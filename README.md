@@ -19,7 +19,7 @@ This README is the operational source of truth. Dated gate reports live in `docs
 | C | Swiss fate, schedule enrichment, strict validation, Next 16, ESLint, CI | Complete locally; not released |
 | D | Source health, schedule adapter, resilient refresh, workflow hardening | Complete locally; not released |
 | E | Command-center information architecture and game-level results | Complete locally; not released |
-| F | “Aegis Vault” visual system and rights-aware art direction | Pending |
+| F | “Aegis Vault” visual system and rights-aware art direction | Complete locally; not released |
 | G | WCAG 2.2 AA, performance, SEO, and sharing | Pending |
 | H | Component/E2E coverage, preview audit, release checkpoint | Pending |
 | Production | Push and production alias change | Requires explicit approval |
