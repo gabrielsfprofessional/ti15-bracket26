@@ -6,31 +6,169 @@
     "startUtc MUST be UTC ISO 8601 ending in Z. Never put a local time here.",
     "Shanghai (CST, UTC+8) -> UTC: subtract 8 hours.",
     "  10:00 AM Aug 15 in Shanghai = 2026-08-15T02:00:00Z  (= Fri Aug 14, 10:00 PM EDT)",
-    "  05:00 PM Aug 15 in Shanghai = 2026-08-15T09:00:00Z  (= Sat Aug 15, 05:00 AM EDT)",
+    "  07:00 PM Aug 15 in Shanghai = 2026-08-15T11:00:00Z  (= Sat Aug 15, 07:00 AM EDT)",
     "",
     "Leave aTeamId / bTeamId out (or null) when the matchup is not known yet; the card",
     "renders as TBD and still shows the time. Use aLabel / bLabel for things like",
-    "\"Winner of Round 4 Match 2\".",
+    "3–1 team.",
     "",
     "Once a match is actually played, OpenDota takes over automatically and its entry here",
     "is ignored — completed data always beats this file. You can leave old rows in place.",
     "",
-    "Team ids are in data/teams.ts.",
-    "DELETE the placeholder row below once you enter real matches."
+    "Team ids are in data/teams.ts. Times and Round 4 pairings were verified against",
+    "Liquipedia's TI 2026 Group Stage source on 2026-08-14."
   ],
   "streamUrl": "https://www.twitch.tv/dota2ti",
   "matches": [
     {
-      "id": "placeholder-1",
+      "id": "swiss-r4-m1",
       "section": "swiss",
       "round": 4,
-      "roundLabel": "PLACEHOLDER — replace in data/schedule.json",
+      "roundLabel": "Round 4 · 3–0",
       "bestOf": 3,
-      "aTeamId": null,
-      "bTeamId": null,
-      "aLabel": "TBD",
-      "bLabel": "TBD",
+      "aTeamId": 9572001,
+      "bTeamId": 7119388,
+      "startUtc": "2026-08-15T05:00:00Z"
+    },
+    {
+      "id": "swiss-r4-m2",
+      "section": "swiss",
+      "round": 4,
+      "roundLabel": "Round 4 · 2–1",
+      "bestOf": 3,
+      "aTeamId": 10150413,
+      "bTeamId": 2163,
+      "startUtc": "2026-08-15T05:00:00Z"
+    },
+    {
+      "id": "swiss-r4-m3",
+      "section": "swiss",
+      "round": 4,
+      "roundLabel": "Round 4 · 2–1",
+      "bestOf": 3,
+      "aTeamId": 8255888,
+      "bTeamId": 9467224,
+      "startUtc": "2026-08-15T05:00:00Z"
+    },
+    {
+      "id": "swiss-r4-m4",
+      "section": "swiss",
+      "round": 4,
+      "roundLabel": "Round 4 · 2–1",
+      "bestOf": 3,
+      "aTeamId": 10136357,
+      "bTeamId": 726228,
+      "startUtc": "2026-08-15T05:00:00Z"
+    },
+    {
+      "id": "swiss-r4-m5",
+      "section": "swiss",
+      "round": 4,
+      "roundLabel": "Round 4 · 1–2",
+      "bestOf": 3,
+      "aTeamId": 10150538,
+      "bTeamId": 8261500,
       "startUtc": "2026-08-15T02:00:00Z"
+    },
+    {
+      "id": "swiss-r4-m6",
+      "section": "swiss",
+      "round": 4,
+      "roundLabel": "Round 4 · 1–2",
+      "bestOf": 3,
+      "aTeamId": 9247354,
+      "bTeamId": 9964962,
+      "startUtc": "2026-08-15T02:00:00Z"
+    },
+    {
+      "id": "swiss-r4-m7",
+      "section": "swiss",
+      "round": 4,
+      "roundLabel": "Round 4 · 1–2",
+      "bestOf": 3,
+      "aTeamId": 5017210,
+      "bTeamId": 9823272,
+      "startUtc": "2026-08-15T02:00:00Z"
+    },
+    {
+      "id": "swiss-r4-m8",
+      "section": "swiss",
+      "round": 4,
+      "roundLabel": "Round 4 · 0–3",
+      "bestOf": 3,
+      "aTeamId": 2586976,
+      "bTeamId": 10149530,
+      "startUtc": "2026-08-15T02:00:00Z"
+    },
+    {
+      "id": "swiss-r5-3-1-a",
+      "section": "swiss",
+      "round": 5,
+      "roundLabel": "Round 5 · 3–1",
+      "bestOf": 3,
+      "aLabel": "3–1 team",
+      "bLabel": "3–1 team",
+      "startUtc": "2026-08-15T11:00:00Z"
+    },
+    {
+      "id": "swiss-r5-3-1-b",
+      "section": "swiss",
+      "round": 5,
+      "roundLabel": "Round 5 · 3–1",
+      "bestOf": 3,
+      "aLabel": "3–1 team",
+      "bLabel": "3–1 team",
+      "startUtc": "2026-08-15T11:00:00Z"
+    },
+    {
+      "id": "swiss-r5-2-2-a",
+      "section": "swiss",
+      "round": 5,
+      "roundLabel": "Round 5 · 2–2",
+      "bestOf": 3,
+      "aLabel": "2–2 team",
+      "bLabel": "2–2 team",
+      "startUtc": "2026-08-15T08:00:00Z"
+    },
+    {
+      "id": "swiss-r5-2-2-b",
+      "section": "swiss",
+      "round": 5,
+      "roundLabel": "Round 5 · 2–2",
+      "bestOf": 3,
+      "aLabel": "2–2 team",
+      "bLabel": "2–2 team",
+      "startUtc": "2026-08-15T08:00:00Z"
+    },
+    {
+      "id": "swiss-r5-2-2-c",
+      "section": "swiss",
+      "round": 5,
+      "roundLabel": "Round 5 · 2–2",
+      "bestOf": 3,
+      "aLabel": "2–2 team",
+      "bLabel": "2–2 team",
+      "startUtc": "2026-08-15T11:00:00Z"
+    },
+    {
+      "id": "swiss-r5-1-3-a",
+      "section": "swiss",
+      "round": 5,
+      "roundLabel": "Round 5 · 1–3",
+      "bestOf": 3,
+      "aLabel": "1–3 team",
+      "bLabel": "1–3 team",
+      "startUtc": "2026-08-15T08:00:00Z"
+    },
+    {
+      "id": "swiss-r5-1-3-b",
+      "section": "swiss",
+      "round": 5,
+      "roundLabel": "Round 5 · 1–3",
+      "bestOf": 3,
+      "aLabel": "1–3 team",
+      "bLabel": "1–3 team",
+      "startUtc": "2026-08-15T08:00:00Z"
     }
   ]
 }
