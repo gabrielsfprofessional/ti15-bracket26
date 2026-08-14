@@ -46,4 +46,4 @@
 
 ## Commit
 
-Recorded in the next gate report because a commit cannot contain its own hash.
+`8bc3dc8` — `Gate F: establish the Aegis Vault visual system`

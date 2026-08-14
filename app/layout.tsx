@@ -1,31 +1,52 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
-// Absolute base for OG/Twitter image URLs. Without it, the Phase 4 share cards
-// resolve against a relative path and fail silently — the card just never renders
-// on Discord or iMessage, with no build error to warn you. The literal fallback
-// keeps the production build correct even before NEXT_PUBLIC_SITE_URL is set in
-// the Vercel dashboard; the env var is what makes preview deploys point at
-// themselves rather than at production.
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ti15-bracket26.vercel.app";
+const DESCRIPTION =
+  "Unofficial live companion for The International 2026 in Shanghai: live series, complete schedule, Swiss standings, game results, and verified bracket updates.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "TI15 — The International 2026",
-  description:
-    "Live bracket, standings and schedule for The International 2026 in Shanghai. All times in Eastern.",
+  title: {
+    default: "TI15 Live Tracker — The International 2026",
+    template: "%s · TI15 Live Tracker",
+  },
+  description: DESCRIPTION,
+  applicationName: "TI15 Live Tracker",
+  alternates: { canonical: "/" },
+  keywords: ["TI15", "The International 2026", "Dota 2", "Shanghai", "schedule", "standings"],
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: "TI15 Live Tracker",
+    title: "TI15 Live Tracker — The International 2026",
+    description: DESCRIPTION,
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "TI15 live tournament tracker" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "TI15 Live Tracker — The International 2026",
+    description: DESCRIPTION,
+    images: ["/opengraph-image"],
+  },
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/apple-icon", sizes: "180x180", type: "image/png" }],
+  },
+  manifest: "/manifest.webmanifest",
+  category: "sports",
+  formatDetection: { telephone: false, address: false, email: false },
 };
 
 export const viewport: Viewport = {
-  // viewport-fit=cover so the sticky live bar can clear the iPhone home indicator
-  // via safe-area insets in Phase 2.
   viewportFit: "cover",
-  themeColor: "#0A0D12",
+  themeColor: "#090b0f",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <body>{children}</body>
     </html>
   );
