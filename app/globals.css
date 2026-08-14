@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+/*
+ * PHASE 1 ONLY. This is deliberately plain — enough contrast and spacing to read
+ * the data and check it against the broadcast, and nothing else. The Aegis Vault
+ * design system lands in Phase 2 and replaces everything in this file.
+ */
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background: #0a0d12;
+  color: #c9d3dc;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* Scores and times must align in a column even before the real type stack. */
+.tabular {
+  font-family: ui-monospace, "JetBrains Mono", "Cascadia Mono", Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+}

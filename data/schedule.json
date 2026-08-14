@@ -1,0 +1,36 @@
+{
+  "_readme": [
+    "HAND-ENTERED UPCOMING MATCHES. OpenDota has no schedule endpoint — there is no way to",
+    "fetch future match times, so this file is the only source for them.",
+    "",
+    "startUtc MUST be UTC ISO 8601 ending in Z. Never put a local time here.",
+    "Shanghai (CST, UTC+8) -> UTC: subtract 8 hours.",
+    "  10:00 AM Aug 15 in Shanghai = 2026-08-15T02:00:00Z  (= Fri Aug 14, 10:00 PM EDT)",
+    "  05:00 PM Aug 15 in Shanghai = 2026-08-15T09:00:00Z  (= Fri Aug 15, 05:00 AM EDT)",
+    "",
+    "Leave aTeamId / bTeamId out (or null) when the matchup is not known yet; the card",
+    "renders as TBD and still shows the time. Use aLabel / bLabel for things like",
+    "\"Winner of Round 4 Match 2\".",
+    "",
+    "Once a match is actually played, OpenDota takes over automatically and its entry here",
+    "is ignored — completed data always beats this file. You can leave old rows in place.",
+    "",
+    "Team ids are in data/teams.ts.",
+    "DELETE the placeholder row below once you enter real matches."
+  ],
+  "streamUrl": "https://www.twitch.tv/dota2ti",
+  "matches": [
+    {
+      "id": "placeholder-1",
+      "section": "swiss",
+      "round": 4,
+      "roundLabel": "PLACEHOLDER — replace in data/schedule.json",
+      "bestOf": 3,
+      "aTeamId": null,
+      "bTeamId": null,
+      "aLabel": "TBD",
+      "bLabel": "TBD",
+      "startUtc": "2026-08-15T02:00:00Z"
+    }
+  ]
+}
