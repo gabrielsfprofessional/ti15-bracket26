@@ -1,7 +1,27 @@
 import { describe, expect, it } from "vitest";
-import { ago, countdown, etAbbreviation, formatEt, formatEtDay, formatEtTime } from "./time";
+import { ET_ZONE, ago, countdown, etAbbreviation, formatEt, formatEtDay, formatEtTime } from "./time";
+
+/**
+ * The real UTC offset the IANA zone resolves to at a given instant, derived by
+ * asking for the same moment in both zones and subtracting.
+ */
+function etOffsetHours(iso: string): number {
+  const at = new Date(iso);
+  const inEt = new Date(at.toLocaleString("en-US", { timeZone: ET_ZONE }));
+  const inUtc = new Date(at.toLocaleString("en-US", { timeZone: "UTC" }));
+  return Math.round((inEt.getTime() - inUtc.getTime()) / 3_600_000);
+}
 
 describe("Eastern formatting", () => {
+  it("resolves a genuinely different offset in summer and winter", () => {
+    // The strongest form of the "never hardcode -5" rule: the zone must actually
+    // MOVE across the DST boundary. A string constant or a fixed offset passes a
+    // formatting assertion but cannot pass this one.
+    expect(etOffsetHours("2026-08-21T03:00:00Z")).toBe(-4);
+    expect(etOffsetHours("2026-01-15T17:30:00Z")).toBe(-5);
+    expect(etOffsetHours("2026-08-21T03:00:00Z")).not.toBe(etOffsetHours("2026-01-15T17:30:00Z"));
+  });
+
   it("renders August as EDT (UTC-4), not a hardcoded UTC-5", () => {
     // 2026-08-21T03:00Z is 11:00 PM Eastern on Aug 20. A fixed -5 offset would
     // print 10:00 PM and be wrong for every match of this tournament.

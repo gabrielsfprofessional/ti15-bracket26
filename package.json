@@ -9,7 +9,8 @@
     "lint": "next lint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "logos": "tsx scripts/logos.ts"
+    "logos": "tsx scripts/logos.ts",
+    "smoke": "tsx scripts/smoke.ts"
   },
   "dependencies": {
     "lucide-react": "^0.469.0",

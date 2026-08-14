@@ -33,18 +33,51 @@ export const TEAMS: Team[] = [
 
 export const TEAM_BY_ID: ReadonlyMap<TeamId, Team> = new Map(TEAMS.map((t) => [t.id, t]));
 
-/** Never throws. An unknown id renders as its number rather than blanking the row. */
+/**
+ * A team id that is not one of the 16. This is always a data problem — a roster
+ * change, a stand-in org, or OpenDota reporting a showmatch under the league id —
+ * so it is surfaced rather than hidden behind a blank cell or the string
+ * "undefined". `logo` is empty on purpose: callers check for it and render a
+ * placeholder instead of requesting a 404.
+ */
+export function unknownTeam(id: TeamId): Team {
+  return { id, name: `Unknown (${id})`, short: "???", logo: "" };
+}
+
+/**
+ * Ids already warned about. Without this the same unknown id logs on every
+ * render of every request, which buries the one line that actually matters.
+ */
+const warnedUnknownIds = new Set<TeamId>();
+
+function warnUnknown(id: TeamId): void {
+  if (warnedUnknownIds.has(id)) return;
+  warnedUnknownIds.add(id);
+  console.warn(
+    `[teams] team_id ${id} is not one of the 16 hardcoded TI15 teams. ` +
+      `It will render as "Unknown (${id})". Add it to data/teams.ts if it is real.`,
+  );
+}
+
+/**
+ * Never throws and NEVER returns undefined.
+ *
+ * A nullish id means "no team yet" (an unplayed bracket slot) and returns null,
+ * which is a different thing from an id we cannot resolve — that returns a
+ * populated Unknown team and logs loudly.
+ */
 export function getTeam(id: TeamId | null | undefined): Team | null {
   if (id == null) return null;
-  return TEAM_BY_ID.get(id) ?? null;
+  const known = TEAM_BY_ID.get(id);
+  if (known) return known;
+  warnUnknown(id);
+  return unknownTeam(id);
 }
 
 export function teamName(id: TeamId | null | undefined): string {
-  if (id == null) return "TBD";
-  return TEAM_BY_ID.get(id)?.name ?? `Team ${id}`;
+  return getTeam(id)?.name ?? "TBD";
 }
 
 export function teamShort(id: TeamId | null | undefined): string {
-  if (id == null) return "TBD";
-  return TEAM_BY_ID.get(id)?.short ?? String(id);
+  return getTeam(id)?.short ?? "TBD";
 }

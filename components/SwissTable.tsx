@@ -5,16 +5,18 @@ import type { SwissRow } from "@/lib/types";
  * Swiss standings. W-L counts COMPLETED series only — a half-played Bo3 is not
  * a win, and showing it as one would put a team a round ahead of reality.
  *
- * `state` drives the colour. It stays "active" for everyone until the group
- * stage is actually decided, because the number of Swiss rounds has not been
- * published and guessing it would paint live teams as eliminated. Setting a fate
- * by hand in overrides.json colours a row immediately.
+ * `state` drives the colour, and stays "active" for all 16 until every team has
+ * played all 5 Swiss rounds. Once it resolves, the fate is DERIVED from the W-L
+ * sort alone and marked provisional: the official cut also breaks ties on
+ * Buchholz and game win %, so ranks either side of 3rd/4th and 13th/14th can
+ * move. Provisional rows get a hairline accent only. Setting a fate by hand in
+ * overrides.json is authoritative and renders at full strength.
  */
-const STATE_STYLE: Record<SwissRow["state"], { text: string; label: string }> = {
-  active: { text: "text-[#c9d3dc]", label: "" },
-  advanced: { text: "text-[#3fcf8e]", label: "Main Event" },
-  elimination_round: { text: "text-[#d8c089]", label: "Elimination round" },
-  eliminated: { text: "text-[#6b7785] line-through", label: "Out" },
+const STATE_STYLE: Record<SwissRow["state"], { text: string; label: string; accent: string }> = {
+  active: { text: "text-[#c9d3dc]", label: "", accent: "transparent" },
+  advanced: { text: "text-[#3fcf8e]", label: "Main Event", accent: "#3fcf8e" },
+  elimination_round: { text: "text-[#d8c089]", label: "Elimination round", accent: "#d8c089" },
+  eliminated: { text: "text-[#6b7785]", label: "Out", accent: "#e4432f" },
 };
 
 export function SwissTable({ rows }: { rows: SwissRow[] }) {
@@ -36,12 +38,21 @@ export function SwissTable({ rows }: { rows: SwissRow[] }) {
           {rows.map((row, i) => {
             const style = STATE_STYLE[row.state];
             const team = getTeam(row.teamId);
+            // A derived fate gets a hairline accent and nothing more. Never a
+            // filled background — that would read as settled, and the boundary
+            // between 3rd/4th and 13th/14th turns on tiebreaks we do not compute.
+            const provisional = row.provisional === true;
             return (
               <tr key={row.teamId} className="border-t border-[#232a33]">
-                <td className="tabular py-1.5 text-[#6b7785]">{i + 1}</td>
+                <td
+                  className="tabular py-1.5 text-[#6b7785]"
+                  style={{ boxShadow: `inset 2px 0 0 0 ${style.accent}` }}
+                >
+                  <span className="pl-2">{i + 1}</span>
+                </td>
                 <td className={`py-1.5 ${style.text}`}>
                   <span className="flex items-center gap-2">
-                    {team && (
+                    {team && team.logo && (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={team.logo}
@@ -56,7 +67,10 @@ export function SwissTable({ rows }: { rows: SwissRow[] }) {
                 </td>
                 <td className="tabular py-1.5 text-right">{row.wins}</td>
                 <td className="tabular py-1.5 text-right">{row.losses}</td>
-                <td className={`py-1.5 pl-3 text-xs ${style.text}`}>{style.label}</td>
+                <td className={`py-1.5 pl-3 text-xs ${provisional ? "text-[#6b7785]" : style.text}`}>
+                  {style.label}
+                  {provisional && style.label && <span className="ml-1 opacity-70">(provisional)</span>}
+                </td>
               </tr>
             );
           })}

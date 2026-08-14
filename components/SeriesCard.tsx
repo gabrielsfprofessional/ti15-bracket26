@@ -7,9 +7,26 @@ import type { Series, SlotRef } from "@/lib/types";
  * starts and WHO is playing, so the day+time line and the two team rows are the
  * only things given any weight. Phase 1 styling is plain on purpose.
  */
+/**
+ * Only a series that has actually been played has a score worth showing. A
+ * scheduled or TBD match rendering "0" beside both teams reads as a result.
+ */
+const HAS_SCORE = new Set<Series["status"]>(["live", "unconfirmed", "completed"]);
+
+const STATUS_LABEL: Record<Series["status"], string> = {
+  tbd: "Matchup TBD",
+  scheduled: "Scheduled",
+  live: "Live",
+  // Never the word "unconfirmed" on its own — it reads as doubt about the score,
+  // which is not what it means. The score is solid; the liveness is not.
+  unconfirmed: "In progress · not confirmed live",
+  completed: "Final",
+};
+
 export function SeriesCard({ series }: { series: Series }) {
   const winnerA = series.winnerId != null && series.a.teamId === series.winnerId;
   const winnerB = series.winnerId != null && series.b.teamId === series.winnerId;
+  const showScore = HAS_SCORE.has(series.status);
 
   return (
     <article id={`series-${series.id}`} className="border border-[#232a33] p-3">
@@ -26,15 +43,11 @@ export function SeriesCard({ series }: { series: Series }) {
 
       {/* WHO */}
       <div className="flex flex-col gap-1">
-        <TeamSide slot={series.a} score={series.scoreA} isWinner={winnerA} />
-        <TeamSide slot={series.b} score={series.scoreB} isWinner={winnerB} />
+        <TeamSide slot={series.a} score={series.scoreA} isWinner={winnerA} showScore={showScore} />
+        <TeamSide slot={series.b} score={series.scoreB} isWinner={winnerB} showScore={showScore} />
       </div>
 
-      <div className="mt-2 text-xs text-[#6b7785]">
-        <span>{series.status}</span>
-        <span className="mx-1">·</span>
-        <span>{series.source}</span>
-      </div>
+      <div className="mt-2 text-xs text-[#6b7785]">{STATUS_LABEL[series.status]}</div>
     </article>
   );
 }
@@ -54,7 +67,9 @@ export function TeamSide({
 
   return (
     <div className="flex items-center gap-2">
-      {team ? (
+      {/* An Unknown team carries an empty logo path — rendering it would fire a
+          request at our own origin and 404. */}
+      {team && team.logo ? (
         // Plain <img>: these are 16 small committed files served from our own
         // origin, never a hotlink to Steam's CDN.
         // eslint-disable-next-line @next/next/no-img-element

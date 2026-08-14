@@ -21,8 +21,11 @@ export default async function Page() {
   const t = await buildTournament(nowMs);
 
   const upcoming = pickUpcoming(t.series, nowMs, 3);
-  const completed = t.series
-    .filter((s) => s.status === "completed")
+  // "unconfirmed" belongs here, not in the live bar. It has played games and a
+  // real score, so dropping it would make a series vanish from the site
+  // entirely — the opposite failure to the stale LIVE badge it replaced.
+  const results = t.series
+    .filter((s) => s.status === "completed" || s.status === "unconfirmed")
     .sort((a, b) => (b.startUtc ?? "").localeCompare(a.startUtc ?? ""));
 
   const dot = SYNC_DOT[t.syncState];
@@ -54,10 +57,10 @@ export default async function Page() {
 
       <section>
         <h2 className="text-xs uppercase tracking-widest text-[#6b7785]">
-          Completed series ({completed.length})
+          Results ({results.length})
         </h2>
         <div className="mt-2 flex flex-col gap-2">
-          {completed.map((s) => (
+          {results.map((s) => (
             <SeriesCard key={s.id} series={s} />
           ))}
         </div>

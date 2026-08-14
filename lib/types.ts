@@ -3,7 +3,14 @@
 // ---------------------------------------------------------------------------
 
 export type TeamId = number; // OpenDota team_id
-export type Status = "tbd" | "scheduled" | "live" | "completed";
+/**
+ * "unconfirmed" is the C.2 status: games have been played and no side has hit the
+ * win threshold, but nothing corroborates that the series is still running right
+ * now. It is deliberately NOT "live" — a Bo3 sitting at 1-1 because OpenDota
+ * never reported game 3 would otherwise read LIVE forever on the loudest element
+ * of the page. It renders with its real score and no badge.
+ */
+export type Status = "tbd" | "scheduled" | "live" | "unconfirmed" | "completed";
 export type Section = "swiss" | "elimination" | "upper" | "lower" | "grand_final";
 export type Source = "override" | "live" | "opendota" | "schedule" | "tbd";
 
@@ -39,6 +46,12 @@ export interface Series {
   streamUrl?: string;
   source: Source;
   updatedUtc: string;
+  /**
+   * The data/schedule.json row this series was matched to, stamped by the merge
+   * layer. Once stamped, that row is dropped by id rather than by re-running a
+   * fuzzy time comparison — see mergeSchedule (C.3).
+   */
+  scheduleId?: string;
 }
 
 export interface SwissRow {
@@ -46,6 +59,15 @@ export interface SwissRow {
   wins: number;
   losses: number;
   state: "active" | "advanced" | "elimination_round" | "eliminated";
+  /**
+   * True when `state` was DERIVED from the W-L sort rather than set by hand.
+   *
+   * The official Swiss ranking breaks ties on opponent strength (Buchholz) and
+   * then game win %, neither of which this site computes. So a derived fate near
+   * the 3/10/3 boundary can be wrong, and the UI must show it at reduced
+   * emphasis. A fate set in overrides.json is authoritative and clears this.
+   */
+  provisional?: boolean;
 }
 
 export interface Tournament {

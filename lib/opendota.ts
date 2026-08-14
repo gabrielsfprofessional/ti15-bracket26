@@ -7,6 +7,7 @@ import type {
   OverridesFile,
   RawLive,
   RawMatch,
+  ScheduleEntry,
   ScheduleFile,
   Series,
   SwissRow,
@@ -24,13 +25,49 @@ const USER_AGENT =
 const DEFAULT_STREAM_URL = "https://www.twitch.tv/dota2ti";
 
 /**
- * How many Swiss rounds the group stage runs. Valve has not published this and
- * it is not derivable from the API, so team fate is deliberately left as
- * "active" until it is known. Set this number and every team's advanced /
- * elimination_round / eliminated state falls out of the final standings.
- * Until then, overrides.json.swiss is the way to mark a team's fate.
+ * How many Swiss rounds the group stage runs.
+ *
+ * FIVE, full-field: all 16 teams play all 5 rounds. Nobody exits early at 3 wins
+ * or 3 losses. Confirmed two ways — Liquipedia's group stage page lists Rounds
+ * 1-5 followed by a separate Elimination Round, and the 2/6/6/2 W-L spread
+ * observed after round 3 is the binomial signature of a full field, which a
+ * drop-at-3 format cannot produce.
+ *
+ * Fate is assigned only once all 16 have played all 5 (see computeSwiss), and
+ * every derived fate is marked provisional.
  */
-const SWISS_ROUNDS: number | null = null;
+const SWISS_ROUNDS = 5;
+
+/** rank 1-3 advance straight to the Main Event. */
+const ADVANCE_CUT = 3;
+/** ranks 4-13 play the Elimination Round; 14-16 are out. */
+const ELIMINATION_CUT = 13;
+
+/**
+ * C.7 — no single upstream request may hang the page.
+ *
+ * This is also the budget for the WHOLE call including the retry, not per
+ * attempt. Vercel Hobby kills a function at 10s: 8s + 1s backoff + another 8s
+ * would be 17s and would 504 the page, which is the exact failure this timeout
+ * exists to prevent. Better to give up at 8s and let the degraded path render.
+ */
+const FETCH_BUDGET_MS = 8_000;
+/** C.7 — exactly one retry, after this pause. Not a backoff ladder. */
+const RETRY_BACKOFF_MS = 1_000;
+
+/**
+ * C.2 — how long after a series' last game ended it may still claim to be LIVE
+ * without the live feed corroborating it.
+ */
+const LIVE_GRACE_MS = 2 * 3_600_000;
+
+/**
+ * C.3 — how far a played series may sit from its hand-entered slot and still be
+ * considered the same match. Asymmetric on purpose: Dota broadcasts run late,
+ * essentially never early.
+ */
+const SCHEDULE_EARLY_MS = 2 * 3_600_000;
+const SCHEDULE_LATE_MS = 12 * 3_600_000;
 
 const overrides = overridesFile as unknown as OverridesFile;
 const schedule = scheduleFile as unknown as ScheduleFile;
@@ -39,15 +76,78 @@ const schedule = scheduleFile as unknown as ScheduleFile;
 // I/O
 // ---------------------------------------------------------------------------
 
-async function getJson<T>(path: string, revalidate: number): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
-    // Ignored outside Next (scripts/sync.ts runs this under plain node).
-    next: { revalidate },
-  } as RequestInit);
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-  if (!res.ok) throw new Error(`OpenDota ${path} -> HTTP ${res.status}`);
-  return (await res.json()) as T;
+/**
+ * Retry only what retrying can actually fix. A 429 or a 5xx is upstream weather;
+ * a 4xx means we asked the wrong question and asking twice just burns quota
+ * against a keyless rate limit.
+ */
+function isRetryableStatus(status: number): boolean {
+  return status === 429 || status >= 500;
+}
+
+async function fetchOnce(url: string, revalidate: number, timeoutMs: number): Promise<Response> {
+  // A hanging upstream must not turn into a 504 on our page. Without this the
+  // request inherits the platform's much longer timeout and the whole render
+  // blocks behind it.
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, {
+      headers: { "User-Agent": USER_AGENT, Accept: "application/json" },
+      signal: controller.signal,
+      // Ignored outside Next (scripts/sync.ts runs this under plain node).
+      next: { revalidate },
+    } as RequestInit);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/**
+ * One bounded retry, 1s apart, and only for the failures a retry can fix.
+ *
+ * Bounded is the point: an unbounded retry loop against a rate-limited free API
+ * turns a blip into a ban. A timeout is deliberately NOT retried — the second
+ * attempt is overwhelmingly likely to time out too, and paying twice for that
+ * is what pushes the request past the platform's function limit.
+ */
+async function getJson<T>(path: string, revalidate: number): Promise<T> {
+  const url = `${BASE}${path}`;
+  const deadline = Date.now() + FETCH_BUDGET_MS;
+  let lastError = new Error(`OpenDota ${path} -> no attempt made`);
+
+  for (let attempt = 0; attempt < 2; attempt++) {
+    if (attempt > 0) await sleep(RETRY_BACKOFF_MS);
+
+    const remaining = deadline - Date.now();
+    if (remaining <= 0) break;
+
+    let res: Response;
+    try {
+      res = await fetchOnce(url, revalidate, remaining);
+    } catch (err) {
+      // A timeout or a dead socket. Not retried; surfaced so the caller can fall
+      // back to the degraded path immediately rather than waiting again.
+      throw new Error(`OpenDota ${path} -> ${describe(err)}`);
+    }
+
+    if (res.ok) return (await res.json()) as T;
+
+    lastError = new Error(`OpenDota ${path} -> HTTP ${res.status}`);
+    // 4xx means we asked the wrong question; asking twice just burns quota.
+    if (!isRetryableStatus(res.status)) throw lastError;
+  }
+
+  throw lastError;
+}
+
+function describe(err: unknown): string {
+  if (err instanceof Error) {
+    return err.name === "AbortError" ? `timed out after ${FETCH_BUDGET_MS}ms` : err.message;
+  }
+  return String(err);
 }
 
 /** Every played GAME of the league. One request. */
@@ -96,7 +196,7 @@ export function assembleTournament(input: AssembleInput): Tournament {
   const { matches, live, nowMs } = input;
 
   const played = toSeries(matches);
-  const withLive = mergeLive(played, live);
+  const withLive = mergeLive(played, live, nowMs);
   const withSchedule = mergeSchedule(withLive);
   const streamUrl = overrides.streamUrl ?? schedule.streamUrl ?? DEFAULT_STREAM_URL;
 
@@ -122,27 +222,36 @@ export function assembleTournament(input: AssembleInput): Tournament {
 /**
  * Fold the live feed in.
  *
- * Two things matter here:
+ * Three things matter here:
  *  1. The live feed's radiant_score / dire_score are KILL COUNTS. They are read
  *     for nothing. Every series score on this site comes from completed games.
  *  2. The live feed lags on removal — a finished game keeps showing up with
  *     deactivate_time 0 after /matches has already recorded it as complete.
  *     A live game whose match_id is already a completed game is dropped, or the
  *     site invents a phantom extra game of a series that is already over.
+ *  3. C.2 — this is the ONLY layer allowed to call something "live".
+ *     toSeries() is pure and has no clock, so it marks any undecided series
+ *     "live" as its best guess. That guess is wrong the moment OpenDota stalls:
+ *     a Bo3 stuck at 1-1 because game 3 never got reported would sit there
+ *     claiming LIVE indefinitely, on the most prominent element of the page.
+ *     Every such guess is re-checked below against the live feed and the clock,
+ *     and demoted to "unconfirmed" if neither backs it up.
  */
-function mergeLive(series: Series[], live: RawLive[]): Series[] {
+export function mergeLive(series: Series[], live: RawLive[], nowMs: number): Series[] {
   const completedGameIds = new Set<string>();
   for (const s of series) for (const id of s.gameIds) completedGameIds.add(String(id));
 
   const stillLive = live.filter((g) => !completedGameIds.has(String(g.match_id)));
-  if (stillLive.length === 0) return series;
 
   const out = series.map((s) => ({ ...s }));
   const byKey = new Map(out.map((s) => [s.id, s]));
+  /** Series the live feed positively vouches for on THIS sync. */
+  const confirmed = new Set<string>();
 
   for (const g of stillLive) {
     const key = g.series_id ? `s-${g.series_id}` : `g-${g.match_id}`;
     const existing = byKey.get(key);
+    confirmed.add(key);
 
     if (existing) {
       // Live outranks completed in the source precedence: a genuinely new game
@@ -176,22 +285,80 @@ function mergeLive(series: Series[], live: RawLive[]): Series[] {
     byKey.set(key, fresh);
   }
 
+  // C.2 — demote every "live" the feed did not vouch for and the clock does not
+  // support. A series that met its win threshold is already "completed" by
+  // toSeries and is never touched here.
+  for (const s of out) {
+    if (s.status !== "live") continue;
+    if (confirmed.has(s.id)) continue;
+    if (endedWithinGrace(s, nowMs)) continue;
+    s.status = "unconfirmed";
+  }
+
   return out;
 }
 
 /**
- * Add hand-entered upcoming matches. A scheduled row is dropped once its match
- * has actually been played — matched by the same two teams starting within 12
- * hours of the entered time — so stale rows do not linger next to real results.
+ * Did this series' last game finish recently enough that it is plausibly still
+ * running? `updatedUtc` is last start_time + duration, set by toSeries.
  */
-function mergeSchedule(series: Series[], windowHours = 12): Series[] {
-  const existingIds = new Set(series.map((s) => s.id));
-  const out = [...series];
+function endedWithinGrace(s: Series, nowMs: number): boolean {
+  const endedMs = Date.parse(s.updatedUtc);
+  if (Number.isNaN(endedMs)) return false;
+  return nowMs - endedMs <= LIVE_GRACE_MS;
+}
 
-  for (const entry of schedule.matches ?? []) {
+/**
+ * Add hand-entered upcoming matches, and retire the rows whose match has since
+ * been played.
+ *
+ * C.3 — the retirement rule is a ONE-TO-ONE assignment, not a "same two teams
+ * within 12 hours" scan. The old rule was too loose in a way that matters here:
+ * the Elimination Round explicitly RE-PAIRS teams that already met in the group
+ * stage (the best 3-2 team picks any of the five 2-3 teams). Under a pair-only
+ * test, the group-stage series would silently retire the Elimination Round row
+ * and the upcoming match would vanish from the page.
+ *
+ * So each schedule row claims at most one played series and each played series
+ * can be claimed once — nearest start time wins. The claim is then STAMPED onto
+ * the series as `scheduleId`, which is what makes it stable: after the first
+ * match the association is an id, not a re-run of a fuzzy time comparison.
+ */
+export function mergeSchedule(
+  series: Series[],
+  entriesIn: ScheduleEntry[] = schedule.matches ?? [],
+): Series[] {
+  const out = series.map((s) => ({ ...s }));
+  const existingIds = new Set(out.map((s) => s.id));
+
+  // Only real, concrete, dated series can be claimed by a schedule row.
+  const claimable = out.filter(
+    (s) =>
+      (s.source === "opendota" || s.source === "live") &&
+      s.startUtc != null &&
+      s.a.kind === "team" &&
+      s.b.kind === "team" &&
+      s.a.teamId != null &&
+      s.b.teamId != null,
+  );
+  const claimed = new Set<string>();
+
+  // Chronological, so the assignment does not depend on hand-entry order: the
+  // earlier round gets first pick of the earlier series.
+  const entries = [...entriesIn].sort(
+    (x, y) => (x.startUtc ?? "9999").localeCompare(y.startUtc ?? "9999") || x.id.localeCompare(y.id),
+  );
+
+  for (const entry of entries) {
     if (existingIds.has(entry.id)) continue;
+
     if (entry.aTeamId != null && entry.bTeamId != null && entry.startUtc) {
-      if (alreadyPlayed(series, entry.aTeamId, entry.bTeamId, entry.startUtc, windowHours)) continue;
+      const played = claimPlayed(claimable, claimed, entry.aTeamId, entry.bTeamId, entry.startUtc);
+      if (played) {
+        claimed.add(played.id);
+        played.scheduleId = entry.id;
+        continue;
+      }
     }
 
     out.push({
@@ -221,24 +388,41 @@ function slotFromSchedule(teamId: TeamId | null | undefined, label?: string) {
   return { kind: "tbd" as const, label: label ?? "TBD" };
 }
 
-function alreadyPlayed(
-  series: Series[],
+/**
+ * The unclaimed played series that best fits this schedule row, or null.
+ * "Best" is the nearest start time inside an asymmetric window — a broadcast
+ * runs late far more often than early.
+ */
+function claimPlayed(
+  claimable: Series[],
+  claimed: Set<string>,
   aId: TeamId,
   bId: TeamId,
   startUtc: string,
-  windowHours: number,
-): boolean {
+): Series | null {
   const target = Date.parse(startUtc);
-  if (Number.isNaN(target)) return false;
-  const windowMs = windowHours * 3600_000;
+  if (Number.isNaN(target)) return null;
 
-  return series.some((s) => {
-    if (s.source !== "opendota" && s.source !== "live") return false;
-    if (!s.startUtc) return false;
+  let best: Series | null = null;
+  let bestDistance = Number.POSITIVE_INFINITY;
+
+  for (const s of claimable) {
+    if (claimed.has(s.id)) continue;
     const ids = [s.a.teamId, s.b.teamId];
-    if (!ids.includes(aId) || !ids.includes(bId)) return false;
-    return Math.abs(Date.parse(s.startUtc) - target) <= windowMs;
-  });
+    if (!ids.includes(aId) || !ids.includes(bId)) continue;
+
+    const delta = Date.parse(s.startUtc as string) - target;
+    if (delta < -SCHEDULE_EARLY_MS || delta > SCHEDULE_LATE_MS) continue;
+
+    const distance = Math.abs(delta);
+    // Ties broken by id so the assignment is deterministic.
+    if (distance < bestDistance || (distance === bestDistance && best && s.id < best.id)) {
+      best = s;
+      bestDistance = distance;
+    }
+  }
+
+  return best;
 }
 
 /** overrides.json wins over everything, including hiding a series outright. */
@@ -300,7 +484,6 @@ export function computeSwiss(series: Series[]): SwissRow[] {
     rows.set(t.id, { teamId: t.id, wins: 0, losses: 0, state: "active" });
   }
 
-  let completedCount = 0;
   for (const s of series) {
     if (s.section !== "swiss") continue;
     if (s.status !== "completed" || s.winnerId == null) continue;
@@ -312,25 +495,30 @@ export function computeSwiss(series: Series[]): SwissRow[] {
     const loser = rows.get(loserId);
     if (winner) winner.wins++;
     if (loser) loser.losses++;
-    completedCount++;
   }
 
+  // W-L ONLY. The official ranking then breaks ties on opponent strength
+  // (Buchholz) and game win %, and this deliberately does not attempt either:
+  // getting Buchholz subtly wrong would move the 3/10/3 boundary and grey out a
+  // team that is still alive, which is the single most damaging error this site
+  // can make. The name tiebreak exists only to keep the order deterministic.
   const sorted = [...rows.values()].sort(
     (x, y) =>
-      y.wins - x.wins ||
-      x.losses - y.losses ||
-      nameOf(x.teamId).localeCompare(nameOf(y.teamId)),
+      y.wins - x.wins || x.losses - y.losses || nameOf(x.teamId).localeCompare(nameOf(y.teamId)),
   );
 
-  // Fate is only assigned once the group stage is actually over. Guessing it
-  // mid-stage would paint teams as eliminated while they are still alive.
-  if (SWISS_ROUNDS != null && completedCount > 0) {
-    const finished = sorted.every((r) => r.wins + r.losses >= SWISS_ROUNDS);
-    if (finished) {
-      sorted.forEach((row, i) => {
-        row.state = i < 3 ? "advanced" : i < 13 ? "elimination_round" : "eliminated";
-      });
-    }
+  // Fate is assigned only once all 16 have played all 5 rounds. Before that
+  // every team stays "active" — guessing mid-stage would paint teams as
+  // eliminated while they are still alive.
+  const finished = sorted.every((r) => r.wins + r.losses >= SWISS_ROUNDS);
+  if (finished) {
+    sorted.forEach((row, i) => {
+      row.state =
+        i < ADVANCE_CUT ? "advanced" : i < ELIMINATION_CUT ? "elimination_round" : "eliminated";
+      // Derived, so the boundary may be wrong by a tiebreak we do not compute.
+      // The UI renders this at reduced emphasis until it is confirmed by hand.
+      row.provisional = true;
+    });
   }
 
   return sorted;
@@ -345,6 +533,11 @@ function applySwissOverrides(rows: SwissRow[]): SwissRow[] {
   if (Object.keys(patches).length === 0) return rows;
   return rows.map((r) => {
     const patch = patches[String(r.teamId)];
-    return patch ? { ...r, ...patch } : r;
+    if (!patch) return r;
+    const merged: SwissRow = { ...r, ...patch };
+    // A hand-set fate IS the real cut, made against the official tiebreaks. It
+    // is never provisional, and it renders at full emphasis.
+    if (patch.state != null) merged.provisional = false;
+    return merged;
   });
 }
