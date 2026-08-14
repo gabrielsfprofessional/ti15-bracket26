@@ -91,7 +91,7 @@ export function TournamentView({
       </header>
 
       <LiveBar series={tournament.series} />
-      <NextUp upcoming={upcoming} />
+      <NextUp upcoming={upcoming} nowMs={nowMs} />
       <SwissTable rows={tournament.swiss} />
 
       <section>

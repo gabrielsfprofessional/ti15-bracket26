@@ -1,6 +1,3 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import { SeriesCard } from "@/components/SeriesCard";
 import { countdown } from "@/lib/time";
 import type { Series } from "@/lib/types";
@@ -12,15 +9,7 @@ import type { Series } from "@/lib/types";
  * first client render agree and nothing hydration-mismatches. It then recomputes
  * every 30 seconds, as specified.
  */
-export function NextUp({ upcoming }: { upcoming: Series[] }) {
-  const [nowMs, setNowMs] = useState<number | null>(null);
-
-  useEffect(() => {
-    setNowMs(Date.now());
-    const id = setInterval(() => setNowMs(Date.now()), 30_000);
-    return () => clearInterval(id);
-  }, []);
-
+export function NextUp({ upcoming, nowMs }: { upcoming: Series[]; nowMs: number }) {
   if (upcoming.length === 0) {
     return (
       <section>
@@ -34,7 +23,7 @@ export function NextUp({ upcoming }: { upcoming: Series[] }) {
   }
 
   const next = upcoming[0];
-  const untilNext = nowMs === null ? null : countdown(next.startUtc, nowMs);
+  const untilNext = countdown(next.startUtc, nowMs);
 
   return (
     <section>

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { getTeam, teamName, teamShort, unknownTeam } from "@/data/teams";
-import { computeSwiss, mergeLive, mergeSchedule } from "./opendota";
+import { applySwissOverrides, computeSwiss, mergeLive, mergeSchedule } from "./opendota";
 import type { RawLive, ScheduleEntry, Series, TeamId } from "./types";
 
 // Real ids from data/teams.ts — the merge layer joins on these.
@@ -145,6 +145,66 @@ describe("C.3 schedule matching", () => {
     expect(out[0].scheduleId).toBe("r2-m1");
   });
 
+  it("enriches a played series with official round metadata without replacing results", () => {
+    const played = series({
+      id: "s-500",
+      status: "completed",
+      winnerId: LIQUID,
+      scoreA: 2,
+      scoreB: 1,
+      startUtc: "2026-08-16T16:27:00Z",
+      updatedUtc: "2026-08-16T18:42:00Z",
+      gameIds: [501, 502, 503],
+    });
+    const out = mergeSchedule([
+      played,
+    ], [
+      entry({
+        id: "elim-verified",
+        section: "elimination",
+        round: 1,
+        roundLabel: "Elimination Round · Match 1",
+        bestOf: 5,
+      }),
+    ]);
+
+    expect(out[0]).toMatchObject({
+      id: "s-500",
+      scheduleId: "elim-verified",
+      section: "elimination",
+      round: 1,
+      roundLabel: "Elimination Round · Match 1",
+      bestOf: 5,
+      status: "completed",
+      winnerId: LIQUID,
+      scoreA: 2,
+      scoreB: 1,
+      startUtc: "2026-08-16T16:27:00Z",
+      updatedUtc: "2026-08-16T18:42:00Z",
+      gameIds: [501, 502, 503],
+      source: "opendota",
+    });
+  });
+
+  it("claims repeated pairings one-to-one and leaves an unplayed rematch visible", () => {
+    const played = series({
+      id: "s-500",
+      status: "completed",
+      winnerId: LIQUID,
+      startUtc: "2026-08-14T16:00:00Z",
+    });
+    const out = mergeSchedule(
+      [played],
+      [
+        entry({ id: "round-1", startUtc: "2026-08-14T16:00:00Z" }),
+        entry({ id: "round-5-rematch", round: 5, startUtc: "2026-08-16T16:00:00Z" }),
+      ],
+    );
+
+    expect(out.map((item) => item.id).sort()).toEqual(["round-5-rematch", "s-500"]);
+    expect(out.find((item) => item.id === "s-500")?.scheduleId).toBe("round-1");
+  });
+
   it("keeps an Elimination Round rematch of the same two teams", () => {
     // THE regression this replaced the +/-12h scan for. The Elimination Round
     // re-pairs teams that already met in the group stage; a pair-only test would
@@ -278,26 +338,36 @@ const ALL_16: TeamId[] = [
   5017210, 7119388, 9823272, 9572001, 726228, 8261500,
 ];
 
-/**
- * A plausible full-field spread after 5 rounds: 5-0 x1, 4-1 x2, 3-2 x5,
- * 2-3 x5, 1-4 x2, 0-5 x1. Sums to 40 wins across 40 series, which is exactly
- * 16 teams x 5 rounds / 2 — the arithmetic a full-field Swiss has to satisfy.
- */
-const SPREAD = [5, 4, 4, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 1, 1, 0];
+const ROUND_3_RECORDS: Array<[number, number]> = [
+  [3, 0], [3, 0],
+  [2, 1], [2, 1], [2, 1], [2, 1], [2, 1], [2, 1],
+  [1, 2], [1, 2], [1, 2], [1, 2], [1, 2], [1, 2],
+  [0, 3], [0, 3],
+];
 
-/**
- * Build a completed 5-round group stage where ALL_16[i] finishes on SPREAD[i]
- * wins. Who played whom is fictional — computeSwiss only reads winner and loser
- * — but each team must end on exactly 5 played, since that is what gates fate
- * assignment. Built by pairing a bag of win slots against a bag of loss slots.
- */
-function swissSeries(spread: number[]): Series[] {
+const ROUND_4_RECORDS: Array<[number, number]> = [
+  [4, 0],
+  [3, 1], [3, 1], [3, 1], [3, 1],
+  [2, 2], [2, 2], [2, 2], [2, 2], [2, 2], [2, 2],
+  [1, 3], [1, 3], [1, 3], [1, 3],
+  [0, 4],
+];
+
+const COMPLETED_RECORDS: Array<[number, number]> = [
+  [4, 0], [4, 1], [4, 1],
+  [3, 2], [3, 2], [3, 2], [3, 2], [3, 2],
+  [2, 3], [2, 3], [2, 3], [2, 3], [2, 3],
+  [1, 4], [1, 4], [0, 4],
+];
+
+/** Build deterministic completed series from a balanced table of W-L records. */
+function swissSeries(records: Array<[number, number]>): Series[] {
   const winners: TeamId[] = [];
   const losers: TeamId[] = [];
 
   ALL_16.forEach((id, i) => {
-    for (let w = 0; w < spread[i]; w++) winners.push(id);
-    for (let l = 0; l < 5 - spread[i]; l++) losers.push(id);
+    for (let w = 0; w < records[i][0]; w++) winners.push(id);
+    for (let l = 0; l < records[i][1]; l++) losers.push(id);
   });
 
   // Reverse so the heaviest winners are drawn against the heaviest losers, which
@@ -321,54 +391,53 @@ function swissSeries(spread: number[]): Series[] {
 }
 
 describe("C.1 Swiss fate", () => {
-  it("leaves all 16 active before the fifth round completes", () => {
-    const partial = series({ status: "completed", winnerId: LIQUID });
-    const rows = computeSwiss([partial]);
+  it("keeps everyone active through Round 3", () => {
+    const rows = computeSwiss(swissSeries(ROUND_3_RECORDS));
     expect(rows).toHaveLength(16);
-    expect(rows.every((r) => r.state === "active")).toBe(true);
+    expect(rows.every((row) => row.wins + row.losses === 3)).toBe(true);
+    expect(rows.every((row) => row.state === "active")).toBe(true);
   });
 
-  it("builds the intended spread — the fixture itself is load-bearing", () => {
-    const rows = computeSwiss(swissSeries(SPREAD));
-    expect(rows.map((r) => r.wins)).toEqual(SPREAD);
-    expect(rows.every((r) => r.wins + r.losses === 5)).toBe(true);
+  it("settles only the 4-0 and 0-4 teams after Round 4", () => {
+    const rows = computeSwiss(swissSeries(ROUND_4_RECORDS));
+    const fourZero = rows.find((row) => row.wins === 4 && row.losses === 0);
+    const zeroFour = rows.find((row) => row.wins === 0 && row.losses === 4);
+
+    expect(fourZero?.state).toBe("advanced");
+    expect(zeroFour?.state).toBe("eliminated");
+    expect(
+      rows
+        .filter((row) => [3, 2, 1].includes(row.wins))
+        .every((row) => row.state === "active"),
+    ).toBe(true);
   });
 
-  it("assigns 3 / 10 / 3 once every team has played all five", () => {
-    const rows = computeSwiss(swissSeries(SPREAD));
-    const states = rows.map((r) => r.state);
-
-    expect(states.filter((s) => s === "advanced")).toHaveLength(3);
-    expect(states.filter((s) => s === "elimination_round")).toHaveLength(10);
-    expect(states.filter((s) => s === "eliminated")).toHaveLength(3);
-    // Ranks 1-3 advance, 14-16 are out. Nothing in between is ever "eliminated".
-    expect(states.slice(0, 3).every((s) => s === "advanced")).toBe(true);
-    expect(states.slice(13).every((s) => s === "eliminated")).toBe(true);
+  it("assigns exactly 3 advanced, 10 elimination-round, and 3 eliminated", () => {
+    const rows = computeSwiss(swissSeries(COMPLETED_RECORDS));
+    expect(rows.filter((row) => row.state === "advanced")).toHaveLength(3);
+    expect(rows.filter((row) => row.state === "elimination_round")).toHaveLength(10);
+    expect(rows.filter((row) => row.state === "eliminated")).toHaveLength(3);
+    expect(rows.filter((row) => row.wins + row.losses === 4)).toHaveLength(2);
   });
 
-  it("marks every derived fate provisional", () => {
-    // Buchholz decides the real 3rd/4th and 13th/14th boundary and this does not
-    // compute it, so nothing here may render as settled.
-    const rows = computeSwiss(swissSeries(SPREAD));
-    expect(rows.every((r) => r.provisional === true)).toBe(true);
+  it("keeps manual fate overrides authoritative and non-provisional", () => {
+    const rows = computeSwiss(swissSeries(ROUND_3_RECORDS));
+    const overridden = applySwissOverrides(rows, {
+      [String(ALL_16[0])]: { state: "eliminated", provisional: true },
+    });
+    const row = overridden.find((item) => item.teamId === ALL_16[0]);
+
+    expect(row?.state).toBe("eliminated");
+    expect(row?.provisional).toBe(false);
   });
 
-  it("sorts on W-L alone, descending", () => {
-    const rows = computeSwiss(swissSeries(SPREAD));
-    for (let i = 1; i < rows.length; i++) {
-      expect(rows[i - 1].wins).toBeGreaterThanOrEqual(rows[i].wins);
+  it("preserves Swiss win/loss parity at every completed checkpoint", () => {
+    for (const records of [ROUND_3_RECORDS, ROUND_4_RECORDS, COMPLETED_RECORDS]) {
+      const rows = computeSwiss(swissSeries(records));
+      expect(rows.reduce((sum, row) => sum + row.wins, 0)).toBe(
+        rows.reduce((sum, row) => sum + row.losses, 0),
+      );
     }
-    expect(rows[0].wins).toBe(5);
-    expect(rows[15].wins).toBe(0);
-  });
-
-  it("does not assign fate when a team is a round short", () => {
-    // One team on 4 played is enough to hold the whole table at "active" —
-    // greying out a live team is the worst error this site can make.
-    const short = swissSeries(SPREAD).slice(0, -1);
-    const rows = computeSwiss(short);
-    expect(rows.every((r) => r.state === "active")).toBe(true);
-    expect(rows.every((r) => r.provisional === undefined)).toBe(true);
   });
 
   it("counts a half-played Bo3 as nothing", () => {

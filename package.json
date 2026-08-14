@@ -2,11 +2,14 @@
   "name": "ti15-bracket",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint . --max-warnings=0",
     "test": "vitest run",
     "test:watch": "vitest",
     "logos": "tsx scripts/logos.ts",
@@ -17,7 +20,7 @@
   "dependencies": {
     "lucide-react": "^0.469.0",
     "motion": "^11.15.0",
-    "next": "^15.1.0",
+    "next": "16.3.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -26,6 +29,8 @@
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.3.1",
     "tailwindcss": "^4.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0",

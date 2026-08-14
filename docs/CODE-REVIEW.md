@@ -1,3 +1,11 @@
+# HISTORICAL — archived 2026-08-14
+
+> **Do not use this document as current implementation guidance.** It predates the committed
+> snapshot, scheduled workflow, live polling, verified schedule, and Gate C hardening. The current
+> source of truth is `README.md`; current evidence is recorded in `docs/gates/`.
+
+# Original review (preserved verbatim below)
+
 # 1. VERDICT
 
 Do not ship. The pure scoring and timezone functions are directionally good (`lib/series.ts:36`, `lib/time.ts:13`), but the launch architecture in the brief is not built: there is no `scripts/sync.ts`, no `data/tournament.json`, no tracked workflow file, and request-time rendering calls OpenDota directly (`app/page.tsx:20`, `app/page.tsx:21`, `app/api/state/route.ts:15`). The single biggest risk is a rate limit, API outage, or empty OpenDota response turning a last-good public bracket into empty or placeholder data because `buildTournament()` converts failed fetches into empty arrays (`lib/opendota.ts:71`, `lib/opendota.ts:73`, `lib/opendota.ts:74`).

@@ -6,6 +6,8 @@ import { loadTournament } from "@/lib/state";
 export const revalidate = 60;
 
 export default async function Page() {
+  // This is a server-side observation timestamp passed into pure data assembly.
+  // eslint-disable-next-line react-hooks/purity
   const nowMs = Date.now();
   const tournament = await loadTournament(nowMs);
 

@@ -25,23 +25,13 @@ const USER_AGENT =
 const DEFAULT_STREAM_URL = "https://www.twitch.tv/dota2ti";
 
 /**
- * How many Swiss rounds the group stage runs.
- *
- * FIVE, full-field: all 16 teams play all 5 rounds. Nobody exits early at 3 wins
- * or 3 losses. Confirmed two ways — Liquipedia's group stage page lists Rounds
- * 1-5 followed by a separate Elimination Round, and the 2/6/6/2 W-L spread
- * observed after round 3 is the binomial signature of a full field, which a
- * drop-at-3 format cannot produce.
- *
- * Fate is assigned only once all 16 have played all 5 (see computeSwiss), and
- * every derived fate is marked provisional.
+ * TI15 uses record thresholds: 4 wins advances, 4 losses eliminates, and teams
+ * between those thresholds after five series enter the Elimination Round. A
+ * 4-0 or 0-4 team stops after Round 4, so fate can never depend on all 16 teams
+ * reaching five played series or on an unimplemented ranking tiebreak.
  */
-const SWISS_ROUNDS = 5;
-
-/** rank 1-3 advance straight to the Main Event. */
-const ADVANCE_CUT = 3;
-/** ranks 4-13 play the Elimination Round; 14-16 are out. */
-const ELIMINATION_CUT = 13;
+const SWISS_FATE_THRESHOLD = 4;
+const SWISS_MAX_ROUNDS = 5;
 
 /**
  * C.7 — no single upstream request may hang the page.
@@ -157,8 +147,8 @@ export function fetchLeagueMatches(): Promise<RawMatch[]> {
 
 /** In-progress games across all of Dota, filtered down to this league. */
 export async function fetchLive(): Promise<RawLive[]> {
-  // Short cache: this is the only genuinely volatile endpoint.
-  const all = await getJson<RawLive[]>("/api/live", 30);
+  // Align source observation with the public 60-second state cache/poll cadence.
+  const all = await getJson<RawLive[]>("/api/live", 60);
   return all.filter((g) => g.league_id === TI_LEAGUE_ID);
 }
 
@@ -356,6 +346,10 @@ export function mergeSchedule(
       const played = claimPlayed(claimable, claimed, entry.aTeamId, entry.bTeamId, entry.startUtc);
       if (played) {
         claimed.add(played.id);
+        played.section = entry.section;
+        played.round = entry.round;
+        played.roundLabel = entry.roundLabel;
+        played.bestOf = entry.bestOf;
         played.scheduleId = entry.id;
         continue;
       }
@@ -497,28 +491,17 @@ export function computeSwiss(series: Series[]): SwissRow[] {
     if (loser) loser.losses++;
   }
 
-  // W-L ONLY. The official ranking then breaks ties on opponent strength
-  // (Buchholz) and game win %, and this deliberately does not attempt either:
-  // getting Buchholz subtly wrong would move the 3/10/3 boundary and grey out a
-  // team that is still alive, which is the single most damaging error this site
-  // can make. The name tiebreak exists only to keep the order deterministic.
+  // Fate comes only from record thresholds. W-L and name are display ordering;
+  // they never decide advancement or elimination.
   const sorted = [...rows.values()].sort(
     (x, y) =>
       y.wins - x.wins || x.losses - y.losses || nameOf(x.teamId).localeCompare(nameOf(y.teamId)),
   );
 
-  // Fate is assigned only once all 16 have played all 5 rounds. Before that
-  // every team stays "active" — guessing mid-stage would paint teams as
-  // eliminated while they are still alive.
-  const finished = sorted.every((r) => r.wins + r.losses >= SWISS_ROUNDS);
-  if (finished) {
-    sorted.forEach((row, i) => {
-      row.state =
-        i < ADVANCE_CUT ? "advanced" : i < ELIMINATION_CUT ? "elimination_round" : "eliminated";
-      // Derived, so the boundary may be wrong by a tiebreak we do not compute.
-      // The UI renders this at reduced emphasis until it is confirmed by hand.
-      row.provisional = true;
-    });
+  for (const row of sorted) {
+    if (row.wins >= SWISS_FATE_THRESHOLD) row.state = "advanced";
+    else if (row.losses >= SWISS_FATE_THRESHOLD) row.state = "eliminated";
+    else if (row.wins + row.losses >= SWISS_MAX_ROUNDS) row.state = "elimination_round";
   }
 
   return sorted;
@@ -528,15 +511,16 @@ function nameOf(id: TeamId): string {
   return TEAMS.find((t) => t.id === id)?.name ?? String(id);
 }
 
-function applySwissOverrides(rows: SwissRow[]): SwissRow[] {
-  const patches = overrides.swiss ?? {};
+export function applySwissOverrides(
+  rows: SwissRow[],
+  patches: NonNullable<OverridesFile["swiss"]> = overrides.swiss ?? {},
+): SwissRow[] {
   if (Object.keys(patches).length === 0) return rows;
   return rows.map((r) => {
     const patch = patches[String(r.teamId)];
     if (!patch) return r;
     const merged: SwissRow = { ...r, ...patch };
-    // A hand-set fate IS the real cut, made against the official tiebreaks. It
-    // is never provisional, and it renders at full emphasis.
+    // A hand-set fate is authoritative and never provisional.
     if (patch.state != null) merged.provisional = false;
     return merged;
   });

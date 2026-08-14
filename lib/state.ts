@@ -1,7 +1,7 @@
 import snapshotFile from "@/data/tournament.json";
 import { buildTournament } from "./opendota";
 import type { Tournament } from "./types";
-import { assertTournamentValid } from "./validation";
+import { assertTournamentValid, TournamentValidationError } from "./validation";
 
 const committedSnapshot = snapshotFile as unknown as Tournament;
 
@@ -24,13 +24,18 @@ export async function loadTournamentWithFallback(
       throw new Error("one or more OpenDota requests failed");
     }
 
-    assertTournamentValid(candidate, snapshot.series.length);
+    assertTournamentValid(candidate, snapshot);
     return candidate;
   } catch (error) {
-    console.error(
-      "[state] live tournament rejected; serving snapshot from " + snapshot.lastSyncUtc,
-      error,
-    );
+    const reasons =
+      error instanceof TournamentValidationError
+        ? error.reasons
+        : [error instanceof Error ? error.message : "unknown live-state failure"];
+    console.error("[state] live tournament rejected", {
+      event: "live_candidate_rejected",
+      fallbackSnapshotUtc: snapshot.lastSyncUtc,
+      reasons,
+    });
     return { ...snapshot, syncState: "degraded" };
   }
 }
