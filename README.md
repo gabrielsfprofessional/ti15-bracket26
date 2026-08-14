@@ -21,7 +21,7 @@ This README is the operational source of truth. Dated gate reports live in `docs
 | E | Command-center information architecture and game-level results | Complete locally; not released |
 | F | “Aegis Vault” visual system and rights-aware art direction | Complete locally; not released |
 | G | WCAG 2.2 AA, performance, SEO, and sharing | Complete locally; preview audit pending |
-| H | Component/E2E coverage, preview audit, release checkpoint | Pending |
+| H | Component/E2E coverage, preview audit, release checkpoint | Local checks complete; preview pending |
 | Production | Push and production alias change | Requires explicit approval |
 
 The protected local history is intentionally ahead of `origin/main`. Do not squash, rewrite,
@@ -113,6 +113,7 @@ npm run lint
 npx tsc --noEmit
 npm test
 npm run build
+npm run test:e2e    # requires a production build; starts/stops its own local server
 npm run smoke       # explicit live-provider check
 npm run snapshot    # validates, writes only material changes
 npm run uptime      # production state contract check
@@ -130,6 +131,7 @@ network jobs and do not belong in the unit suite.
 3. `npx tsc --noEmit`
 4. `npm test`
 5. `npm run build`
+6. install Playwright Chromium and run `npm run test:e2e`
 
 `.github/workflows/snapshot.yml` remains a separate scheduled operational workflow.
 

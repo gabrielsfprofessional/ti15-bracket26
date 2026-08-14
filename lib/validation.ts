@@ -101,6 +101,7 @@ export function validateTournament(
     }
 
     validateScore(item, add);
+    validateGameDetails(item, uniqueTeamIds, add);
 
     if (item.status === "completed") {
       for (const gameId of item.gameIds) {
@@ -119,6 +120,63 @@ export function validateTournament(
   validateCompletedHistory(baselineTournament, candidateById, add);
 
   return { valid: errors.length === 0, errors };
+}
+
+function validateGameDetails(
+  item: Series,
+  tournamentTeamIds: Set<TeamId>,
+  add: (code: string, detail: string) => void,
+): void {
+  if (item.games !== undefined) {
+    if (!Array.isArray(item.games)) {
+      add("games", `${item.id}.games is not an array`);
+    } else {
+      if (item.games.length !== item.gameIds.length) {
+        add("games", `${item.id} has ${item.games.length} summaries for ${item.gameIds.length} game ids`);
+      }
+      item.games.forEach((game, index) => {
+        if (!Number.isSafeInteger(game.matchId) || game.matchId <= 0 || game.matchId !== item.gameIds[index]) {
+          add("game_summary", `${item.id} game ${index + 1} has mismatched match id ${String(game.matchId)}`);
+        }
+        if (game.gameNumber !== index + 1) {
+          add("game_summary", `${item.id} has invalid game number ${String(game.gameNumber)}`);
+        }
+        if (!tournamentTeamIds.has(game.radiantTeamId) || !tournamentTeamIds.has(game.direTeamId)) {
+          add("unknown_team", `${item.id} game ${game.matchId} has an unknown side`);
+        }
+        const participants = new Set([item.a.teamId, item.b.teamId]);
+        if (!participants.has(game.radiantTeamId) || !participants.has(game.direTeamId)) {
+          add("game_participants", `${item.id} game ${game.matchId} sides do not match the series`);
+        }
+        if (game.winnerId !== game.radiantTeamId && game.winnerId !== game.direTeamId) {
+          add("game_winner", `${item.id} game ${game.matchId} winner is not a side`);
+        }
+        if (!isUtcIso(game.startUtc)) add("timestamp", `${item.id} game ${game.matchId} start is not UTC ISO 8601`);
+        if (!Number.isInteger(game.durationSeconds) || game.durationSeconds < 0) {
+          add("game_duration", `${item.id} game ${game.matchId} has invalid duration`);
+        }
+        if (!Number.isInteger(game.radiantKills) || game.radiantKills < 0 || !Number.isInteger(game.direKills) || game.direKills < 0) {
+          add("game_kills", `${item.id} game ${game.matchId} has invalid final kills`);
+        }
+        if (game.openDotaUrl !== `https://www.opendota.com/matches/${game.matchId}`) {
+          add("game_link", `${item.id} game ${game.matchId} has an invalid OpenDota URL`);
+        }
+      });
+    }
+  }
+
+  if (item.liveGame !== undefined) {
+    const live = item.liveGame;
+    if (item.status !== "live") add("live_game", `${item.id} carries live detail while ${item.status}`);
+    if (!isUtcIso(live.observedUtc)) add("timestamp", `${item.id}.liveGame.observedUtc is not UTC ISO 8601`);
+    if (live.gameNumber < 1 || !Number.isInteger(live.gameNumber)) add("live_game", `${item.id} has invalid live game number`);
+    if (!tournamentTeamIds.has(live.radiantTeamId) || !tournamentTeamIds.has(live.direTeamId)) {
+      add("unknown_team", `${item.id} live game has an unknown side`);
+    }
+    if (![live.radiantKills, live.direKills, live.gameTimeSeconds].every((value) => Number.isInteger(value) && value >= 0)) {
+      add("live_game", `${item.id} has invalid live game counters`);
+    }
+  }
 }
 
 function validateScore(item: Series, add: (code: string, detail: string) => void): void {

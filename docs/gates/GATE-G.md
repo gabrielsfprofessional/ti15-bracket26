@@ -48,4 +48,4 @@
 
 ## Commit
 
-Recorded in the next gate report because a commit cannot contain its own hash.
+`3199364` — `Gate G: complete accessibility and sharing surfaces`

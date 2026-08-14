@@ -97,6 +97,39 @@ describe("tournament validation gate", () => {
     expect(result.errors.join(" ")).toMatch(/duplicate_game_id/);
   });
 
+  it("rejects malformed per-game summaries and live counters", () => {
+    const broken = series("s-games") as Series;
+    broken.games = [{
+      matchId: 999,
+      gameNumber: 2,
+      radiantTeamId: TEAMS[0].id,
+      direTeamId: 123,
+      winnerId: 456,
+      startUtc: "2026-08-14 11:00",
+      durationSeconds: -1,
+      radiantKills: -2,
+      direKills: 4,
+      openDotaUrl: "https://example.com",
+    }];
+    broken.liveGame = {
+      gameNumber: 0,
+      radiantTeamId: TEAMS[0].id,
+      direTeamId: TEAMS[1].id,
+      radiantKills: -1,
+      direKills: 0,
+      gameTimeSeconds: -1,
+      observedUtc: "not-a-date",
+    };
+
+    const result = validateTournament(tournament({ series: [broken] }), 1);
+    expect(result.errors.join(" ")).toMatch(/game_summary/);
+    expect(result.errors.join(" ")).toMatch(/game_winner/);
+    expect(result.errors.join(" ")).toMatch(/game_duration/);
+    expect(result.errors.join(" ")).toMatch(/game_kills/);
+    expect(result.errors.join(" ")).toMatch(/game_link/);
+    expect(result.errors.join(" ")).toMatch(/live_game/);
+  });
+
   it("rejects unknown team IDs in concrete series slots", () => {
     const broken = series("s-1");
     broken.b = { kind: "team", teamId: 99999999 };
