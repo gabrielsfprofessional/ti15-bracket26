@@ -20,13 +20,30 @@ This README is the operational source of truth. Dated gate reports live in `docs
 | D | Source health, schedule adapter, resilient refresh, workflow hardening | Complete locally; not released |
 | E | Command-center information architecture and game-level results | Complete locally; not released |
 | F | “Aegis Vault” visual system and rights-aware art direction | Complete locally; not released |
-| G | WCAG 2.2 AA, performance, SEO, and sharing | Complete locally; preview audit pending |
-| H | Component/E2E coverage, preview audit, release checkpoint | Local checks complete; preview pending |
+| G | WCAG 2.2 AA, performance, SEO, and sharing | Preview-qualified; exceptions documented below |
+| H | Component/E2E coverage, preview audit, release checkpoint | Preview complete; production approval required |
 | Production | Push and production alias change | Requires explicit approval |
 
 The protected local history is intentionally ahead of `origin/main`. Do not squash, rewrite,
 reset, or discard it. No production deployment is authorized until the preview checklist is
 presented and the user explicitly approves release.
+
+### Preview checkpoint — 2026-08-14
+
+The protected release-candidate preview is
+[`ti15-bracket26-iombinjr9-ti-bracket-26.vercel.app`](https://ti15-bracket26-iombinjr9-ti-bracket-26.vercel.app)
+at application commit `57b8601`. It verified league `19719`, 16 unique teams, 39 series,
+24 completed series, eight scheduled series, seven TBD series, 59 individual games, 24–24 Swiss
+parity, healthy match/live sources, managed schedule status, and the expected one-minute ISR cache
+contract. The preview is protected by Vercel authentication.
+
+Three mobile Lighthouse samples produced a median Performance score of 94, Accessibility 100,
+Best Practices 100, LCP 2.61 seconds, CLS 0, and a 194 ms total-blocking-time lab proxy. Two
+release exceptions remain explicit: LCP is 0.11 seconds above the 2.5-second target, and the
+protected preview scores 61 for SEO because the preview layer is intentionally non-crawlable.
+The application’s canonical, manifest, robots, sitemap, Open Graph, and SportsEvent surfaces were
+verified independently. A human screenshot comparison remains pending because the in-app browser
+had no available browser surface; automated Edge checks passed every required viewport.
 
 ## Data architecture
 

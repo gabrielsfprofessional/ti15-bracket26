@@ -5,97 +5,97 @@
       "id": 9467224,
       "name": "Aurora Gaming",
       "short": "AUR",
-      "logo": "/logos/9467224.png"
+      "logo": "/logos/optimized/9467224.webp"
     },
     {
       "id": 8255888,
       "name": "BoomBoys",
       "short": "BB",
-      "logo": "/logos/8255888.png"
+      "logo": "/logos/optimized/8255888.webp"
     },
     {
       "id": 9964962,
       "name": "GamerLegion",
       "short": "GL",
-      "logo": "/logos/9964962.png"
+      "logo": "/logos/optimized/9964962.webp"
     },
     {
       "id": 10149530,
       "name": "HULIGANI",
       "short": "HU",
-      "logo": "/logos/10149530.png"
+      "logo": "/logos/optimized/10149530.webp"
     },
     {
       "id": 10150413,
       "name": "Iron Wing",
       "short": "IW",
-      "logo": "/logos/10150413.png"
+      "logo": "/logos/optimized/10150413.webp"
     },
     {
       "id": 10150538,
       "name": "LGD Gaming",
       "short": "LGD",
-      "logo": "/logos/10150538.png"
+      "logo": "/logos/optimized/10150538.webp"
     },
     {
       "id": 10136357,
       "name": "Nigma Galaxy",
       "short": "NGX",
-      "logo": "/logos/10136357.png"
+      "logo": "/logos/optimized/10136357.webp"
     },
     {
       "id": 2586976,
       "name": "OG",
       "short": "OG",
-      "logo": "/logos/2586976.png"
+      "logo": "/logos/optimized/2586976.webp"
     },
     {
       "id": 9247354,
       "name": "Team Falcons",
       "short": "FLCN",
-      "logo": "/logos/9247354.png"
+      "logo": "/logos/optimized/9247354.webp"
     },
     {
       "id": 2163,
       "name": "Team Liquid",
       "short": "TL",
-      "logo": "/logos/2163.png"
+      "logo": "/logos/optimized/2163.webp"
     },
     {
       "id": 5017210,
       "name": "Team Resilience",
       "short": "TR",
-      "logo": "/logos/5017210.png"
+      "logo": "/logos/optimized/5017210.webp"
     },
     {
       "id": 7119388,
       "name": "Team Spirit",
       "short": "TS",
-      "logo": "/logos/7119388.png"
+      "logo": "/logos/optimized/7119388.webp"
     },
     {
       "id": 9823272,
       "name": "Team Yandex",
       "short": "TY",
-      "logo": "/logos/9823272.png"
+      "logo": "/logos/optimized/9823272.webp"
     },
     {
       "id": 9572001,
       "name": "TEAM VISION",
       "short": "VSN",
-      "logo": "/logos/9572001.png"
+      "logo": "/logos/optimized/9572001.webp"
     },
     {
       "id": 726228,
       "name": "Vici Gaming",
       "short": "VG",
-      "logo": "/logos/726228.png"
+      "logo": "/logos/optimized/726228.webp"
     },
     {
       "id": 8261500,
       "name": "Xtreme Gaming",
       "short": "XG",
-      "logo": "/logos/8261500.png"
+      "logo": "/logos/optimized/8261500.webp"
     }
   ],
   "swiss": [
@@ -1998,22 +1998,22 @@
     }
   ],
   "championId": null,
-  "lastSyncUtc": "2026-08-14T21:32:53.365Z",
+  "lastSyncUtc": "2026-08-14T23:17:47.222Z",
   "syncState": "ok",
   "sourceHealth": {
     "matches": {
       "status": "ok",
-      "observedUtc": "2026-08-14T21:32:53.365Z"
+      "observedUtc": "2026-08-14T23:17:47.222Z"
     },
     "live": {
       "status": "ok",
-      "observedUtc": "2026-08-14T21:32:53.365Z"
+      "observedUtc": "2026-08-14T23:17:47.222Z"
     },
     "schedule": {
       "status": "managed",
-      "observedUtc": "2026-08-14T21:32:53.365Z"
+      "observedUtc": "2026-08-14T23:17:47.222Z"
     },
-    "snapshotGeneratedUtc": "2026-08-14T21:32:53.365Z",
+    "snapshotGeneratedUtc": "2026-08-14T23:17:47.222Z",
     "mode": "live"
   }
 }
