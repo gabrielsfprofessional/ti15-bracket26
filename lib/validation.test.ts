@@ -36,6 +36,13 @@ function tournament(overrides: Partial<Tournament> = {}): Tournament {
     championId: null,
     lastSyncUtc: "2026-08-14T12:00:00.000Z",
     syncState: "ok",
+    sourceHealth: {
+      matches: { status: "ok", observedUtc: "2026-08-14T12:00:00.000Z" },
+      live: { status: "ok", observedUtc: "2026-08-14T12:00:00.000Z" },
+      schedule: { status: "managed", observedUtc: "2026-08-14T12:00:00.000Z" },
+      snapshotGeneratedUtc: "2026-08-14T11:00:00.000Z",
+      mode: "live",
+    },
     ...overrides,
   };
 }
@@ -180,12 +187,36 @@ describe("tournament validation gate", () => {
     const candidate = tournament({ lastSyncUtc: "2026-08-14T13:00:00.000Z" });
     expect(tournamentDataChanged(candidate, committed)).toBe(false);
   });
+
+  it("ignores source observation clocks when deciding whether snapshot data changed", () => {
+    const committed = tournament();
+    const candidate = tournament({
+      sourceHealth: {
+        ...committed.sourceHealth,
+        matches: { status: "ok", observedUtc: "2026-08-14T13:00:00.000Z" },
+        live: { status: "ok", observedUtc: "2026-08-14T13:00:00.000Z" },
+        schedule: { status: "managed", observedUtc: "2026-08-14T13:00:00.000Z" },
+        snapshotGeneratedUtc: "2026-08-14T13:00:00.000Z",
+      },
+    });
+    expect(tournamentDataChanged(candidate, committed)).toBe(false);
+  });
+
+  it("rejects missing or contradictory source-health metadata", () => {
+    const missing = tournament();
+    delete (missing as Partial<Tournament>).sourceHealth;
+    expect(validateTournament(missing, 1).errors.join(" ")).toMatch(/source_health/);
+
+    const contradictory = tournament();
+    contradictory.sourceHealth.mode = "degraded";
+    expect(validateTournament(contradictory, 1).errors.join(" ")).toMatch(/does not match syncState/);
+  });
 });
 
 describe("snapshot fallback", () => {
   it("returns a valid live payload unchanged", async () => {
     const live = tournament({ lastSyncUtc: "2026-08-14T13:00:00.000Z" });
-    await expect(loadTournamentWithFallback(async () => live, tournament())).resolves.toBe(live);
+    await expect(loadTournamentWithFallback(async () => live, tournament())).resolves.toStrictEqual(live);
   });
 
   it("serves the committed snapshot as degraded when live fetching fails", async () => {
@@ -194,9 +225,19 @@ describe("snapshot fallback", () => {
     const result = await loadTournamentWithFallback(
       async () => Promise.reject(new Error("dead upstream")),
       snapshot,
+      "2026-08-14T13:00:00.000Z",
     );
 
-    expect(result).toEqual({ ...snapshot, syncState: "degraded" });
+    expect(result).toMatchObject({
+      syncState: "degraded",
+      sourceHealth: {
+        matches: { status: "error", observedUtc: "2026-08-14T13:00:00.000Z" },
+        live: { status: "error", observedUtc: "2026-08-14T13:00:00.000Z" },
+        schedule: snapshot.sourceHealth.schedule,
+        snapshotGeneratedUtc: snapshot.sourceHealth.snapshotGeneratedUtc,
+        mode: "degraded",
+      },
+    });
     expect(console.error).toHaveBeenCalledOnce();
   });
 

@@ -15,6 +15,8 @@ const SOURCES = new Set(["override", "live", "opendota", "schedule", "tbd"]);
 const SYNC_STATES = new Set(["ok", "degraded", "manual"]);
 const SLOT_KINDS = new Set(["team", "winner_of", "loser_of", "tbd"]);
 const SWISS_STATES = new Set(["active", "advanced", "elimination_round", "eliminated"]);
+const SOURCE_STATUSES = new Set(["ok", "error", "managed"]);
+const SERVED_MODES = new Set(["live", "degraded", "manual"]);
 const BEST_OFS = new Set([1, 3, 5]);
 const EXPECTED_TEAM_IDS = new Set(TEAMS.map((team) => team.id));
 const UTC_ISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/;
@@ -47,6 +49,7 @@ export function validateTournament(
   if (candidate.leagueId !== 19719) add("league_id", `expected 19719, received ${candidate.leagueId}`);
   if (!SYNC_STATES.has(candidate.syncState)) add("sync_state", `invalid value ${String(candidate.syncState)}`);
   if (!isUtcIso(candidate.lastSyncUtc)) add("timestamp", `lastSyncUtc is not UTC ISO 8601`);
+  validateSourceHealth(candidate, add);
 
   const teamIds = candidate.teams.map((team) => team.id);
   const uniqueTeamIds = new Set(teamIds);
@@ -209,6 +212,38 @@ function validateSwiss(
   }
 }
 
+function validateSourceHealth(
+  candidate: Tournament,
+  add: (code: string, detail: string) => void,
+): void {
+  const health = (candidate as Partial<Tournament>).sourceHealth;
+  if (!health || typeof health !== "object") {
+    add("source_health", "metadata is missing");
+    return;
+  }
+
+  for (const key of ["matches", "live", "schedule"] as const) {
+    const observation = health[key];
+    if (!observation || !SOURCE_STATUSES.has(observation.status)) {
+      add("source_health", `${key} has invalid status ${String(observation?.status)}`);
+    }
+    if (!observation || !isUtcIso(observation.observedUtc)) {
+      add("timestamp", `sourceHealth.${key}.observedUtc is not UTC ISO 8601`);
+    }
+  }
+
+  if (!SERVED_MODES.has(health.mode)) add("served_mode", `invalid value ${String(health.mode)}`);
+  if (health.snapshotGeneratedUtc === null || !isUtcIso(health.snapshotGeneratedUtc)) {
+    add("timestamp", "sourceHealth.snapshotGeneratedUtc is not UTC ISO 8601");
+  }
+
+  const expectedMode =
+    candidate.syncState === "manual" ? "manual" : candidate.syncState === "degraded" ? "degraded" : "live";
+  if (health.mode !== expectedMode) {
+    add("served_mode", `${health.mode} does not match syncState ${candidate.syncState}`);
+  }
+}
+
 function validateCompletedHistory(
   baseline: Tournament | null,
   candidateById: Map<string, Series>,
@@ -255,7 +290,20 @@ export function assertTournamentValid(
 
 /** The observation timestamp is metadata, not a tournament-state change. */
 export function tournamentDataChanged(candidate: Tournament, committed: Tournament): boolean {
-  const candidateData = { ...candidate, lastSyncUtc: "" };
-  const committedData = { ...committed, lastSyncUtc: "" };
+  const stable = (tournament: Tournament) => ({
+    ...tournament,
+    lastSyncUtc: "",
+    sourceHealth: tournament.sourceHealth
+      ? {
+          ...tournament.sourceHealth,
+          matches: { ...tournament.sourceHealth.matches, observedUtc: "" },
+          live: { ...tournament.sourceHealth.live, observedUtc: "" },
+          schedule: { ...tournament.sourceHealth.schedule, observedUtc: "" },
+          snapshotGeneratedUtc: null,
+        }
+      : undefined,
+  });
+  const candidateData = stable(candidate);
+  const committedData = stable(committed);
   return JSON.stringify(candidateData) !== JSON.stringify(committedData);
 }

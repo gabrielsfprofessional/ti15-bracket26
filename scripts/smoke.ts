@@ -18,6 +18,13 @@ const byStatus = new Map<string, number>();
 for (const s of t.series) byStatus.set(s.status, (byStatus.get(s.status) ?? 0) + 1);
 
 console.log("syncState      ", t.syncState);
+console.log("served mode    ", t.sourceHealth.mode);
+console.log("source health  ", {
+  matches: t.sourceHealth.matches.status,
+  live: t.sourceHealth.live.status,
+  schedule: t.sourceHealth.schedule.status,
+  snapshot: t.sourceHealth.snapshotGeneratedUtc,
+});
 console.log("series         ", t.series.length);
 console.log("by status      ", Object.fromEntries(byStatus));
 console.log("swiss states   ", Object.fromEntries(

@@ -13,10 +13,12 @@ export const revalidate = 60;
 
 export async function GET() {
   const tournament = await loadTournament(Date.now());
+  const deploymentSha = process.env.VERCEL_GIT_COMMIT_SHA ?? null;
 
-  return NextResponse.json(tournament, {
+  return NextResponse.json({ ...tournament, deploymentSha }, {
     headers: {
       "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
+      ...(deploymentSha ? { "X-TI-Commit": deploymentSha } : {}),
     },
   });
 }

@@ -35,33 +35,56 @@ export function TournamentView({
   useEffect(() => {
     let active = true;
     let controller: AbortController | null = null;
+    let inFlight: Promise<void> | null = null;
 
-    async function refresh(): Promise<void> {
+    function refresh(): Promise<void> {
+      if (inFlight) return inFlight;
       controller = new AbortController();
-      try {
-        const response = await fetch("/api/state", {
-          headers: { Accept: "application/json" },
-          signal: controller.signal,
-        });
-        if (!response.ok) throw new Error("state endpoint returned HTTP " + response.status);
+      inFlight = (async () => {
+        try {
+          const response = await fetch("/api/state", {
+            headers: { Accept: "application/json" },
+            signal: controller?.signal,
+          });
+          if (!response.ok) throw new Error("state endpoint returned HTTP " + response.status);
 
-        const payload: unknown = await response.json();
-        if (!isTournament(payload)) throw new Error("state endpoint returned an invalid payload");
-        if (active) setTournament(payload);
-      } catch (error) {
-        if (active && !(error instanceof DOMException && error.name === "AbortError")) {
-          console.warn("[poll] keeping the last valid tournament state", error);
+          const payload: unknown = await response.json();
+          if (!isTournament(payload)) throw new Error("state endpoint returned an invalid payload");
+          if (active) {
+            setTournament((current) =>
+              Date.parse(payload.lastSyncUtc) >= Date.parse(current.lastSyncUtc) ? payload : current,
+            );
+          }
+        } catch (error) {
+          if (active && !(error instanceof DOMException && error.name === "AbortError")) {
+            console.warn("[poll] keeping the last valid tournament state", error);
+          }
+        } finally {
+          inFlight = null;
+          controller = null;
         }
-      }
+      })();
+      return inFlight;
     }
 
-    const id = window.setInterval(refresh, POLL_MS);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") void refresh();
+    };
+    const onOnline = () => void refresh();
+    const id = window.setInterval(() => void refresh(), POLL_MS);
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("online", onOnline);
+
+    if (Date.now() - Date.parse(initialTournament.lastSyncUtc) >= POLL_MS) void refresh();
+
     return () => {
       active = false;
       controller?.abort();
       window.clearInterval(id);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("online", onOnline);
     };
-  }, []);
+  }, [initialTournament.lastSyncUtc]);
 
   const upcoming = pickUpcoming(tournament.series, nowMs, 3);
   const results = tournament.series
@@ -122,6 +145,8 @@ function isTournament(value: unknown): value is Tournament {
     Array.isArray(candidate.swiss) &&
     Array.isArray(candidate.series) &&
     typeof candidate.lastSyncUtc === "string" &&
+    candidate.sourceHealth != null &&
+    typeof candidate.sourceHealth === "object" &&
     (candidate.syncState === "ok" ||
       candidate.syncState === "degraded" ||
       candidate.syncState === "manual")

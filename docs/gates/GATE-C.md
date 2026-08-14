@@ -52,4 +52,4 @@
 
 ## Commit
 
-Recorded in the next gate report because a commit cannot contain its own hash.
+`7916bf7` — `Gate C: harden tournament correctness and CI`

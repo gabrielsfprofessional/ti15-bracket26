@@ -1,14 +1,13 @@
 import overridesFile from "@/data/overrides.json";
-import scheduleFile from "@/data/schedule.json";
 import { TEAMS } from "@/data/teams";
 import { resolve } from "./resolve";
+import { readSchedule } from "./schedule";
 import { bestOfFor, toSeries, unixToIso } from "./series";
 import type {
   OverridesFile,
   RawLive,
   RawMatch,
   ScheduleEntry,
-  ScheduleFile,
   Series,
   SwissRow,
   TeamId,
@@ -60,7 +59,6 @@ const SCHEDULE_EARLY_MS = 2 * 3_600_000;
 const SCHEDULE_LATE_MS = 12 * 3_600_000;
 
 const overrides = overridesFile as unknown as OverridesFile;
-const schedule = scheduleFile as unknown as ScheduleFile;
 
 // ---------------------------------------------------------------------------
 // I/O
@@ -167,7 +165,14 @@ export async function buildTournament(nowMs: number): Promise<Tournament> {
   // the page is still broadly correct, so both are reported the same way.
   const degraded = matchesResult.status === "rejected" || liveResult.status === "rejected";
 
-  return assembleTournament({ matches, live, nowMs, degraded });
+  return assembleTournament({
+    matches,
+    live,
+    nowMs,
+    degraded,
+    matchesStatus: matchesResult.status === "fulfilled" ? "ok" : "error",
+    liveStatus: liveResult.status === "fulfilled" ? "ok" : "error",
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -180,15 +185,19 @@ export interface AssembleInput {
   live: RawLive[];
   nowMs: number;
   degraded?: boolean;
+  matchesStatus?: "ok" | "error";
+  liveStatus?: "ok" | "error";
 }
 
 export function assembleTournament(input: AssembleInput): Tournament {
   const { matches, live, nowMs } = input;
+  const observedUtc = new Date(nowMs).toISOString();
+  const scheduleState = readSchedule(nowMs);
 
   const played = toSeries(matches);
   const withLive = mergeLive(played, live, nowMs);
-  const withSchedule = mergeSchedule(withLive);
-  const streamUrl = overrides.streamUrl ?? schedule.streamUrl ?? DEFAULT_STREAM_URL;
+  const withSchedule = mergeSchedule(withLive, scheduleState.matches);
+  const streamUrl = overrides.streamUrl ?? scheduleState.streamUrl ?? DEFAULT_STREAM_URL;
 
   let series: Series[] = withSchedule.map((s) => ({ ...s, streamUrl: s.streamUrl ?? streamUrl }));
   series = applySeriesOverrides(series);
@@ -204,6 +213,18 @@ export function assembleTournament(input: AssembleInput): Tournament {
     championId: overrides.championId ?? null,
     lastSyncUtc: new Date(nowMs).toISOString(),
     syncState: overrides.syncState ?? (input.degraded ? "degraded" : "ok"),
+    sourceHealth: {
+      matches: { status: input.matchesStatus ?? (input.degraded ? "error" : "ok"), observedUtc },
+      live: { status: input.liveStatus ?? (input.degraded ? "error" : "ok"), observedUtc },
+      schedule: scheduleState.health,
+      snapshotGeneratedUtc: null,
+      mode:
+        overrides.syncState === "manual"
+          ? "manual"
+          : input.degraded
+            ? "degraded"
+            : "live",
+    },
   };
 
   return resolve(tournament);
@@ -316,7 +337,7 @@ function endedWithinGrace(s: Series, nowMs: number): boolean {
  */
 export function mergeSchedule(
   series: Series[],
-  entriesIn: ScheduleEntry[] = schedule.matches ?? [],
+  entriesIn: ScheduleEntry[],
 ): Series[] {
   const out = series.map((s) => ({ ...s }));
   const existingIds = new Set(out.map((s) => s.id));

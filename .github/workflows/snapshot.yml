@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: tournament-snapshot
@@ -15,7 +15,9 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
+    permissions:
+      contents: write
 
     steps:
       - name: Check out repository
@@ -34,10 +36,12 @@ jobs:
         run: npm run snapshot
 
       - name: Commit changed snapshot
+        id: commit
         shell: bash
         run: |
           if git diff --quiet -- data/tournament.json; then
             echo "Tournament payload unchanged; skipping commit and Vercel deploy."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -46,6 +50,10 @@ jobs:
           git add data/tournament.json
           git commit -m "chore(data): refresh tournament snapshot"
           git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Check production API
+      - name: Verify production API and deployed commit
+        env:
+          UPTIME_EXPECTED_SHA: ${{ steps.commit.outputs.sha }}
         run: npm run uptime

@@ -23,6 +23,8 @@ async function main(): Promise<void> {
     throw new Error("OpenDota returned partial data; refusing to replace the snapshot");
   }
 
+  candidate.sourceHealth.snapshotGeneratedUtc = candidate.lastSyncUtc;
+
   assertTournamentValid(candidate, committed ?? 0);
 
   if (committed && !tournamentDataChanged(candidate, committed)) {

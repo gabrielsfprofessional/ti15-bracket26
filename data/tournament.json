@@ -1242,6 +1242,22 @@
     }
   ],
   "championId": null,
-  "lastSyncUtc": "2026-08-14T19:31:59.368Z",
-  "syncState": "ok"
+  "lastSyncUtc": "2026-08-14T20:27:29.261Z",
+  "syncState": "ok",
+  "sourceHealth": {
+    "matches": {
+      "status": "ok",
+      "observedUtc": "2026-08-14T20:27:29.261Z"
+    },
+    "live": {
+      "status": "ok",
+      "observedUtc": "2026-08-14T20:27:29.261Z"
+    },
+    "schedule": {
+      "status": "managed",
+      "observedUtc": "2026-08-14T20:27:29.261Z"
+    },
+    "snapshotGeneratedUtc": "2026-08-14T20:27:29.261Z",
+    "mode": "live"
+  }
 }

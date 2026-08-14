@@ -70,6 +70,24 @@ export interface SwissRow {
   provisional?: boolean;
 }
 
+export type SourceStatus = "ok" | "error" | "managed";
+export type ServedMode = "live" | "degraded" | "manual";
+
+export interface SourceObservation {
+  status: SourceStatus;
+  observedUtc: string;
+}
+
+export interface SourceHealth {
+  matches: SourceObservation;
+  live: SourceObservation;
+  schedule: SourceObservation;
+  /** When the currently available last-known-good snapshot was generated. */
+  snapshotGeneratedUtc: string | null;
+  /** What the visitor is receiving now, independent of individual source status. */
+  mode: ServedMode;
+}
+
 export interface Tournament {
   leagueId: 19719;
   teams: Team[];
@@ -78,6 +96,7 @@ export interface Tournament {
   championId: TeamId | null;
   lastSyncUtc: string;
   syncState: "ok" | "degraded" | "manual";
+  sourceHealth: SourceHealth;
 }
 
 // ---------------------------------------------------------------------------

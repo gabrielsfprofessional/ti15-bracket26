@@ -37,6 +37,13 @@ function bracket(): Tournament {
     championId: null,
     lastSyncUtc: "2026-08-20T00:00:00.000Z",
     syncState: "ok",
+    sourceHealth: {
+      matches: { status: "ok", observedUtc: "2026-08-20T00:00:00.000Z" },
+      live: { status: "ok", observedUtc: "2026-08-20T00:00:00.000Z" },
+      schedule: { status: "managed", observedUtc: "2026-08-20T00:00:00.000Z" },
+      snapshotGeneratedUtc: "2026-08-20T00:00:00.000Z",
+      mode: "live",
+    },
     series: [
       s("ub1", "upper", team(T1), team(T2)),
       s("ub2", "upper", team(T3), team(T4)),

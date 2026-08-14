@@ -17,7 +17,7 @@ This README is the operational source of truth. Dated gate reports live in `docs
 | --- | --- | --- |
 | Baseline | Validated OpenDota series pipeline, schedule, snapshot fallback | Complete |
 | C | Swiss fate, schedule enrichment, strict validation, Next 16, ESLint, CI | Complete locally; not released |
-| D | Source health, schedule adapter, resilient refresh, workflow hardening | In progress |
+| D | Source health, schedule adapter, resilient refresh, workflow hardening | Complete locally; not released |
 | E | Command-center information architecture and game-level results | Pending |
 | F | “Aegis Vault” visual system and rights-aware art direction | Pending |
 | G | WCAG 2.2 AA, performance, SEO, and sharing | Pending |
@@ -84,6 +84,9 @@ completed games and live detection but no future schedule endpoint. Until a supp
 legally usable organizer/provider API is documented and integrated behind `lib/schedule.ts`,
 future schedule updates are managed rather than automatic. Never scrape Liquipedia HTML or rely
 on undocumented page markup.
+
+The dated provider assessment, including the deferred PandaScore option, is in
+`docs/SCHEDULE-PROVIDER.md`.
 
 When a played OpenDota series claims a schedule row, OpenDota retains authority for start time,
 score, winner, games, status, and observation time. The row adds `section`, `round`, `roundLabel`,
