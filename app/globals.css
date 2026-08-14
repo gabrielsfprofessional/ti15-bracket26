@@ -1373,6 +1373,16 @@ a {
     width: min(100% - 1rem, 1180px);
   }
 
+  .hero::before {
+    background: linear-gradient(105deg, rgb(20 25 32 / 0.98), rgb(16 20 26 / 0.82));
+    box-shadow: var(--shadow-sm), inset 0 1px rgb(255 255 255 / 0.03);
+  }
+
+  .hero::after,
+  .hero__geometry {
+    display: none;
+  }
+
   .hero__content {
     padding: var(--space-5) var(--space-4) 0;
   }
