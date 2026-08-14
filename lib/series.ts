@@ -78,16 +78,19 @@ function buildSeries(
   let winnerId: TeamId | null = null;
 
   for (const g of group) {
+    // Stop counting once the series is decided. Games can appear after the
+    // clinch (a remake, or a re-reported game), and letting them keep
+    // incrementing prints an impossible "3-1" on a Bo3.
+    if (winnerId !== null) continue;
+
     const gameWinner = g.radiant_win ? g.radiant_team_id : g.dire_team_id;
     if (gameWinner === teamA) scoreA++;
     else if (gameWinner === teamB) scoreB++;
     // A winner from outside the canonical pair means corrupt data; it is simply
     // not counted rather than being allowed to decide the series.
 
-    if (winnerId === null) {
-      if (scoreA >= need) winnerId = teamA;
-      else if (scoreB >= need) winnerId = teamB;
-    }
+    if (scoreA >= need) winnerId = teamA;
+    else if (scoreB >= need) winnerId = teamB;
   }
 
   const startSec = group[0].start_time;

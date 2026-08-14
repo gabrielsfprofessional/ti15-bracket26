@@ -66,7 +66,7 @@ export function TeamSide({
       )}
 
       <span className={isWinner ? "font-semibold text-[#c9d3dc]" : "text-[#9aa7b4]"}>
-        {team ? team.name : (slot.label ?? "TBD")}
+        {slotText(slot, team?.name)}
       </span>
 
       {showScore && score != null && (
@@ -76,4 +76,14 @@ export function TeamSide({
       )}
     </div>
   );
+}
+
+/**
+ * A slot that names a real team we cannot look up is a data problem, not an
+ * undecided matchup. Showing its id surfaces that; showing "TBD" would hide it.
+ */
+function slotText(slot: SlotRef, name: string | undefined): string {
+  if (name) return name;
+  if (slot.kind === "team" && slot.teamId != null) return `Team ${slot.teamId}`;
+  return slot.label ?? "TBD";
 }

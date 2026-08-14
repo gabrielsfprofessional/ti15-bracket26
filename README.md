@@ -131,7 +131,7 @@ Swiss fate, hide a series outright, set the champion, or flip the status dot to 
 ```bash
 npm install
 npm run dev        # http://localhost:3000
-npm test           # 42 unit tests
+npm test           # 45 unit tests
 npm run build
 npm run logos      # one-off: re-download the 16 team logos into public/logos/
 ```

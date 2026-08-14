@@ -144,6 +144,44 @@ describe("toSeries", () => {
     expect(s.winnerId).toBe(FALCONS);
   });
 
+  it("never prints an impossible score when extra games appear after the clinch", () => {
+    // Falcons clinch 2-0. Two further games must not turn this into "3-1" or "4-1",
+    // which is not a scoreline a Bo3 can produce.
+    const [s] = toSeries([
+      game({ seriesId: 106, radiant: FALCONS, dire: LGD, winner: FALCONS, start: T0 }),
+      game({ seriesId: 106, radiant: LGD, dire: FALCONS, winner: FALCONS, start: T0 + 3000 }),
+      game({ seriesId: 106, radiant: LGD, dire: FALCONS, winner: FALCONS, start: T0 + 6000 }),
+      game({ seriesId: 106, radiant: FALCONS, dire: LGD, winner: LGD, start: T0 + 9000 }),
+    ]);
+    expect([s.scoreA, s.scoreB]).toEqual([2, 0]);
+    expect(s.winnerId).toBe(FALCONS);
+    // All games are still recorded, they just stop moving the score.
+    expect(s.gameIds).toHaveLength(4);
+  });
+
+  it("caps every best-of at its own threshold", () => {
+    for (const [seriesType, bestOf, need] of [
+      [0, 1, 1],
+      [1, 3, 2],
+      [2, 5, 3],
+    ] as const) {
+      const games = Array.from({ length: 7 }, (_, i) =>
+        game({
+          seriesId: 900 + seriesType,
+          seriesType,
+          radiant: FALCONS,
+          dire: LGD,
+          winner: FALCONS,
+          start: T0 + i * 3000,
+        }),
+      );
+      const [s] = toSeries(games);
+      expect(s.bestOf).toBe(bestOf);
+      expect(s.scoreA).toBe(need);
+      expect(s.scoreA + s.scoreB).toBeLessThanOrEqual(bestOf);
+    }
+  });
+
   it("splits distinct series_ids and never merges them", () => {
     const out = toSeries([
       game({ seriesId: 200, radiant: FALCONS, dire: LGD, winner: FALCONS, start: T0 }),

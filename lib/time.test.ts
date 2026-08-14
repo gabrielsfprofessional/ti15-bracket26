@@ -22,6 +22,13 @@ describe("Eastern formatting", () => {
     expect(formatEtTime(shanghai10amAug15)).toBe("10:00 PM EDT");
   });
 
+  it("matches the worked CST->UTC examples documented in data/schedule.json", () => {
+    // These two lines are the instructions used to hand-enter every upcoming
+    // match. A wrong weekday there costs a whole day, so they are pinned here.
+    expect(formatEt("2026-08-15T02:00:00Z")).toBe("Fri Aug 14, 10:00 PM EDT");
+    expect(formatEt("2026-08-15T09:00:00Z")).toBe("Sat Aug 15, 5:00 AM EDT");
+  });
+
   it("handles midnight and noon without printing 0:00", () => {
     expect(formatEt("2026-08-20T04:00:00Z")).toBe("Thu Aug 20, 12:00 AM EDT");
     expect(formatEt("2026-08-20T16:00:00Z")).toBe("Thu Aug 20, 12:00 PM EDT");
