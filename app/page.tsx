@@ -1,4 +1,5 @@
 import { TournamentView } from "@/components/TournamentView";
+import { TournamentFooter, TournamentHeader } from "@/components/TournamentHeader";
 import { getTeam } from "@/data/teams";
 import { loadTournament } from "@/lib/state";
 
@@ -48,7 +49,9 @@ export default async function Page() {
           }}
         />
       )}
+      <TournamentHeader tournament={tournament} nowMs={nowMs} />
       <TournamentView initialTournament={tournament} initialNowMs={nowMs} />
+      <TournamentFooter />
     </>
   );
 }

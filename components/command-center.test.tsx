@@ -8,6 +8,7 @@ import { ScheduleSection } from "@/components/ScheduleSection";
 import { SeriesCard } from "@/components/SeriesCard";
 import { SwissTable } from "@/components/SwissTable";
 import { TournamentView } from "@/components/TournamentView";
+import { TournamentHeader } from "@/components/TournamentHeader";
 import type { GameSummary, Series, Tournament } from "@/lib/types";
 import { describe, expect, it, vi } from "vitest";
 
@@ -147,7 +148,12 @@ describe("degraded and resilient rendering", () => {
       syncState: "degraded",
       sourceHealth: { ...structuredClone(snapshot.sourceHealth), mode: "degraded" },
     };
-    render(<TournamentView initialTournament={degraded} initialNowMs={Date.parse(degraded.lastSyncUtc)} />);
+    render(
+      <>
+        <TournamentHeader tournament={degraded} nowMs={Date.parse(degraded.lastSyncUtc)} />
+        <TournamentView initialTournament={degraded} initialNowMs={Date.parse(degraded.lastSyncUtc)} />
+      </>,
+    );
 
     expect(screen.getByText("Fallback snapshot")).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "Schedule" })).toBeInTheDocument();
