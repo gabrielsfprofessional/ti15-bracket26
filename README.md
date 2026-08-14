@@ -28,6 +28,9 @@ many people are watching. The browser polls `/api/state` and updates in place.
 A committed snapshot at `data/tournament.json`, refreshed on a schedule by GitHub Actions, is
 the **fallback** for when OpenDota is unreachable — disaster recovery, not the freshness
 mechanism. Serving it flips the site into a visibly `degraded` state rather than a blank page.
+Live and snapshot payloads must retain all 16 teams, never reduce the committed series count,
+and preserve equal Swiss win/loss totals. A failed guard is logged and cannot replace or bypass
+the last known-good snapshot.
 
 **Source precedence**, enforced during assembly:
 
@@ -100,10 +103,10 @@ Thu Aug 20, 11:00 PM EDT
 
 ```
 app/          layout.tsx, page.tsx, api/state/route.ts
-components/   LiveBar, NextUp, SwissTable, SeriesCard
-data/         teams.ts (16 hardcoded), schedule.json (hand-entered), overrides.json (wins)
-lib/          types.ts, series.ts, resolve.ts, opendota.ts, time.ts
-scripts/      logos.ts
+components/   TournamentView polling shell + LiveBar, NextUp, SwissTable, SeriesCard
+data/         teams.ts, schedule.json, overrides.json, bundled tournament.json snapshot
+lib/          pure assembly/resolution plus live/snapshot validation and fallback
+scripts/      smoke.ts, snapshot.ts, uptime.ts, logos.ts
 public/logos/ 16 committed team logos — never hotlinked
 ```
 
@@ -141,8 +144,10 @@ Swiss fate, hide a series outright, set the champion, or flip the status dot to 
 ```bash
 npm install
 npm run dev        # http://localhost:3000
-npm test           # 83 unit tests
+npm test           # 91 unit tests
 npm run build
+npm run smoke      # run the real pipeline without writing
+npm run snapshot   # validate and refresh data/tournament.json only when data changed
 npm run logos      # one-off: re-download the 16 team logos into public/logos/
 ```
 
@@ -157,8 +162,9 @@ Import the repo into Vercel and accept the detected Next.js defaults. No environ
 and no `vercel.json` are required, and none should be added — in particular, do not add a
 `crons` block (see #4 above).
 
-`/api/state` is served with `Cache-Control: public, s-maxage=60, stale-while-revalidate=300`,
-so a slow or rate-limited OpenDota degrades to slightly stale data rather than a blank page.
+`/api/state` is served with `Cache-Control: public, s-maxage=60, stale-while-revalidate=300`.
+The hourly GitHub Actions workflow validates the live payload, commits only material snapshot
+changes, and checks that the production endpoint still returns HTTP 200 without an error state.
 
 ---
 
@@ -169,20 +175,17 @@ so a slow or rate-limited OpenDota degrades to slightly stale data rather than a
 | 0 — endpoint verification | done |
 | 1 — correct data pipeline, plain page | done |
 | 2 — correctness hardening, live deploy | done |
-| 3 — snapshot fallback, GitHub Actions cron, uptime check | in progress |
+| 3 — snapshot fallback, GitHub Actions cron, uptime check | done |
 | 4 — "Aegis Vault" design system, mobile layout | not started |
 | 5 — OG image, share, deep links, reduced motion | not started |
 | 6 — Main Event bracket topology | blocked: Valve has not published the structure |
 
-Two known open items, both deliberate:
+One known format issue is deliberately not hidden:
 
-- `data/schedule.json` holds a single row labelled `PLACEHOLDER — replace`. Real upcoming times
-  must be hand-entered; none are invented.
-- `SWISS_ROUNDS` in [`lib/opendota.ts`](lib/opendota.ts) is `null`, so every team reads
-  `active`. Advance/elimination colouring needs the number of Swiss rounds, which is neither in
-  the API nor published. Setting that one constant derives every team's fate from the final
-  standings; until then `overrides.json` can mark a fate by hand. Guessing would paint a live
-  team as eliminated.
+- The published Round 5 schedule has seven series: the 4–0 and 0–4 teams stop after Round 4.
+  The current fate derivation was built from the earlier full-field-five-round description and
+  waits for all 16 teams to play five. Until that protected logic is reviewed, `overrides.json`
+  remains the safe way to lock official advancement and elimination states.
 
 ---
 

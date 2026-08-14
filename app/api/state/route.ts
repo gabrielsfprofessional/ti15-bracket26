@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { buildTournament } from "@/lib/opendota";
+import { loadTournament } from "@/lib/state";
 
 /**
  * The whole tournament as JSON. The browser polls this so the page can update in
@@ -12,7 +12,7 @@ import { buildTournament } from "@/lib/opendota";
 export const revalidate = 60;
 
 export async function GET() {
-  const tournament = await buildTournament(Date.now());
+  const tournament = await loadTournament(Date.now());
 
   return NextResponse.json(tournament, {
     headers: {
