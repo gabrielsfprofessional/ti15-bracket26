@@ -11,6 +11,8 @@
  */
 
 export const ET_ZONE = "America/New_York";
+export const SHANGHAI_ZONE = "Asia/Shanghai";
+export type TimeMode = "eastern" | "local" | "shanghai" | "utc";
 
 const PARTS_FMT = new Intl.DateTimeFormat("en-US", {
   timeZone: ET_ZONE,
@@ -60,6 +62,92 @@ export function formatEt(iso: string | null | undefined): string {
 /** The zone abbreviation alone at a given instant: "EDT" in August, "EST" in January. */
 export function etAbbreviation(iso: string): string {
   return parts(iso)?.timeZoneName ?? "";
+}
+
+export function timeZoneFor(mode: TimeMode, localTimeZone?: string): string {
+  if (mode === "shanghai") return SHANGHAI_ZONE;
+  if (mode === "utc") return "UTC";
+  if (mode === "local") return localTimeZone || ET_ZONE;
+  return ET_ZONE;
+}
+
+/** Full weekday/date/time/zone form used everywhere in the command center. */
+export function formatTournamentTime(
+  iso: string | null | undefined,
+  mode: TimeMode,
+  localTimeZone?: string,
+): string {
+  if (!iso) return "Time TBD";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "Time TBD";
+  try {
+    return new Intl.DateTimeFormat("en-US", {
+      timeZone: timeZoneFor(mode, localTimeZone),
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+      timeZoneName: "short",
+    }).format(date);
+  } catch {
+    return formatEt(iso);
+  }
+}
+
+/** Long day heading in the selected zone, e.g. "Saturday, August 15". */
+export function formatTournamentDay(
+  iso: string | null | undefined,
+  mode: TimeMode,
+  localTimeZone?: string,
+): string {
+  if (!iso) return "Date TBD";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "Date TBD";
+  try {
+    return new Intl.DateTimeFormat("en-US", {
+      timeZone: timeZoneFor(mode, localTimeZone),
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+    }).format(date);
+  } catch {
+    return formatEtDay(iso);
+  }
+}
+
+/** Stable selected-zone calendar key for schedule grouping. */
+export function tournamentDayKey(
+  iso: string | null | undefined,
+  mode: TimeMode,
+  localTimeZone?: string,
+): string {
+  if (!iso) return "tbd";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "tbd";
+  try {
+    const formatter = new Intl.DateTimeFormat("en-CA", {
+      timeZone: timeZoneFor(mode, localTimeZone),
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    const dateParts = Object.fromEntries(
+      formatter.formatToParts(date).map((part) => [part.type, part.value]),
+    );
+    return `${dateParts.year}-${dateParts.month}-${dateParts.day}`;
+  } catch {
+    return iso.slice(0, 10);
+  }
+}
+
+export function formatDuration(seconds: number): string {
+  if (!Number.isFinite(seconds) || seconds < 0) return "Duration unavailable";
+  const total = Math.floor(seconds);
+  const minutes = Math.floor(total / 60);
+  const remainder = total % 60;
+  return `${minutes}:${String(remainder).padStart(2, "0")}`;
 }
 
 /**

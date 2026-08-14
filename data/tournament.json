@@ -222,6 +222,44 @@
         8943034557,
         8943072784
       ],
+      "games": [
+        {
+          "matchId": 8942993144,
+          "gameNumber": 1,
+          "radiantTeamId": 9247354,
+          "direTeamId": 10150538,
+          "winnerId": 10150538,
+          "startUtc": "2026-08-13T03:03:26.000Z",
+          "durationSeconds": 2446,
+          "radiantKills": 22,
+          "direKills": 36,
+          "openDotaUrl": "https://www.opendota.com/matches/8942993144"
+        },
+        {
+          "matchId": 8943034557,
+          "gameNumber": 2,
+          "radiantTeamId": 9247354,
+          "direTeamId": 10150538,
+          "winnerId": 9247354,
+          "startUtc": "2026-08-13T04:18:04.000Z",
+          "durationSeconds": 2256,
+          "radiantKills": 29,
+          "direKills": 9,
+          "openDotaUrl": "https://www.opendota.com/matches/8943034557"
+        },
+        {
+          "matchId": 8943072784,
+          "gameNumber": 3,
+          "radiantTeamId": 9247354,
+          "direTeamId": 10150538,
+          "winnerId": 9247354,
+          "startUtc": "2026-08-13T05:25:36.000Z",
+          "durationSeconds": 2640,
+          "radiantKills": 38,
+          "direKills": 21,
+          "openDotaUrl": "https://www.opendota.com/matches/8943072784"
+        }
+      ],
       "source": "opendota",
       "updatedUtc": "2026-08-13T06:09:36.000Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
@@ -249,6 +287,32 @@
       "gameIds": [
         8943000927,
         8943038404
+      ],
+      "games": [
+        {
+          "matchId": 8943000927,
+          "gameNumber": 1,
+          "radiantTeamId": 10136357,
+          "direTeamId": 10150413,
+          "winnerId": 10150413,
+          "startUtc": "2026-08-13T03:18:54.000Z",
+          "durationSeconds": 1649,
+          "radiantKills": 5,
+          "direKills": 30,
+          "openDotaUrl": "https://www.opendota.com/matches/8943000927"
+        },
+        {
+          "matchId": 8943038404,
+          "gameNumber": 2,
+          "radiantTeamId": 10136357,
+          "direTeamId": 10150413,
+          "winnerId": 10150413,
+          "startUtc": "2026-08-13T04:24:48.000Z",
+          "durationSeconds": 3264,
+          "radiantKills": 20,
+          "direKills": 56,
+          "openDotaUrl": "https://www.opendota.com/matches/8943038404"
+        }
       ],
       "source": "opendota",
       "updatedUtc": "2026-08-13T05:19:12.000Z",
@@ -279,6 +343,44 @@
         8943053016,
         8943098449
       ],
+      "games": [
+        {
+          "matchId": 8943010675,
+          "gameNumber": 1,
+          "radiantTeamId": 5017210,
+          "direTeamId": 9572001,
+          "winnerId": 9572001,
+          "startUtc": "2026-08-13T03:33:30.000Z",
+          "durationSeconds": 2517,
+          "radiantKills": 22,
+          "direKills": 37,
+          "openDotaUrl": "https://www.opendota.com/matches/8943010675"
+        },
+        {
+          "matchId": 8943053016,
+          "gameNumber": 2,
+          "radiantTeamId": 9572001,
+          "direTeamId": 5017210,
+          "winnerId": 5017210,
+          "startUtc": "2026-08-13T04:51:00.000Z",
+          "durationSeconds": 2898,
+          "radiantKills": 41,
+          "direKills": 31,
+          "openDotaUrl": "https://www.opendota.com/matches/8943053016"
+        },
+        {
+          "matchId": 8943098449,
+          "gameNumber": 3,
+          "radiantTeamId": 9572001,
+          "direTeamId": 5017210,
+          "winnerId": 9572001,
+          "startUtc": "2026-08-13T06:10:21.000Z",
+          "durationSeconds": 1946,
+          "radiantKills": 40,
+          "direKills": 18,
+          "openDotaUrl": "https://www.opendota.com/matches/8943098449"
+        }
+      ],
       "source": "opendota",
       "updatedUtc": "2026-08-13T06:42:47.000Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
@@ -306,6 +408,32 @@
       "gameIds": [
         8943013334,
         8943055466
+      ],
+      "games": [
+        {
+          "matchId": 8943013334,
+          "gameNumber": 1,
+          "radiantTeamId": 8255888,
+          "direTeamId": 2586976,
+          "winnerId": 8255888,
+          "startUtc": "2026-08-13T03:38:50.000Z",
+          "durationSeconds": 2722,
+          "radiantKills": 22,
+          "direKills": 13,
+          "openDotaUrl": "https://www.opendota.com/matches/8943013334"
+        },
+        {
+          "matchId": 8943055466,
+          "gameNumber": 2,
+          "radiantTeamId": 2586976,
+          "direTeamId": 8255888,
+          "winnerId": 8255888,
+          "startUtc": "2026-08-13T04:55:26.000Z",
+          "durationSeconds": 2215,
+          "radiantKills": 7,
+          "direKills": 29,
+          "openDotaUrl": "https://www.opendota.com/matches/8943055466"
+        }
       ],
       "source": "opendota",
       "updatedUtc": "2026-08-13T05:32:21.000Z",
@@ -335,6 +463,32 @@
         8943091110,
         8943148045
       ],
+      "games": [
+        {
+          "matchId": 8943091110,
+          "gameNumber": 1,
+          "radiantTeamId": 2163,
+          "direTeamId": 726228,
+          "winnerId": 2163,
+          "startUtc": "2026-08-13T05:57:49.000Z",
+          "durationSeconds": 3610,
+          "radiantKills": 39,
+          "direKills": 25,
+          "openDotaUrl": "https://www.opendota.com/matches/8943091110"
+        },
+        {
+          "matchId": 8943148045,
+          "gameNumber": 2,
+          "radiantTeamId": 726228,
+          "direTeamId": 2163,
+          "winnerId": 2163,
+          "startUtc": "2026-08-13T07:28:26.000Z",
+          "durationSeconds": 2286,
+          "radiantKills": 6,
+          "direKills": 25,
+          "openDotaUrl": "https://www.opendota.com/matches/8943148045"
+        }
+      ],
       "source": "opendota",
       "updatedUtc": "2026-08-13T08:06:32.000Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
@@ -362,6 +516,32 @@
       "gameIds": [
         8943097729,
         8943171995
+      ],
+      "games": [
+        {
+          "matchId": 8943097729,
+          "gameNumber": 1,
+          "radiantTeamId": 9964962,
+          "direTeamId": 9467224,
+          "winnerId": 9467224,
+          "startUtc": "2026-08-13T06:09:06.000Z",
+          "durationSeconds": 4369,
+          "radiantKills": 39,
+          "direKills": 41,
+          "openDotaUrl": "https://www.opendota.com/matches/8943097729"
+        },
+        {
+          "matchId": 8943171995,
+          "gameNumber": 2,
+          "radiantTeamId": 9467224,
+          "direTeamId": 9964962,
+          "winnerId": 9467224,
+          "startUtc": "2026-08-13T07:59:08.000Z",
+          "durationSeconds": 2574,
+          "radiantKills": 30,
+          "direKills": 13,
+          "openDotaUrl": "https://www.opendota.com/matches/8943171995"
+        }
       ],
       "source": "opendota",
       "updatedUtc": "2026-08-13T08:42:02.000Z",
@@ -391,6 +571,32 @@
         8943142948,
         8943182700
       ],
+      "games": [
+        {
+          "matchId": 8943142948,
+          "gameNumber": 1,
+          "radiantTeamId": 9823272,
+          "direTeamId": 10149530,
+          "winnerId": 9823272,
+          "startUtc": "2026-08-13T07:18:12.000Z",
+          "durationSeconds": 1515,
+          "radiantKills": 23,
+          "direKills": 3,
+          "openDotaUrl": "https://www.opendota.com/matches/8943142948"
+        },
+        {
+          "matchId": 8943182700,
+          "gameNumber": 2,
+          "radiantTeamId": 9823272,
+          "direTeamId": 10149530,
+          "winnerId": 9823272,
+          "startUtc": "2026-08-13T08:13:43.000Z",
+          "durationSeconds": 2927,
+          "radiantKills": 34,
+          "direKills": 24,
+          "openDotaUrl": "https://www.opendota.com/matches/8943182700"
+        }
+      ],
       "source": "opendota",
       "updatedUtc": "2026-08-13T09:02:30.000Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
@@ -418,6 +624,32 @@
       "gameIds": [
         8943143428,
         8943200897
+      ],
+      "games": [
+        {
+          "matchId": 8943143428,
+          "gameNumber": 1,
+          "radiantTeamId": 7119388,
+          "direTeamId": 8261500,
+          "winnerId": 7119388,
+          "startUtc": "2026-08-13T07:18:50.000Z",
+          "durationSeconds": 3054,
+          "radiantKills": 48,
+          "direKills": 26,
+          "openDotaUrl": "https://www.opendota.com/matches/8943143428"
+        },
+        {
+          "matchId": 8943200897,
+          "gameNumber": 2,
+          "radiantTeamId": 8261500,
+          "direTeamId": 7119388,
+          "winnerId": 7119388,
+          "startUtc": "2026-08-13T08:41:37.000Z",
+          "durationSeconds": 2908,
+          "radiantKills": 27,
+          "direKills": 25,
+          "openDotaUrl": "https://www.opendota.com/matches/8943200897"
+        }
       ],
       "source": "opendota",
       "updatedUtc": "2026-08-13T09:30:05.000Z",
@@ -448,6 +680,44 @@
         8943278347,
         8943357930
       ],
+      "games": [
+        {
+          "matchId": 8943202720,
+          "gameNumber": 1,
+          "radiantTeamId": 8255888,
+          "direTeamId": 10150413,
+          "winnerId": 8255888,
+          "startUtc": "2026-08-13T08:43:13.000Z",
+          "durationSeconds": 3237,
+          "radiantKills": 36,
+          "direKills": 23,
+          "openDotaUrl": "https://www.opendota.com/matches/8943202720"
+        },
+        {
+          "matchId": 8943278347,
+          "gameNumber": 2,
+          "radiantTeamId": 8255888,
+          "direTeamId": 10150413,
+          "winnerId": 10150413,
+          "startUtc": "2026-08-13T10:08:40.000Z",
+          "durationSeconds": 2681,
+          "radiantKills": 11,
+          "direKills": 36,
+          "openDotaUrl": "https://www.opendota.com/matches/8943278347"
+        },
+        {
+          "matchId": 8943357930,
+          "gameNumber": 3,
+          "radiantTeamId": 8255888,
+          "direTeamId": 10150413,
+          "winnerId": 8255888,
+          "startUtc": "2026-08-13T11:22:05.000Z",
+          "durationSeconds": 4164,
+          "radiantKills": 37,
+          "direKills": 32,
+          "openDotaUrl": "https://www.opendota.com/matches/8943357930"
+        }
+      ],
       "source": "opendota",
       "updatedUtc": "2026-08-13T12:31:29.000Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
@@ -477,6 +747,44 @@
         8943332564,
         8943466067
       ],
+      "games": [
+        {
+          "matchId": 8943235603,
+          "gameNumber": 1,
+          "radiantTeamId": 5017210,
+          "direTeamId": 10150538,
+          "winnerId": 5017210,
+          "startUtc": "2026-08-13T09:17:12.000Z",
+          "durationSeconds": 3923,
+          "radiantKills": 62,
+          "direKills": 30,
+          "openDotaUrl": "https://www.opendota.com/matches/8943235603"
+        },
+        {
+          "matchId": 8943332564,
+          "gameNumber": 2,
+          "radiantTeamId": 10150538,
+          "direTeamId": 5017210,
+          "winnerId": 10150538,
+          "startUtc": "2026-08-13T10:55:50.000Z",
+          "durationSeconds": 4566,
+          "radiantKills": 54,
+          "direKills": 33,
+          "openDotaUrl": "https://www.opendota.com/matches/8943332564"
+        },
+        {
+          "matchId": 8943466067,
+          "gameNumber": 3,
+          "radiantTeamId": 10150538,
+          "direTeamId": 5017210,
+          "winnerId": 10150538,
+          "startUtc": "2026-08-13T12:39:44.000Z",
+          "durationSeconds": 4282,
+          "radiantKills": 52,
+          "direKills": 30,
+          "openDotaUrl": "https://www.opendota.com/matches/8943466067"
+        }
+      ],
       "source": "opendota",
       "updatedUtc": "2026-08-13T13:51:06.000Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
@@ -504,6 +812,32 @@
       "gameIds": [
         8943244303,
         8943324841
+      ],
+      "games": [
+        {
+          "matchId": 8943244303,
+          "gameNumber": 1,
+          "radiantTeamId": 10136357,
+          "direTeamId": 2586976,
+          "winnerId": 10136357,
+          "startUtc": "2026-08-13T09:32:32.000Z",
+          "durationSeconds": 3227,
+          "radiantKills": 28,
+          "direKills": 19,
+          "openDotaUrl": "https://www.opendota.com/matches/8943244303"
+        },
+        {
+          "matchId": 8943324841,
+          "gameNumber": 2,
+          "radiantTeamId": 2586976,
+          "direTeamId": 10136357,
+          "winnerId": 10136357,
+          "startUtc": "2026-08-13T10:54:31.000Z",
+          "durationSeconds": 4461,
+          "radiantKills": 35,
+          "direKills": 37,
+          "openDotaUrl": "https://www.opendota.com/matches/8943324841"
+        }
       ],
       "source": "opendota",
       "updatedUtc": "2026-08-13T12:08:52.000Z",
@@ -534,6 +868,44 @@
         8943364918,
         8943477775
       ],
+      "games": [
+        {
+          "matchId": 8943267925,
+          "gameNumber": 1,
+          "radiantTeamId": 9247354,
+          "direTeamId": 9572001,
+          "winnerId": 9247354,
+          "startUtc": "2026-08-13T10:06:45.000Z",
+          "durationSeconds": 2690,
+          "radiantKills": 32,
+          "direKills": 24,
+          "openDotaUrl": "https://www.opendota.com/matches/8943267925"
+        },
+        {
+          "matchId": 8943364918,
+          "gameNumber": 2,
+          "radiantTeamId": 9247354,
+          "direTeamId": 9572001,
+          "winnerId": 9572001,
+          "startUtc": "2026-08-13T11:28:22.000Z",
+          "durationSeconds": 3075,
+          "radiantKills": 17,
+          "direKills": 49,
+          "openDotaUrl": "https://www.opendota.com/matches/8943364918"
+        },
+        {
+          "matchId": 8943477775,
+          "gameNumber": 3,
+          "radiantTeamId": 9572001,
+          "direTeamId": 9247354,
+          "winnerId": 9572001,
+          "startUtc": "2026-08-13T12:50:39.000Z",
+          "durationSeconds": 5678,
+          "radiantKills": 56,
+          "direKills": 39,
+          "openDotaUrl": "https://www.opendota.com/matches/8943477775"
+        }
+      ],
       "source": "opendota",
       "updatedUtc": "2026-08-13T14:25:17.000Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
@@ -563,6 +935,44 @@
         8944521919,
         8944566156
       ],
+      "games": [
+        {
+          "matchId": 8944475901,
+          "gameNumber": 1,
+          "radiantTeamId": 726228,
+          "direTeamId": 10149530,
+          "winnerId": 10149530,
+          "startUtc": "2026-08-14T02:00:25.000Z",
+          "durationSeconds": 2828,
+          "radiantKills": 18,
+          "direKills": 20,
+          "openDotaUrl": "https://www.opendota.com/matches/8944475901"
+        },
+        {
+          "matchId": 8944521919,
+          "gameNumber": 2,
+          "radiantTeamId": 726228,
+          "direTeamId": 10149530,
+          "winnerId": 726228,
+          "startUtc": "2026-08-14T03:15:47.000Z",
+          "durationSeconds": 2704,
+          "radiantKills": 25,
+          "direKills": 14,
+          "openDotaUrl": "https://www.opendota.com/matches/8944521919"
+        },
+        {
+          "matchId": 8944566156,
+          "gameNumber": 3,
+          "radiantTeamId": 726228,
+          "direTeamId": 10149530,
+          "winnerId": 726228,
+          "startUtc": "2026-08-14T04:34:25.000Z",
+          "durationSeconds": 3255,
+          "radiantKills": 24,
+          "direKills": 21,
+          "openDotaUrl": "https://www.opendota.com/matches/8944566156"
+        }
+      ],
       "source": "opendota",
       "updatedUtc": "2026-08-14T05:28:40.000Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
@@ -590,6 +1000,32 @@
       "gameIds": [
         8944476051,
         8944506550
+      ],
+      "games": [
+        {
+          "matchId": 8944476051,
+          "gameNumber": 1,
+          "radiantTeamId": 9964962,
+          "direTeamId": 8261500,
+          "winnerId": 9964962,
+          "startUtc": "2026-08-14T02:01:23.000Z",
+          "durationSeconds": 1293,
+          "radiantKills": 18,
+          "direKills": 6,
+          "openDotaUrl": "https://www.opendota.com/matches/8944476051"
+        },
+        {
+          "matchId": 8944506550,
+          "gameNumber": 2,
+          "radiantTeamId": 8261500,
+          "direTeamId": 9964962,
+          "winnerId": 9964962,
+          "startUtc": "2026-08-14T02:52:48.000Z",
+          "durationSeconds": 2832,
+          "radiantKills": 15,
+          "direKills": 36,
+          "openDotaUrl": "https://www.opendota.com/matches/8944506550"
+        }
       ],
       "source": "opendota",
       "updatedUtc": "2026-08-14T03:40:00.000Z",
@@ -620,6 +1056,44 @@
         8944525313,
         8944570404
       ],
+      "games": [
+        {
+          "matchId": 8944475950,
+          "gameNumber": 1,
+          "radiantTeamId": 9823272,
+          "direTeamId": 2163,
+          "winnerId": 9823272,
+          "startUtc": "2026-08-14T02:02:05.000Z",
+          "durationSeconds": 3147,
+          "radiantKills": 34,
+          "direKills": 32,
+          "openDotaUrl": "https://www.opendota.com/matches/8944475950"
+        },
+        {
+          "matchId": 8944525313,
+          "gameNumber": 2,
+          "radiantTeamId": 2163,
+          "direTeamId": 9823272,
+          "winnerId": 2163,
+          "startUtc": "2026-08-14T03:22:24.000Z",
+          "durationSeconds": 2377,
+          "radiantKills": 42,
+          "direKills": 21,
+          "openDotaUrl": "https://www.opendota.com/matches/8944525313"
+        },
+        {
+          "matchId": 8944570404,
+          "gameNumber": 3,
+          "radiantTeamId": 2163,
+          "direTeamId": 9823272,
+          "winnerId": 2163,
+          "startUtc": "2026-08-14T04:37:43.000Z",
+          "durationSeconds": 2290,
+          "radiantKills": 29,
+          "direKills": 10,
+          "openDotaUrl": "https://www.opendota.com/matches/8944570404"
+        }
+      ],
       "source": "opendota",
       "updatedUtc": "2026-08-14T05:15:53.000Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
@@ -647,6 +1121,32 @@
       "gameIds": [
         8944475884,
         8944521792
+      ],
+      "games": [
+        {
+          "matchId": 8944475884,
+          "gameNumber": 1,
+          "radiantTeamId": 7119388,
+          "direTeamId": 9467224,
+          "winnerId": 7119388,
+          "startUtc": "2026-08-14T02:02:13.000Z",
+          "durationSeconds": 2526,
+          "radiantKills": 32,
+          "direKills": 32,
+          "openDotaUrl": "https://www.opendota.com/matches/8944475884"
+        },
+        {
+          "matchId": 8944521792,
+          "gameNumber": 2,
+          "radiantTeamId": 9467224,
+          "direTeamId": 7119388,
+          "winnerId": 7119388,
+          "startUtc": "2026-08-14T03:15:07.000Z",
+          "durationSeconds": 2619,
+          "radiantKills": 25,
+          "direKills": 36,
+          "openDotaUrl": "https://www.opendota.com/matches/8944521792"
+        }
       ],
       "source": "opendota",
       "updatedUtc": "2026-08-14T03:58:46.000Z",
@@ -676,6 +1176,32 @@
         8944553935,
         8944602781
       ],
+      "games": [
+        {
+          "matchId": 8944553935,
+          "gameNumber": 1,
+          "radiantTeamId": 10150538,
+          "direTeamId": 10136357,
+          "winnerId": 10136357,
+          "startUtc": "2026-08-14T04:11:37.000Z",
+          "durationSeconds": 3012,
+          "radiantKills": 26,
+          "direKills": 29,
+          "openDotaUrl": "https://www.opendota.com/matches/8944553935"
+        },
+        {
+          "matchId": 8944602781,
+          "gameNumber": 2,
+          "radiantTeamId": 10150538,
+          "direTeamId": 10136357,
+          "winnerId": 10136357,
+          "startUtc": "2026-08-14T05:32:11.000Z",
+          "durationSeconds": 3750,
+          "radiantKills": 43,
+          "direKills": 42,
+          "openDotaUrl": "https://www.opendota.com/matches/8944602781"
+        }
+      ],
       "source": "opendota",
       "updatedUtc": "2026-08-14T06:34:41.000Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
@@ -703,6 +1229,32 @@
       "gameIds": [
         8944565060,
         8944612322
+      ],
+      "games": [
+        {
+          "matchId": 8944565060,
+          "gameNumber": 1,
+          "radiantTeamId": 8255888,
+          "direTeamId": 9572001,
+          "winnerId": 9572001,
+          "startUtc": "2026-08-14T04:33:50.000Z",
+          "durationSeconds": 2214,
+          "radiantKills": 10,
+          "direKills": 31,
+          "openDotaUrl": "https://www.opendota.com/matches/8944565060"
+        },
+        {
+          "matchId": 8944612322,
+          "gameNumber": 2,
+          "radiantTeamId": 9572001,
+          "direTeamId": 8255888,
+          "winnerId": 9572001,
+          "startUtc": "2026-08-14T05:45:16.000Z",
+          "durationSeconds": 4116,
+          "radiantKills": 20,
+          "direKills": 33,
+          "openDotaUrl": "https://www.opendota.com/matches/8944612322"
+        }
       ],
       "source": "opendota",
       "updatedUtc": "2026-08-14T06:53:52.000Z",
@@ -733,6 +1285,44 @@
         8944695348,
         8944764687
       ],
+      "games": [
+        {
+          "matchId": 8944611964,
+          "gameNumber": 1,
+          "radiantTeamId": 10150413,
+          "direTeamId": 9247354,
+          "winnerId": 10150413,
+          "startUtc": "2026-08-14T05:47:21.000Z",
+          "durationSeconds": 4085,
+          "radiantKills": 41,
+          "direKills": 43,
+          "openDotaUrl": "https://www.opendota.com/matches/8944611964"
+        },
+        {
+          "matchId": 8944695348,
+          "gameNumber": 2,
+          "radiantTeamId": 10150413,
+          "direTeamId": 9247354,
+          "winnerId": 9247354,
+          "startUtc": "2026-08-14T07:41:57.000Z",
+          "durationSeconds": 2841,
+          "radiantKills": 21,
+          "direKills": 31,
+          "openDotaUrl": "https://www.opendota.com/matches/8944695348"
+        },
+        {
+          "matchId": 8944764687,
+          "gameNumber": 3,
+          "radiantTeamId": 10150413,
+          "direTeamId": 9247354,
+          "winnerId": 10150413,
+          "startUtc": "2026-08-14T09:02:04.000Z",
+          "durationSeconds": 2895,
+          "radiantKills": 46,
+          "direKills": 13,
+          "openDotaUrl": "https://www.opendota.com/matches/8944764687"
+        }
+      ],
       "source": "opendota",
       "updatedUtc": "2026-08-14T09:50:19.000Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
@@ -760,6 +1350,32 @@
       "gameIds": [
         8944628326,
         8944692094
+      ],
+      "games": [
+        {
+          "matchId": 8944628326,
+          "gameNumber": 1,
+          "radiantTeamId": 5017210,
+          "direTeamId": 2586976,
+          "winnerId": 5017210,
+          "startUtc": "2026-08-14T06:10:26.000Z",
+          "durationSeconds": 3276,
+          "radiantKills": 45,
+          "direKills": 23,
+          "openDotaUrl": "https://www.opendota.com/matches/8944628326"
+        },
+        {
+          "matchId": 8944692094,
+          "gameNumber": 2,
+          "radiantTeamId": 2586976,
+          "direTeamId": 5017210,
+          "winnerId": 5017210,
+          "startUtc": "2026-08-14T07:38:00.000Z",
+          "durationSeconds": 1961,
+          "radiantKills": 15,
+          "direKills": 32,
+          "openDotaUrl": "https://www.opendota.com/matches/8944692094"
+        }
       ],
       "source": "opendota",
       "updatedUtc": "2026-08-14T08:10:41.000Z",
@@ -790,6 +1406,44 @@
         8944742846,
         8944834423
       ],
+      "games": [
+        {
+          "matchId": 8944676424,
+          "gameNumber": 1,
+          "radiantTeamId": 726228,
+          "direTeamId": 9964962,
+          "winnerId": 9964962,
+          "startUtc": "2026-08-14T07:14:12.000Z",
+          "durationSeconds": 3170,
+          "radiantKills": 13,
+          "direKills": 44,
+          "openDotaUrl": "https://www.opendota.com/matches/8944676424"
+        },
+        {
+          "matchId": 8944742846,
+          "gameNumber": 2,
+          "radiantTeamId": 9964962,
+          "direTeamId": 726228,
+          "winnerId": 726228,
+          "startUtc": "2026-08-14T08:38:41.000Z",
+          "durationSeconds": 3791,
+          "radiantKills": 32,
+          "direKills": 31,
+          "openDotaUrl": "https://www.opendota.com/matches/8944742846"
+        },
+        {
+          "matchId": 8944834423,
+          "gameNumber": 3,
+          "radiantTeamId": 9964962,
+          "direTeamId": 726228,
+          "winnerId": 726228,
+          "startUtc": "2026-08-14T10:17:04.000Z",
+          "durationSeconds": 2277,
+          "radiantKills": 13,
+          "direKills": 26,
+          "openDotaUrl": "https://www.opendota.com/matches/8944834423"
+        }
+      ],
       "source": "opendota",
       "updatedUtc": "2026-08-14T10:55:01.000Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
@@ -819,6 +1473,44 @@
         8944752572,
         8944819470
       ],
+      "games": [
+        {
+          "matchId": 8944680063,
+          "gameNumber": 1,
+          "radiantTeamId": 2163,
+          "direTeamId": 7119388,
+          "winnerId": 7119388,
+          "startUtc": "2026-08-14T07:26:22.000Z",
+          "durationSeconds": 3068,
+          "radiantKills": 23,
+          "direKills": 49,
+          "openDotaUrl": "https://www.opendota.com/matches/8944680063"
+        },
+        {
+          "matchId": 8944752572,
+          "gameNumber": 2,
+          "radiantTeamId": 7119388,
+          "direTeamId": 2163,
+          "winnerId": 2163,
+          "startUtc": "2026-08-14T08:51:56.000Z",
+          "durationSeconds": 2171,
+          "radiantKills": 11,
+          "direKills": 41,
+          "openDotaUrl": "https://www.opendota.com/matches/8944752572"
+        },
+        {
+          "matchId": 8944819470,
+          "gameNumber": 3,
+          "radiantTeamId": 2163,
+          "direTeamId": 7119388,
+          "winnerId": 7119388,
+          "startUtc": "2026-08-14T10:01:28.000Z",
+          "durationSeconds": 2954,
+          "radiantKills": 22,
+          "direKills": 38,
+          "openDotaUrl": "https://www.opendota.com/matches/8944819470"
+        }
+      ],
       "source": "opendota",
       "updatedUtc": "2026-08-14T10:50:42.000Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
@@ -846,6 +1538,32 @@
       "gameIds": [
         8944738770,
         8944814087
+      ],
+      "games": [
+        {
+          "matchId": 8944738770,
+          "gameNumber": 1,
+          "radiantTeamId": 8261500,
+          "direTeamId": 10149530,
+          "winnerId": 8261500,
+          "startUtc": "2026-08-14T08:36:26.000Z",
+          "durationSeconds": 2887,
+          "radiantKills": 27,
+          "direKills": 16,
+          "openDotaUrl": "https://www.opendota.com/matches/8944738770"
+        },
+        {
+          "matchId": 8944814087,
+          "gameNumber": 2,
+          "radiantTeamId": 8261500,
+          "direTeamId": 10149530,
+          "winnerId": 8261500,
+          "startUtc": "2026-08-14T09:56:34.000Z",
+          "durationSeconds": 2338,
+          "radiantKills": 28,
+          "direKills": 13,
+          "openDotaUrl": "https://www.opendota.com/matches/8944814087"
+        }
       ],
       "source": "opendota",
       "updatedUtc": "2026-08-14T10:35:32.000Z",
@@ -875,6 +1593,44 @@
         8944841068,
         8944931337,
         8945052416
+      ],
+      "games": [
+        {
+          "matchId": 8944841068,
+          "gameNumber": 1,
+          "radiantTeamId": 9823272,
+          "direTeamId": 9467224,
+          "winnerId": 9823272,
+          "startUtc": "2026-08-14T10:24:53.000Z",
+          "durationSeconds": 2528,
+          "radiantKills": 33,
+          "direKills": 21,
+          "openDotaUrl": "https://www.opendota.com/matches/8944841068"
+        },
+        {
+          "matchId": 8944931337,
+          "gameNumber": 2,
+          "radiantTeamId": 9467224,
+          "direTeamId": 9823272,
+          "winnerId": 9467224,
+          "startUtc": "2026-08-14T11:41:47.000Z",
+          "durationSeconds": 2421,
+          "radiantKills": 36,
+          "direKills": 9,
+          "openDotaUrl": "https://www.opendota.com/matches/8944931337"
+        },
+        {
+          "matchId": 8945052416,
+          "gameNumber": 3,
+          "radiantTeamId": 9823272,
+          "direTeamId": 9467224,
+          "winnerId": 9467224,
+          "startUtc": "2026-08-14T12:54:23.000Z",
+          "durationSeconds": 2032,
+          "radiantKills": 9,
+          "direKills": 29,
+          "openDotaUrl": "https://www.opendota.com/matches/8945052416"
+        }
       ],
       "source": "opendota",
       "updatedUtc": "2026-08-14T13:28:15.000Z",
@@ -1242,22 +1998,22 @@
     }
   ],
   "championId": null,
-  "lastSyncUtc": "2026-08-14T20:27:29.261Z",
+  "lastSyncUtc": "2026-08-14T21:32:53.365Z",
   "syncState": "ok",
   "sourceHealth": {
     "matches": {
       "status": "ok",
-      "observedUtc": "2026-08-14T20:27:29.261Z"
+      "observedUtc": "2026-08-14T21:32:53.365Z"
     },
     "live": {
       "status": "ok",
-      "observedUtc": "2026-08-14T20:27:29.261Z"
+      "observedUtc": "2026-08-14T21:32:53.365Z"
     },
     "schedule": {
       "status": "managed",
-      "observedUtc": "2026-08-14T20:27:29.261Z"
+      "observedUtc": "2026-08-14T21:32:53.365Z"
     },
-    "snapshotGeneratedUtc": "2026-08-14T20:27:29.261Z",
+    "snapshotGeneratedUtc": "2026-08-14T21:32:53.365Z",
     "mode": "live"
   }
 }

@@ -270,6 +270,15 @@ export function mergeLive(series: Series[], live: RawLive[], nowMs: number): Ser
       existing.status = "live";
       existing.source = "live";
       existing.winnerId = null;
+      existing.liveGame = {
+        gameNumber: existing.scoreA + existing.scoreB + 1,
+        radiantTeamId: g.team_id_radiant,
+        direTeamId: g.team_id_dire,
+        radiantKills: g.radiant_score,
+        direKills: g.dire_score,
+        gameTimeSeconds: g.game_time,
+        observedUtc: unixToIso(g.last_update_time),
+      };
       continue;
     }
 
@@ -289,6 +298,16 @@ export function mergeLive(series: Series[], live: RawLive[], nowMs: number): Ser
       startUtc: unixToIso(g.activate_time),
       winnerId: null,
       gameIds: [],
+      games: [],
+      liveGame: {
+        gameNumber: 1,
+        radiantTeamId: g.team_id_radiant,
+        direTeamId: g.team_id_dire,
+        radiantKills: g.radiant_score,
+        direKills: g.dire_score,
+        gameTimeSeconds: g.game_time,
+        observedUtc: unixToIso(g.last_update_time),
+      },
       source: "live",
       updatedUtc: unixToIso(g.last_update_time),
     };

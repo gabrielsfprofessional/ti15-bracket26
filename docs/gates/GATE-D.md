@@ -55,4 +55,4 @@
 
 ## Commit
 
-Recorded in the next gate report because a commit cannot contain its own hash.
+`2a2a602` — `Gate D: expose source health and harden refresh`

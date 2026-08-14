@@ -1,53 +1,77 @@
 import { getTeam } from "@/data/teams";
-import { formatEtDay, formatEtTime } from "@/lib/time";
-import type { Series, SlotRef } from "@/lib/types";
+import { TeamLogo } from "@/components/TeamLogo";
+import { formatDuration, formatTournamentTime, type TimeMode } from "@/lib/time";
+import type { GameSummary, Series, SlotRef } from "@/lib/types";
 
-/**
- * One series. The two things this has to answer in under two seconds are WHEN it
- * starts and WHO is playing, so the day+time line and the two team rows are the
- * only things given any weight. Phase 1 styling is plain on purpose.
- */
-/**
- * Only a series that has actually been played has a score worth showing. A
- * scheduled or TBD match rendering "0" beside both teams reads as a result.
- */
 const HAS_SCORE = new Set<Series["status"]>(["live", "unconfirmed", "completed"]);
 
 const STATUS_LABEL: Record<Series["status"], string> = {
   tbd: "Matchup TBD",
   scheduled: "Scheduled",
-  live: "Live",
-  // Never the word "unconfirmed" on its own — it reads as doubt about the score,
-  // which is not what it means. The score is solid; the liveness is not.
-  unconfirmed: "In progress · not confirmed live",
+  live: "Live now",
+  unconfirmed: "In progress · awaiting live confirmation",
   completed: "Final",
 };
 
-export function SeriesCard({ series }: { series: Series }) {
+export function SeriesCard({
+  series,
+  timeMode,
+  localTimeZone,
+  compact = false,
+}: {
+  series: Series;
+  timeMode: TimeMode;
+  localTimeZone?: string;
+  compact?: boolean;
+}) {
   const winnerA = series.winnerId != null && series.a.teamId === series.winnerId;
   const winnerB = series.winnerId != null && series.b.teamId === series.winnerId;
   const showScore = HAS_SCORE.has(series.status);
+  const games = series.games ?? [];
 
   return (
-    <article id={`series-${series.id}`} className="border border-[#232a33] p-3">
-      <div className="flex items-baseline justify-between gap-3 text-xs text-[#6b7785]">
-        <span className="uppercase tracking-wide">{series.roundLabel}</span>
-        <span className="tabular">Bo{series.bestOf}</span>
+    <article
+      id={`series-${series.id}`}
+      className={`series-card ${compact ? "series-card--compact" : ""} status-${series.status}`}
+    >
+      <div className="series-card__meta">
+        <span>{series.roundLabel}</span>
+        <span className="numeric">Bo{series.bestOf}</span>
       </div>
 
-      {/* WHEN — day is never omitted; a bare clock is ambiguous for this event. */}
-      <div className="mt-1 mb-2">
-        <div className="text-base font-semibold text-[#c9d3dc]">{formatEtDay(series.startUtc)}</div>
-        <div className="tabular text-sm text-[#9aa7b4]">{formatEtTime(series.startUtc)}</div>
+      <div className="series-card__time numeric">
+        {formatTournamentTime(series.startUtc, timeMode, localTimeZone)}
       </div>
 
-      {/* WHO */}
-      <div className="flex flex-col gap-1">
+      <div className="series-card__teams">
         <TeamSide slot={series.a} score={series.scoreA} isWinner={winnerA} showScore={showScore} />
         <TeamSide slot={series.b} score={series.scoreB} isWinner={winnerB} showScore={showScore} />
       </div>
 
-      <div className="mt-2 text-xs text-[#6b7785]">{STATUS_LABEL[series.status]}</div>
+      <div className="series-card__footer">
+        <span className={`status-label status-label--${series.status}`}>{STATUS_LABEL[series.status]}</span>
+        <a className="deep-link" href={`#series-${series.id}`} aria-label={`Link to ${series.roundLabel}`}>
+          #
+        </a>
+      </div>
+
+      {games.length > 0 && (
+        <details className="game-details">
+          <summary>
+            {games.length} {games.length === 1 ? "game" : "games"} · details and OpenDota links
+          </summary>
+          <ol>
+            {games.map((game) => (
+              <GameRow
+                key={game.matchId}
+                game={game}
+                timeMode={timeMode}
+                localTimeZone={localTimeZone}
+              />
+            ))}
+          </ol>
+        </details>
+      )}
     </article>
   );
 }
@@ -64,41 +88,60 @@ export function TeamSide({
   showScore?: boolean;
 }) {
   const team = getTeam(slot.teamId);
-
   return (
-    <div className="flex items-center gap-2">
-      {/* An Unknown team carries an empty logo path — rendering it would fire a
-          request at our own origin and 404. */}
-      {team && team.logo ? (
-        // Plain <img>: these are 16 small committed files served from our own
-        // origin, never a hotlink to Steam's CDN.
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={team.logo} alt="" width={24} height={24} className="h-6 w-6 object-contain" />
-      ) : (
-        <span className="flex h-6 w-6 items-center justify-center text-[10px] text-[#6b7785]">
-          —
-        </span>
-      )}
-
-      <span className={isWinner ? "font-semibold text-[#c9d3dc]" : "text-[#9aa7b4]"}>
-        {slotText(slot, team?.name)}
-      </span>
-
-      {showScore && score != null && (
-        <span className={`tabular ml-auto ${isWinner ? "text-[#3fcf8e]" : "text-[#6b7785]"}`}>
-          {score}
-        </span>
-      )}
+    <div className={`team-side ${isWinner ? "team-side--winner" : ""}`}>
+      <TeamLogo teamId={slot.teamId} size={28} />
+      <span className="team-side__name">{slotText(slot, team?.name)}</span>
+      {isWinner && <span className="sr-only">winner</span>}
+      {showScore && score != null && <span className="team-side__score numeric">{score}</span>}
     </div>
   );
 }
 
-/**
- * A slot that names a real team we cannot look up is a data problem, not an
- * undecided matchup. Showing its id surfaces that; showing "TBD" would hide it.
- */
+function GameRow({
+  game,
+  timeMode,
+  localTimeZone,
+}: {
+  game: GameSummary;
+  timeMode: TimeMode;
+  localTimeZone?: string;
+}) {
+  const radiant = getTeam(game.radiantTeamId);
+  const dire = getTeam(game.direTeamId);
+  const winner = getTeam(game.winnerId);
+
+  return (
+    <li id={`game-${game.matchId}`} className="game-row">
+      <div className="game-row__heading">
+        <strong>Game {game.gameNumber}</strong>
+        <span>{winner?.name ?? `Team ${game.winnerId}`} won</span>
+      </div>
+      <div className="game-row__meta numeric">
+        {formatTournamentTime(game.startUtc, timeMode, localTimeZone)} · {formatDuration(game.durationSeconds)}
+      </div>
+      <div className="game-row__sides">
+        <div className={game.winnerId === game.radiantTeamId ? "is-winner" : ""}>
+          <span>Radiant · {radiant?.name ?? game.radiantTeamId}</span>
+          <strong className="numeric">{game.radiantKills} final kills</strong>
+        </div>
+        <div className={game.winnerId === game.direTeamId ? "is-winner" : ""}>
+          <span>Dire · {dire?.name ?? game.direTeamId}</span>
+          <strong className="numeric">{game.direKills} final kills</strong>
+        </div>
+      </div>
+      <a className="text-link game-row__link" href={game.openDotaUrl} target="_blank" rel="noopener noreferrer">
+        Open game {game.matchId} on OpenDota
+      </a>
+    </li>
+  );
+}
+
 function slotText(slot: SlotRef, name: string | undefined): string {
   if (name) return name;
   if (slot.kind === "team" && slot.teamId != null) return `Team ${slot.teamId}`;
-  return slot.label ?? "TBD";
+  if (slot.label) return slot.label;
+  if (slot.kind === "winner_of") return `Winner of ${slot.matchId ?? "previous match"}`;
+  if (slot.kind === "loser_of") return `Loser of ${slot.matchId ?? "previous match"}`;
+  return "TBD";
 }

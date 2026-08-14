@@ -1,4 +1,4 @@
-import type { RawMatch, Section, Series, SlotRef, TeamId } from "./types";
+import type { GameSummary, RawMatch, Section, Series, SlotRef, TeamId } from "./types";
 
 /**
  * Turn a flat list of GAMES from /api/leagues/{id}/matches into SERIES.
@@ -111,6 +111,21 @@ function buildSeries(
     startUtc: unixToIso(startSec),
     winnerId,
     gameIds: group.map((g) => g.match_id),
+    games: group.map((game, index): GameSummary => {
+      const winner = game.radiant_win ? game.radiant_team_id : game.dire_team_id;
+      return {
+        matchId: game.match_id,
+        gameNumber: index + 1,
+        radiantTeamId: game.radiant_team_id,
+        direTeamId: game.dire_team_id,
+        winnerId: winner,
+        startUtc: unixToIso(game.start_time),
+        durationSeconds: game.duration,
+        radiantKills: game.radiant_score,
+        direKills: game.dire_score,
+        openDotaUrl: `https://www.opendota.com/matches/${game.match_id}`,
+      };
+    }),
     source: "opendota",
     // Derived from the data, not from the clock, so the function stays pure.
     updatedUtc: unixToIso(endSec),

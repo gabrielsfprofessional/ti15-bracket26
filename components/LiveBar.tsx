@@ -1,53 +1,84 @@
 import { teamName } from "@/data/teams";
+import { TeamLogo } from "@/components/TeamLogo";
+import { formatDuration, formatTournamentTime, type TimeMode } from "@/lib/time";
 import type { Series } from "@/lib/types";
 
-/**
- * Shown only while OpenDota's live feed has a game for this league.
- *
- * The game number is derived, not fetched: in a series that stands at 1-1, the
- * game in progress is game 3. The live endpoint's own radiant_score/dire_score
- * are kill counts and are never read here or anywhere else.
- */
-export function LiveBar({ series }: { series: Series[] }) {
-  const live = series.filter((s) => s.status === "live");
-  if (live.length === 0) return null;
+export function LiveBar({
+  series,
+  nextSeries,
+  timeMode,
+  localTimeZone,
+}: {
+  series: Series[];
+  nextSeries?: Series;
+  timeMode: TimeMode;
+  localTimeZone?: string;
+}) {
+  const live = series.filter((item) => item.status === "live");
 
   return (
-    <section className="border border-[#e4432f] p-3">
-      <h2 className="text-xs uppercase tracking-widest text-[#e4432f]">Live now</h2>
+    <section id="live" className={`live-dock ${live.length ? "live-dock--active" : ""}`} aria-labelledby="live-heading">
+      <div className="live-dock__label">
+        <span className="live-beacon" aria-hidden />
+        <h2 id="live-heading">{live.length ? "Live now" : "Live desk"}</h2>
+      </div>
 
-      <ul className="mt-2 flex flex-col gap-3">
-        {live.map((s) => {
-          const gameNumber = s.scoreA + s.scoreB + 1;
-          return (
-            <li key={s.id}>
-              <div className="text-base font-semibold text-[#c9d3dc]">
-                {teamName(s.a.teamId)} <span className="tabular text-[#9aa7b4]">{s.scoreA}</span>
-                <span className="mx-2 text-[#6b7785]">vs</span>
-                <span className="tabular text-[#9aa7b4]">{s.scoreB}</span> {teamName(s.b.teamId)}
-              </div>
-              <div className="text-sm text-[#9aa7b4]">
-                Game {gameNumber} of Bo{s.bestOf}
-                <span className="mx-1">·</span>
-                series {s.scoreA}–{s.scoreB}
-                {s.streamUrl && (
-                  <>
-                    <span className="mx-1">·</span>
-                    <a
-                      className="underline"
-                      href={s.streamUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Watch
-                    </a>
-                  </>
+      {live.length === 0 ? (
+        <div className="live-dock__idle">
+          <div>
+            <strong>No matches live</strong>
+            <span>
+              {nextSeries
+                ? `Next: ${formatTournamentTime(nextSeries.startUtc, timeMode, localTimeZone)}`
+                : "Next match time has not been published"}
+            </span>
+          </div>
+          {nextSeries?.streamUrl && (
+            <a className="watch-button watch-button--quiet" href={nextSeries.streamUrl} target="_blank" rel="noopener noreferrer">
+              Watch hub
+            </a>
+          )}
+        </div>
+      ) : (
+        <ul className="live-dock__matches">
+          {live.map((item) => {
+            const gameNumber = item.liveGame?.gameNumber ?? item.scoreA + item.scoreB + 1;
+            return (
+              <li key={item.id}>
+                <div className="live-match__teams">
+                  <div>
+                    <TeamLogo teamId={item.a.teamId} size={32} />
+                    <span>{teamName(item.a.teamId)}</span>
+                    <strong className="numeric">{item.scoreA}</strong>
+                  </div>
+                  <span className="live-match__versus">series</span>
+                  <div>
+                    <TeamLogo teamId={item.b.teamId} size={32} />
+                    <span>{teamName(item.b.teamId)}</span>
+                    <strong className="numeric">{item.scoreB}</strong>
+                  </div>
+                </div>
+                <div className="live-match__context">
+                  <span>Game {gameNumber} · Bo{item.bestOf}</span>
+                  {item.liveGame && item.liveGame.gameTimeSeconds >= 0 && (
+                    <span className="numeric">Game clock {formatDuration(item.liveGame.gameTimeSeconds)}</span>
+                  )}
+                  {item.liveGame && (
+                    <span className="numeric">
+                      Current-game kills: {teamName(item.liveGame.radiantTeamId)} {item.liveGame.radiantKills}–{item.liveGame.direKills} {teamName(item.liveGame.direTeamId)}
+                    </span>
+                  )}
+                </div>
+                {item.streamUrl && (
+                  <a className="watch-button" href={item.streamUrl} target="_blank" rel="noopener noreferrer">
+                    Watch live
+                  </a>
                 )}
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </section>
   );
 }

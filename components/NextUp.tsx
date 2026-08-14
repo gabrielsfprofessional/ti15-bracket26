@@ -37,7 +37,7 @@ export function NextUp({ upcoming, nowMs }: { upcoming: Series[]; nowMs: number 
 
       <div className="mt-2 flex flex-col gap-2">
         {upcoming.map((s) => (
-          <SeriesCard key={s.id} series={s} />
+          <SeriesCard key={s.id} series={s} timeMode="eastern" />
         ))}
       </div>
     </section>

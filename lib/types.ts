@@ -28,6 +28,29 @@ export interface SlotRef {
   label?: string;
 }
 
+export interface GameSummary {
+  matchId: number;
+  gameNumber: number;
+  radiantTeamId: TeamId;
+  direTeamId: TeamId;
+  winnerId: TeamId;
+  startUtc: string;
+  durationSeconds: number;
+  radiantKills: number;
+  direKills: number;
+  openDotaUrl: string;
+}
+
+export interface LiveGameSummary {
+  gameNumber: number;
+  radiantTeamId: TeamId;
+  direTeamId: TeamId;
+  radiantKills: number;
+  direKills: number;
+  gameTimeSeconds: number;
+  observedUtc: string;
+}
+
 export interface Series {
   id: string;
   seriesId?: number;
@@ -43,6 +66,9 @@ export interface Series {
   startUtc: string | null;
   winnerId: TeamId | null;
   gameIds: number[];
+  /** Additive detail; legacy snapshots may omit it. */
+  games?: GameSummary[];
+  liveGame?: LiveGameSummary;
   streamUrl?: string;
   source: Source;
   updatedUtc: string;

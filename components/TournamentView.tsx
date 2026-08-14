@@ -1,20 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { BracketSection } from "@/components/BracketSection";
 import { LiveBar } from "@/components/LiveBar";
-import { NextUp } from "@/components/NextUp";
-import { SeriesCard } from "@/components/SeriesCard";
+import { ResultsSection } from "@/components/ResultsSection";
+import { ScheduleSection } from "@/components/ScheduleSection";
 import { SwissTable } from "@/components/SwissTable";
-import { formatEt } from "@/lib/time";
+import { ago, formatTournamentTime, type TimeMode } from "@/lib/time";
 import type { Series, Tournament } from "@/lib/types";
 
 const POLL_MS = 60_000;
 const CLOCK_MS = 30_000;
+const TIME_MODE_KEY = "ti15-time-mode";
+const TIME_MODES = new Set<TimeMode>(["eastern", "local", "shanghai", "utc"]);
 
-const SYNC_DOT: Record<Tournament["syncState"], { color: string; label: string }> = {
-  ok: { color: "#3fcf8e", label: "auto-syncing" },
-  degraded: { color: "#e4432f", label: "degraded — serving fallback snapshot" },
-  manual: { color: "#d8c089", label: "manual mode" },
+const MODE_COPY: Record<Tournament["sourceHealth"]["mode"], { eyebrow: string; title: string }> = {
+  live: { eyebrow: "Sources healthy", title: "Live data" },
+  degraded: { eyebrow: "Upstream degraded", title: "Fallback snapshot" },
+  manual: { eyebrow: "Operator controlled", title: "Manual mode" },
 };
 
 export function TournamentView({
@@ -26,10 +29,27 @@ export function TournamentView({
 }) {
   const [tournament, setTournament] = useState(initialTournament);
   const [nowMs, setNowMs] = useState(initialNowMs);
+  const [timeMode, setTimeMode] = useState<TimeMode>("eastern");
+  const [localTimeZone, setLocalTimeZone] = useState<string>();
+  const [syncAnnouncement, setSyncAnnouncement] = useState("");
+  const signatureRef = useRef(stateSignature(initialTournament.series));
 
   useEffect(() => {
     const id = window.setInterval(() => setNowMs(Date.now()), CLOCK_MS);
     return () => window.clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      try {
+        const stored = window.localStorage.getItem(TIME_MODE_KEY) as TimeMode | null;
+        if (stored && TIME_MODES.has(stored)) setTimeMode(stored);
+      } catch {
+        // Storage may be disabled; Eastern remains the hydration-safe default.
+      }
+      setLocalTimeZone(Intl.DateTimeFormat().resolvedOptions().timeZone || undefined);
+    }, 0);
+    return () => window.clearTimeout(id);
   }, []);
 
   useEffect(() => {
@@ -51,6 +71,11 @@ export function TournamentView({
           const payload: unknown = await response.json();
           if (!isTournament(payload)) throw new Error("state endpoint returned an invalid payload");
           if (active) {
+            const signature = stateSignature(payload.series);
+            if (signature !== signatureRef.current) {
+              signatureRef.current = signature;
+              setSyncAnnouncement("Tournament match state updated.");
+            }
             setTournament((current) =>
               Date.parse(payload.lastSyncUtc) >= Date.parse(current.lastSyncUtc) ? payload : current,
             );
@@ -86,90 +111,137 @@ export function TournamentView({
     };
   }, [initialTournament.lastSyncUtc]);
 
-  const upcoming = pickUpcoming(tournament.series, nowMs, 3);
-  const results = tournament.series
-    .filter((series) => series.status === "completed" || series.status === "unconfirmed")
-    .sort((a, b) => (b.startUtc ?? "").localeCompare(a.startUtc ?? ""));
-  const dot = SYNC_DOT[tournament.syncState];
+  const changeTimeMode = (mode: TimeMode) => {
+    setTimeMode(mode);
+    if (mode === "local" && !localTimeZone) {
+      setLocalTimeZone(Intl.DateTimeFormat().resolvedOptions().timeZone || undefined);
+    }
+    try {
+      window.localStorage.setItem(TIME_MODE_KEY, mode);
+    } catch {
+      // Preference persistence is optional; the control still works in memory.
+    }
+  };
+
+  const upcoming = [...tournament.series]
+    .filter((item) => item.status === "scheduled" || item.status === "tbd")
+    .filter((item) => item.startUtc != null && Date.parse(item.startUtc) >= nowMs)
+    .sort((a, b) => (a.startUtc ?? "").localeCompare(b.startUtc ?? ""));
+  const nextSeries = upcoming[0];
+  const completed = tournament.series.filter((item) => item.status === "completed").length;
+  const phase = derivePhase(tournament.series, nextSeries);
+  const modeCopy = MODE_COPY[tournament.sourceHealth.mode];
 
   return (
-    <main className="mx-auto flex max-w-3xl flex-col gap-8 p-4 pb-16">
-      <header>
-        <h1 className="text-2xl font-bold tracking-wide text-[#c9d3dc]">
-          The International 2026
-        </h1>
-        <p className="text-sm text-[#6b7785]">Shanghai · Aug 13–23 · all times Eastern</p>
-        <p className="mt-1 flex items-center gap-2 text-xs text-[#6b7785]" aria-live="polite">
-          <span
-            aria-hidden
-            style={{ background: dot.color }}
-            className="inline-block h-2 w-2 rounded-full"
-          />
-          <span>
-            Last synced {formatEt(tournament.lastSyncUtc)} · {dot.label}
-            {tournament.syncState === "degraded" &&
-              " · snapshot " + ageOf(tournament.lastSyncUtc, nowMs) + " old"}
-          </span>
-        </p>
+    <>
+      <a className="skip-link" href="#main-content">Skip to tournament data</a>
+      <p className="sr-only" role="status" aria-live="polite">{syncAnnouncement}</p>
+
+      <header className="hero" id="top">
+        <div className="hero__geometry" aria-hidden><span /><span /><span /></div>
+        <div className="hero__content">
+          <div className="hero__kicker">TI15 · Shanghai · August 13–23</div>
+          <h1><span>The International</span> 2026</h1>
+          <p className="hero__lede">The live tournament, decoded: what is happening, what starts next, and who still has a path forward.</p>
+          <div className="hero__badges">
+            <span className="phase-badge">{phase}</span>
+            <details className={`source-badge source-badge--${tournament.sourceHealth.mode}`}>
+              <summary>
+                <span className="source-badge__dot" aria-hidden />
+                <span><strong>{modeCopy.title}</strong> · {ago(tournament.lastSyncUtc, nowMs)}</span>
+              </summary>
+              <div className="source-popover">
+                <span className="eyebrow">{modeCopy.eyebrow}</span>
+                <dl>
+                  <div><dt>Matches</dt><dd>{tournament.sourceHealth.matches.status} · {formatTournamentTime(tournament.sourceHealth.matches.observedUtc, timeMode, localTimeZone)}</dd></div>
+                  <div><dt>Live feed</dt><dd>{tournament.sourceHealth.live.status} · {formatTournamentTime(tournament.sourceHealth.live.observedUtc, timeMode, localTimeZone)}</dd></div>
+                  <div><dt>Schedule</dt><dd>{tournament.sourceHealth.schedule.status} · checked-in corrections</dd></div>
+                  <div><dt>Snapshot</dt><dd>{formatTournamentTime(tournament.sourceHealth.snapshotGeneratedUtc, timeMode, localTimeZone)}</dd></div>
+                </dl>
+              </div>
+            </details>
+          </div>
+        </div>
+        <dl className="hero__stats">
+          <div><dt>Teams</dt><dd className="numeric">{tournament.teams.length}</dd></div>
+          <div><dt>Series final</dt><dd className="numeric">{completed}</dd></div>
+          <div><dt>Published</dt><dd className="numeric">{tournament.series.length}</dd></div>
+        </dl>
       </header>
 
-      <LiveBar series={tournament.series} />
-      <NextUp upcoming={upcoming} nowMs={nowMs} />
-      <SwissTable rows={tournament.swiss} />
-
-      <section>
-        <h2 className="text-xs uppercase tracking-widest text-[#6b7785]">
-          Results ({results.length})
-        </h2>
-        <div className="mt-2 flex flex-col gap-2">
-          {results.map((series) => (
-            <SeriesCard key={series.id} series={series} />
-          ))}
+      <nav className="anchor-nav" aria-label="Tournament sections">
+        <div>
+          <a href="#live">Live</a>
+          <a href="#schedule">Schedule</a>
+          <a href="#standings">Standings</a>
+          <a href="#bracket">Bracket</a>
+          <a href="#results">Results</a>
         </div>
-      </section>
+      </nav>
 
-      <footer className="border-t border-[#232a33] pt-4 text-xs leading-relaxed text-[#6b7785]">
-        Not affiliated with or endorsed by Valve Corporation. Dota 2 is a trademark of Valve.
-        Match data from OpenDota.
+      <main id="main-content" className="command-center" tabIndex={-1}>
+        <LiveBar
+          series={tournament.series}
+          nextSeries={nextSeries}
+          timeMode={timeMode}
+          localTimeZone={localTimeZone}
+        />
+        <ScheduleSection
+          series={tournament.series}
+          teams={tournament.teams}
+          timeMode={timeMode}
+          localTimeZone={localTimeZone}
+          onTimeModeChange={changeTimeMode}
+        />
+        <SwissTable rows={tournament.swiss} series={tournament.series} />
+        <BracketSection series={tournament.series} timeMode={timeMode} localTimeZone={localTimeZone} />
+        <ResultsSection
+          series={tournament.series}
+          teams={tournament.teams}
+          timeMode={timeMode}
+          localTimeZone={localTimeZone}
+        />
+      </main>
+
+      <footer className="site-footer">
+        <div>
+          <strong>Unofficial TI15 tournament companion</strong>
+          <p>Not affiliated with or endorsed by Valve Corporation. Dota 2 and The International are Valve properties.</p>
+        </div>
+        <div>
+          <p>Match data from OpenDota · future schedule managed and manually verified.</p>
+          <p>Team logos are owned by their respective organizations.</p>
+        </div>
       </footer>
-    </main>
+    </>
   );
 }
 
-function isTournament(value: unknown): value is Tournament {
+export function isTournament(value: unknown): value is Tournament {
   if (value == null || typeof value !== "object") return false;
   const candidate = value as Partial<Tournament>;
   return (
     candidate.leagueId === 19719 &&
     Array.isArray(candidate.teams) &&
+    candidate.teams.length === 16 &&
     Array.isArray(candidate.swiss) &&
     Array.isArray(candidate.series) &&
     typeof candidate.lastSyncUtc === "string" &&
     candidate.sourceHealth != null &&
     typeof candidate.sourceHealth === "object" &&
-    (candidate.syncState === "ok" ||
-      candidate.syncState === "degraded" ||
-      candidate.syncState === "manual")
+    (candidate.syncState === "ok" || candidate.syncState === "degraded" || candidate.syncState === "manual")
   );
 }
 
-function ageOf(utc: string, nowMs: number): string {
-  const parsed = Date.parse(utc);
-  if (Number.isNaN(parsed)) return "unknown";
-
-  const minutes = Math.floor(Math.max(0, nowMs - parsed) / 60_000);
-  if (minutes < 1) return "less than 1m";
-  if (minutes < 60) return minutes + "m";
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return hours + "h";
-  return Math.floor(hours / 24) + "d";
+function stateSignature(series: Series[]): string {
+  return series
+    .map((item) => `${item.id}:${item.status}:${item.scoreA}:${item.scoreB}:${item.winnerId ?? ""}`)
+    .join("|");
 }
 
-/** Soonest-first upcoming matches that have not started yet. */
-function pickUpcoming(series: Series[], nowMs: number, limit: number): Series[] {
-  return series
-    .filter((item) => item.status === "scheduled" || item.status === "tbd")
-    .filter((item) => item.startUtc != null && Date.parse(item.startUtc) >= nowMs)
-    .sort((a, b) => (a.startUtc ?? "").localeCompare(b.startUtc ?? ""))
-    .slice(0, limit);
+function derivePhase(series: Series[], nextSeries?: Series): string {
+  if (series.some((item) => item.status === "live")) return "Group stage · live";
+  if (nextSeries?.section === "swiss") return `Group stage · ${nextSeries.roundLabel.split(" · ")[0]}`;
+  if (series.some((item) => item.section !== "swiss")) return "Main Event";
+  return "Group stage";
 }

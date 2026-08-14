@@ -81,6 +81,31 @@ describe("toSeries", () => {
     expect(s.bestOf).toBe(3);
   });
 
+  it("emits typed per-game summaries with sides, winner, duration, kills, and link", () => {
+    const raw = game({
+      seriesId: 1001,
+      radiant: FALCONS,
+      dire: LGD,
+      winner: FALCONS,
+      start: T0,
+      duration: 2_345,
+    });
+    const [summary] = toSeries([raw])[0].games ?? [];
+
+    expect(summary).toEqual({
+      matchId: raw.match_id,
+      gameNumber: 1,
+      radiantTeamId: FALCONS,
+      direTeamId: LGD,
+      winnerId: FALCONS,
+      startUtc: new Date(T0 * 1000).toISOString(),
+      durationSeconds: 2_345,
+      radiantKills: 30,
+      direKills: 10,
+      openDotaUrl: `https://www.opendota.com/matches/${raw.match_id}`,
+    });
+  });
+
   it("orders games chronologically regardless of input order", () => {
     const g1 = game({ seriesId: 101, radiant: FALCONS, dire: LGD, winner: FALCONS, start: T0 });
     const g2 = game({ seriesId: 101, radiant: LGD, dire: FALCONS, winner: FALCONS, start: T0 + 3000 });

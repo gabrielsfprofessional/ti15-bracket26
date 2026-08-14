@@ -1,5 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { ET_ZONE, ago, countdown, etAbbreviation, formatEt, formatEtDay, formatEtTime } from "./time";
+import {
+  ET_ZONE,
+  ago,
+  countdown,
+  etAbbreviation,
+  formatDuration,
+  formatEt,
+  formatEtDay,
+  formatEtTime,
+  formatTournamentTime,
+  tournamentDayKey,
+} from "./time";
 
 /**
  * The real UTC offset the IANA zone resolves to at a given instant, derived by
@@ -112,5 +123,27 @@ describe("ago", () => {
 
   it("handles a missing timestamp", () => {
     expect(ago(null, now)).toBe("never");
+  });
+});
+
+describe("time modes", () => {
+  const instant = "2026-08-15T02:00:00Z";
+
+  it("formats Eastern, Shanghai, UTC, and an explicit browser-local zone", () => {
+    expect(formatTournamentTime(instant, "eastern")).toContain("Fri, Aug 14");
+    expect(formatTournamentTime(instant, "eastern")).toContain("EDT");
+    expect(formatTournamentTime(instant, "shanghai")).toContain("Sat, Aug 15");
+    expect(formatTournamentTime(instant, "utc")).toMatch(/UTC/);
+    expect(formatTournamentTime(instant, "local", "Europe/London")).toMatch(/GMT\+1|BST/);
+  });
+
+  it("groups the same instant under the selected zone's calendar day", () => {
+    expect(tournamentDayKey(instant, "eastern")).toBe("2026-08-14");
+    expect(tournamentDayKey(instant, "shanghai")).toBe("2026-08-15");
+  });
+
+  it("formats deterministic game durations", () => {
+    expect(formatDuration(2_345)).toBe("39:05");
+    expect(formatDuration(-1)).toBe("Duration unavailable");
   });
 });
