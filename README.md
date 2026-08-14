@@ -1,7 +1,9 @@
 # TI15 — The International 2026
 
+### ▸ **[ti15-bracket26.vercel.app](https://ti15-bracket26.vercel.app)**
+
 Live bracket, standings and schedule for The International 2026 (Dota 2), Shanghai, Aug 13–23 2026.
-All times displayed in Eastern.
+Read-only, free, unmonetised. All times displayed in Eastern.
 
 Next.js 15 (App Router) · TypeScript · Tailwind CSS v4 · deployed on Vercel.
 No database, no auth, no backend server.
@@ -12,12 +14,20 @@ No database, no auth, no backend server.
 
 > Automate the volatile, hardcode the stable, let manual override always win.
 
+There is no database and there are no API keys — the entire tournament state is derived on
+demand from a public, keyless endpoint and assembled by two pure functions:
+
 ```
-scripts/sync.ts → OpenDota → toSeries() → merge schedule + overrides → resolve()
-               → data/tournament.json → git commit → Vercel auto-deploys
+/api/state → OpenDota → toSeries() → merge schedule + overrides → resolve() → Tournament
 ```
 
-The browser polls `/api/state` and updates in place.
+That route is served with `Cache-Control: public, s-maxage=60, stale-while-revalidate=300`, so
+the CDN absorbs the traffic and OpenDota sees roughly one request a minute regardless of how
+many people are watching. The browser polls `/api/state` and updates in place.
+
+A committed snapshot at `data/tournament.json`, refreshed on a schedule by GitHub Actions, is
+the **fallback** for when OpenDota is unreachable — disaster recovery, not the freshness
+mechanism. Serving it flips the site into a visibly `degraded` state rather than a blank page.
 
 **Source precedence**, enforced during assembly:
 
@@ -131,7 +141,7 @@ Swiss fate, hide a series outright, set the champion, or flip the status dot to 
 ```bash
 npm install
 npm run dev        # http://localhost:3000
-npm test           # 45 unit tests
+npm test           # 83 unit tests
 npm run build
 npm run logos      # one-off: re-download the 16 team logos into public/logos/
 ```
@@ -158,10 +168,11 @@ so a slow or rate-limited OpenDota degrades to slightly stale data rather than a
 | --- | --- |
 | 0 — endpoint verification | done |
 | 1 — correct data pipeline, plain page | done |
-| 2 — "Aegis Vault" design system, mobile layout | not started |
-| 3 — `scripts/sync.ts`, GitHub Actions cron, client polling | not started |
-| 4 — OG image, share, deep links, reduced motion | not started |
-| 5 — Main Event bracket topology | blocked: Valve has not published the structure |
+| 2 — correctness hardening, live deploy | done |
+| 3 — snapshot fallback, GitHub Actions cron, uptime check | in progress |
+| 4 — "Aegis Vault" design system, mobile layout | not started |
+| 5 — OG image, share, deep links, reduced motion | not started |
+| 6 — Main Event bracket topology | blocked: Valve has not published the structure |
 
 Two known open items, both deliberate:
 
@@ -174,6 +185,20 @@ Two known open items, both deliberate:
   team as eliminated.
 
 ---
+
+## License and attribution
+
+The **code** is [MIT](LICENSE).
+
+The **artwork is not**, and is explicitly carved out of that grant:
+
+| | |
+| --- | --- |
+| `public/art/**` | Derived from Dota 2 / The International key art. Valve Corporation's IP. |
+| `public/logos/**` | Esports organisation marks, each the property of its team. |
+
+Neither is mine to relicense. If you fork this, delete both directories or replace them with
+assets you have the right to use.
 
 Not affiliated with or endorsed by Valve Corporation. Dota 2 is a trademark of Valve.
 Match data from OpenDota.

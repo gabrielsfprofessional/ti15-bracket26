@@ -12,7 +12,7 @@ import type { RawLeagueTeam } from "../lib/types";
 
 const LEAGUE_ID = 19719;
 const USER_AGENT =
-  "TI15-Bracket/1.0 (+https://github.com/gabrielsfprofessional/ti15-bracket; gabrielsfprofessional@gmail.com)";
+  "TI15-Bracket/1.0 (+https://github.com/gabrielsfprofessional/ti15-bracket26; gabrielsfprofessional@gmail.com)";
 const OUT_DIR = path.join(process.cwd(), "public", "logos");
 
 async function main() {

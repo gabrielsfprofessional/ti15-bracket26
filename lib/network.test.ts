@@ -126,7 +126,7 @@ describe("outbound request shape", () => {
 
     const ua = (init.headers as Record<string, string>)["User-Agent"];
     expect(ua).toContain("TI15-Bracket");
-    expect(ua).toContain("github.com/gabrielsfprofessional/ti15-bracket");
+    expect(ua).toContain("github.com/gabrielsfprofessional/ti15-bracket26");
   });
 
   it("sends no API key of any kind", async () => {

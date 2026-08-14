@@ -20,7 +20,7 @@ const BASE = "https://api.opendota.com";
 
 /** A real, identifying User-Agent, as a good citizen of a free keyless API. */
 const USER_AGENT =
-  "TI15-Bracket/1.0 (+https://github.com/gabrielsfprofessional/ti15-bracket; gabrielsfprofessional@gmail.com)";
+  "TI15-Bracket/1.0 (+https://github.com/gabrielsfprofessional/ti15-bracket26; gabrielsfprofessional@gmail.com)";
 
 const DEFAULT_STREAM_URL = "https://www.twitch.tv/dota2ti";
 

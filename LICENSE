@@ -1,0 +1,43 @@
+MIT License
+
+Copyright (c) 2026 Gabriel McGill
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+================================================================================
+EXCLUSIONS — the MIT grant above covers CODE ONLY
+================================================================================
+
+The following are NOT covered by the MIT license above and are NOT licensed for
+reuse by this repository. They are included here solely to run this fan project.
+
+  public/art/**     Artwork derived from Dota 2 and The International 2026
+                    key art. Dota 2, The International, the Aegis of Champions,
+                    and all related imagery are trademarks and/or copyrighted
+                    works of Valve Corporation.
+
+  public/logos/**   Esports organisation logos. Each remains the property of
+                    the team it identifies.
+
+Neither is mine to relicense, and no permission to reuse either is granted or
+implied by this file. If you fork this repository, remove those directories or
+replace their contents with assets you have the right to use.
+
+This project is not affiliated with, authorised by, or endorsed by Valve
+Corporation or by any team represented here.
