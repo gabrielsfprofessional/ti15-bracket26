@@ -425,6 +425,15 @@ a {
   scroll-margin-top: 5rem;
 }
 
+/* Keep off-screen data in the DOM and accessibility tree while deferring its
+   expensive style/layout work until the visitor approaches the section. */
+#standings,
+#bracket,
+#results {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 54rem;
+}
+
 .section-heading {
   max-width: 48rem;
   margin-bottom: var(--space-6);
