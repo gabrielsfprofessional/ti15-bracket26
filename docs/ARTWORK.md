@@ -1,7 +1,14 @@
 # Artwork, type, and attribution review
 
-**Reviewed:** 2026-08-14  
-**Production decision:** use the code-native abstract fallback; do not render the four source PNGs
+**Reviewed:** 2026-08-14
+**Status: SUPERSEDED for the art decision.** Provenance was established on 2026-08-14 — the
+sources are AI-generated fan art commissioned by the project owner — and derivatives now ship
+under the terms recorded in [ART.md](./ART.md). Read that file for anything about the four
+source PNGs. The type stack and attribution notes below remain current, and the code-native
+abstract treatment described here is still the `NEXT_PUBLIC_ART=off` fallback.
+
+**Original production decision (no longer in force):** use the code-native abstract fallback;
+do not render the four source PNGs
 
 ## Source-material inventory
 
