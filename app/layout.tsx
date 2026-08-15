@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { ART_ENABLED, artBodyClass } from "@/lib/art";
 import "./globals.css";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://ti15-bracket26.vercel.app";
@@ -29,10 +30,20 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     images: ["/opengraph-image"],
   },
-  icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-    apple: [{ url: "/apple-icon", sizes: "180x180", type: "image/png" }],
-  },
+  icons: ART_ENABLED
+    ? {
+        // The medallion PNG leads because it is the identity mark; icon.svg stays
+        // as the fallback so turning the art off still leaves a usable favicon.
+        icon: [
+          { url: "/art/aegis-icon.png", type: "image/png", sizes: "180x144" },
+          { url: "/icon.svg", type: "image/svg+xml" },
+        ],
+        apple: [{ url: "/apple-icon", sizes: "180x180", type: "image/png" }],
+      }
+    : {
+        icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+        apple: [{ url: "/apple-icon", sizes: "180x180", type: "image/png" }],
+      },
   manifest: "/manifest.webmanifest",
   category: "sports",
   formatDetection: { telephone: false, address: false, email: false },
@@ -47,7 +58,35 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
-      <body>{children}</body>
+      {ART_ENABLED && (
+        <head>
+          {/*
+            Only the hero is preloaded, and only the one variant the viewport
+            will actually paint — `media` keeps the other off the wire entirely,
+            and `type` keeps browsers without AVIF from fetching a file they
+            cannot decode (they pick up the WebP from <picture> instead).
+            Every other art surface is lazy-loaded. Nothing here blocks the live
+            dock or the next-up data, which render from the server payload.
+          */}
+          <link
+            rel="preload"
+            as="image"
+            href="/art/hero-mobile.avif"
+            type="image/avif"
+            media="(max-width: 819px)"
+            fetchPriority="high"
+          />
+          <link
+            rel="preload"
+            as="image"
+            href="/art/hero-desktop.avif"
+            type="image/avif"
+            media="(min-width: 820px)"
+            fetchPriority="high"
+          />
+        </head>
+      )}
+      <body className={artBodyClass}>{children}</body>
     </html>
   );
 }

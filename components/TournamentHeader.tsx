@@ -1,3 +1,5 @@
+import { AegisMedallion } from "@/components/AegisMedallion";
+import { ART_ENABLED } from "@/lib/art";
 import { ago, formatTournamentTime } from "@/lib/time";
 import type { Series, Tournament } from "@/lib/types";
 
@@ -26,10 +28,40 @@ export function TournamentHeader({
     <>
       <a className="skip-link" href="#main-content">Skip to tournament data</a>
       <header className="hero" id="top">
-        <div className="hero__geometry" aria-hidden><span /><span /><span /></div>
+        {ART_ENABLED ? (
+          <>
+            {/*
+              Backdrop only, and never the site's identity — that is the live
+              text below. Art-directed per breakpoint: the desktop band is far
+              too wide to letterbox onto a phone without losing every face.
+              Absolutely positioned, so it contributes no layout and cannot
+              shift anything while it decodes.
+            */}
+            <div className="hero__art" aria-hidden>
+              <picture>
+                <source type="image/avif" media="(min-width: 820px)" srcSet="/art/hero-desktop.avif" />
+                <source type="image/webp" media="(min-width: 820px)" srcSet="/art/hero-desktop.webp" />
+                <source type="image/avif" srcSet="/art/hero-mobile.avif" />
+                <source type="image/webp" srcSet="/art/hero-mobile.webp" />
+                {/* decoding="sync": this is the LCP element and it is already
+                    preloaded, so an async decode only defers the paint that
+                    LCP is measuring. */}
+                <img src="/art/hero-mobile.webp" alt="" width={1600} height={556} decoding="sync" fetchPriority="high" />
+              </picture>
+            </div>
+            <div className="hero__scrim" aria-hidden />
+          </>
+        ) : (
+          <div className="hero__geometry" aria-hidden><span /><span /><span /></div>
+        )}
         <div className="hero__content">
-          <div className="hero__kicker">TI15 · Shanghai · August 13–23</div>
+          <p className="hero__mark" aria-hidden>TI15</p>
           <h1><span>The International</span> 2026</h1>
+          <p className="hero__venue">
+            <span>Shanghai, China</span>
+            <span className="hero__venue-sep" aria-hidden>·</span>
+            <span className="numeric">August 13–23, 2026</span>
+          </p>
           <p className="hero__lede">The live tournament, decoded: what is happening, what starts next, and who still has a path forward.</p>
           <div className="hero__badges">
             <span className="phase-badge">{phase}</span>
@@ -50,11 +82,14 @@ export function TournamentHeader({
             </details>
           </div>
         </div>
-        <dl className="hero__stats">
-          <div><dt>Teams</dt><dd className="numeric">{tournament.teams.length}</dd></div>
-          <div><dt>Series final</dt><dd className="numeric">{completed}</dd></div>
-          <div><dt>Published</dt><dd className="numeric">{tournament.series.length}</dd></div>
-        </dl>
+        <div className="hero__rail">
+          <AegisMedallion won={tournament.championId != null} size={148} className="aegis--hero" priority />
+          <dl className="hero__stats">
+            <div><dt>Teams</dt><dd className="numeric">{tournament.teams.length}</dd></div>
+            <div><dt>Series final</dt><dd className="numeric">{completed}</dd></div>
+            <div><dt>Published</dt><dd className="numeric">{tournament.series.length}</dd></div>
+          </dl>
+        </div>
       </header>
 
       <nav className="anchor-nav" aria-label="Tournament sections">
