@@ -2077,3 +2077,156 @@ a {
     font-size: 0.76rem;
   }
 }
+
+/* ===========================================================================
+   ELIMINATION ROUND
+   Its own stage, not a schedule group. The stakes line under every card is the
+   whole point of the section: one series, one Main Event place, one exit.
+   =========================================================================== */
+
+.elimination-progress {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: baseline;
+  margin: 0 0 var(--space-5);
+  color: var(--text-muted);
+  font-size: 0.86rem;
+}
+
+.elimination-progress strong {
+  color: var(--gold-bright);
+  font-size: 1rem;
+}
+
+.elimination-list {
+  display: grid;
+  gap: var(--space-5);
+  grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.elimination-list > li {
+  display: grid;
+  gap: 0;
+  align-content: start;
+}
+
+.elimination-stakes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: baseline;
+  margin: 0;
+  padding: 0.62rem 0.85rem;
+  border: 1px solid var(--border-soft);
+  border-top: 0;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  background: rgb(9 11 15 / 0.55);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.elimination-stakes__advance {
+  color: var(--success);
+}
+
+.elimination-stakes__out {
+  color: var(--eliminated);
+}
+
+.elimination-stakes__sep {
+  color: var(--border);
+}
+
+.elimination-stakes strong {
+  color: var(--text);
+  font-weight: 800;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.elimination-stakes--settled {
+  border-color: var(--border);
+  background: rgb(13 17 22 / 0.9);
+}
+
+/* The card above the stakes bar loses its bottom corners so the two read as a
+   single carved object rather than two stacked ones. */
+.elimination-list > li .series-card {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/* --- Pre-pairing state ---------------------------------------------------- */
+
+.elimination-pending {
+  max-width: 44rem;
+  padding: var(--space-6) var(--space-5) var(--space-5);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+  text-align: center;
+}
+
+.elimination-pending__rule {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: var(--space-5);
+}
+
+.elimination-pending__rule > span:not(.elimination-pending__glyph) {
+  height: 2px;
+  border-top: 1px solid rgb(0 0 0 / 0.62);
+  border-bottom: 1px solid rgb(255 255 255 / 0.055);
+}
+
+.elimination-pending__glyph {
+  width: 8px;
+  height: 8px;
+  transform: rotate(45deg);
+  border: 1px solid var(--gold);
+  opacity: 0.6;
+}
+
+.elimination-pending strong {
+  display: block;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  letter-spacing: -0.02em;
+}
+
+.elimination-pending p {
+  max-width: 38rem;
+  margin: var(--space-4) auto 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.elimination-pending em {
+  color: var(--gold);
+  font-style: normal;
+  font-weight: 700;
+}
+
+.elimination-pending__note {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+@media (max-width: 560px) {
+  .elimination-list {
+    grid-template-columns: 1fr;
+  }
+
+  .elimination-pending {
+    padding: var(--space-5) var(--space-4) var(--space-4);
+  }
+}

@@ -3,6 +3,8 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import snapshotJson from "@/data/tournament.json";
+import { teamName } from "@/data/teams";
+import { EliminationSection } from "@/components/EliminationSection";
 import { LiveBar } from "@/components/LiveBar";
 import { ScheduleSection } from "@/components/ScheduleSection";
 import { SeriesCard } from "@/components/SeriesCard";
@@ -182,3 +184,72 @@ function makeSeries(overrides: Partial<Series> = {}): Series {
     ...overrides,
   };
 }
+
+describe("elimination round section", () => {
+  it("explains the stage and why nothing is listed before the pairings exist", () => {
+    render(<EliminationSection series={snapshot.series} timeMode="eastern" />);
+
+    expect(screen.getByRole("heading", { name: "Elimination round" })).toBeInTheDocument();
+    expect(screen.getByText(/Pairings are announced after Round 5/)).toBeInTheDocument();
+    // The format is stated, not implied, and the picks are named as picks.
+    expect(screen.getByText(/chosen, not seeded/)).toBeInTheDocument();
+    expect(screen.getByText(/never infers a matchup/)).toBeInTheDocument();
+    // No empty list is rendered in this state.
+    expect(screen.queryByRole("list")).not.toBeInTheDocument();
+  });
+
+  it("states the stakes on every undecided series", () => {
+    const pending = makeSeries({
+      id: "elim-1",
+      section: "elimination",
+      roundLabel: "Elimination Round",
+      status: "scheduled",
+      scoreA: 0,
+      scoreB: 0,
+      winnerId: null,
+    });
+    render(<EliminationSection series={[pending]} timeMode="eastern" />);
+
+    expect(screen.getByText("Winner → Main Event")).toBeInTheDocument();
+    expect(screen.getByText("Loser eliminated")).toBeInTheDocument();
+    expect(screen.getByText(/5 Main Event places at stake/)).toBeInTheDocument();
+  });
+
+  it("names who advanced and who is out once a series is final", () => {
+    const decided = makeSeries({
+      id: "elim-1",
+      section: "elimination",
+      roundLabel: "Elimination Round",
+      status: "completed",
+      scoreA: 2,
+      scoreB: 1,
+      winnerId: 9467224,
+    });
+    render(<EliminationSection series={[decided]} timeMode="eastern" />);
+
+    const advance = screen.getByText(/→ Main Event/);
+    expect(advance).toHaveTextContent(teamName(9467224));
+    const out = screen.getByText(/eliminated$/);
+    expect(out).toHaveTextContent(teamName(8255888));
+  });
+
+  it("counts decided series without counting anything else on the page", () => {
+    const swissNoise = makeSeries({ id: "swiss-1", section: "swiss" });
+    const done = makeSeries({ id: "elim-1", section: "elimination", status: "completed", winnerId: 9467224 });
+    const open = makeSeries({
+      id: "elim-2",
+      section: "elimination",
+      status: "scheduled",
+      winnerId: null,
+      scoreA: 0,
+      scoreB: 0,
+    });
+    const { container } = render(<EliminationSection series={[swissNoise, done, open]} timeMode="eastern" />);
+
+    // The swiss row must not inflate either number.
+    expect(container.querySelector(".elimination-progress")).toHaveTextContent(
+      "1 of 2 series decided",
+    );
+    expect(container.querySelectorAll(".elimination-list > li")).toHaveLength(2);
+  });
+});

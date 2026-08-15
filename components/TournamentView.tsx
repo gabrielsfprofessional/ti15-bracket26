@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { BracketSection } from "@/components/BracketSection";
+import { EliminationSection } from "@/components/EliminationSection";
 import { LiveBar } from "@/components/LiveBar";
 import { ResultsSection } from "@/components/ResultsSection";
 import { ScheduleSection } from "@/components/ScheduleSection";
@@ -140,6 +141,11 @@ export function TournamentView({
           onTimeModeChange={changeTimeMode}
         />
         <SwissTable rows={tournament.swiss} series={tournament.series} />
+        <EliminationSection
+          series={tournament.series}
+          timeMode={timeMode}
+          localTimeZone={localTimeZone}
+        />
         <BracketSection
           series={tournament.series}
           timeMode={timeMode}

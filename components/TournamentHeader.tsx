@@ -97,6 +97,7 @@ export function TournamentHeader({
           <a href="#live">Live</a>
           <a href="#schedule">Schedule</a>
           <a href="#standings">Standings</a>
+          <a href="#elimination">Elimination</a>
           <a href="#bracket">Bracket</a>
           <a href="#results">Results</a>
         </div>
