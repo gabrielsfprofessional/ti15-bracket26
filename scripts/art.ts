@@ -115,11 +115,16 @@ async function main() {
   );
   // Near-square centre crop; the desktop band is far too wide to letterbox on
   // a 390px viewport without losing every face.
+  //
+  // Compressed far harder than the desktop hero, and smaller, because the
+  // mobile scrim never drops below 0.86 — only ~14% of these pixels survive to
+  // the screen, so quality spent here is quality thrown away. This is the LCP
+  // element on phones, where the bytes cost the most.
   await pair(
-    grade(sharp(SRC(3)).extract({ left: 239, top: 30, width: 500, height: 490 }).resize({ width: 780, kernel: "lanczos3" })),
+    grade(sharp(SRC(3)).extract({ left: 239, top: 30, width: 500, height: 490 }).resize({ width: 640, kernel: "lanczos3" })),
     "hero-mobile",
-    50,
-    70,
+    36,
+    58,
   );
 
   // --- Ambients: cropped to bands that exclude every mark. -------------------

@@ -85,7 +85,15 @@ export function TournamentHeader({
           </div>
         </div>
         <div className="hero__rail">
-          <AegisMedallion won={tournament.championId != null} size={148} className="aegis--hero" priority />
+          {/*
+            Deliberately NOT priority. Below 560px the hero medallion is
+            display:none, and an eager <img> is still fetched when hidden --
+            measured at 23KB of AVIF downloaded and decoded on a phone for
+            something no one can see, competing with the LCP image. Lazy lets
+            the browser skip it entirely when hidden, and still loads it
+            promptly on desktop where it is in the viewport at load.
+          */}
+          <AegisMedallion won={tournament.championId != null} size={148} className="aegis--hero" />
           <dl className="hero__stats">
             <div><dt>Teams</dt><dd className="numeric">{tournament.teams.length}</dd></div>
             <div><dt>Series final</dt><dd className="numeric">{completed}</dd></div>
