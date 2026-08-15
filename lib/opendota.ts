@@ -544,7 +544,46 @@ export function computeSwiss(series: Series[]): SwissRow[] {
     else if (row.wins + row.losses >= SWISS_MAX_ROUNDS) row.state = "elimination_round";
   }
 
+  applyEliminationOutcomes(sorted, series);
   return sorted;
+}
+
+/**
+ * Folds decided elimination-round series into team fate.
+ *
+ * The elimination round is a separate stage, so it deliberately does NOT touch
+ * W-L: a 3-2 team that wins its elimination series is still 3-2, and the
+ * standings table keeps showing the Swiss record it actually earned. Because no
+ * win or loss is added, Swiss W/L parity is unaffected across the stage
+ * boundary.
+ *
+ * What the stage does decide is fate — the winner takes a Main Event slot and
+ * the loser is out. This runs after the record thresholds so a real result
+ * always beats the threshold that put the team into the elimination round in
+ * the first place. Hand-set fates still win: applySwissOverrides runs last.
+ */
+function applyEliminationOutcomes(rows: SwissRow[], series: Series[]): void {
+  const byTeam = new Map(rows.map((row) => [row.teamId, row]));
+
+  for (const s of series) {
+    if (s.section !== "elimination") continue;
+    if (s.status !== "completed" || s.winnerId == null) continue;
+    if (s.a.kind !== "team" || s.b.kind !== "team") continue;
+    if (s.a.teamId == null || s.b.teamId == null) continue;
+
+    const loserId = s.a.teamId === s.winnerId ? s.b.teamId : s.a.teamId;
+    const winner = byTeam.get(s.winnerId);
+    const loser = byTeam.get(loserId);
+    // A decided series is an observed fact, not a derived guess.
+    if (winner) {
+      winner.state = "advanced";
+      winner.provisional = false;
+    }
+    if (loser) {
+      loser.state = "eliminated";
+      loser.provisional = false;
+    }
+  }
 }
 
 function nameOf(id: TeamId): string {

@@ -446,3 +446,154 @@ describe("C.1 Swiss fate", () => {
     expect(rows.every((r) => r.wins === 0 && r.losses === 0)).toBe(true);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Step 2 — the elimination round
+//
+// Ten teams enter, five take the last Main Event places and five go out. The
+// pairings are CHOSEN on stage, not seeded, so these fixtures pair teams
+// arbitrarily on purpose: nothing in the code may depend on who faces whom.
+// ---------------------------------------------------------------------------
+
+/** The 3-2 teams in COMPLETED_RECORDS (indices 3-7). */
+const THREE_TWO = ALL_16.slice(3, 8);
+/** The 2-3 teams in COMPLETED_RECORDS (indices 8-12). */
+const TWO_THREE = ALL_16.slice(8, 13);
+
+/**
+ * Five elimination Bo3s. `winners` selects the winning side per series; pass
+ * "a" to advance the 3-2 team and "b" to advance the 2-3 team.
+ */
+function eliminationSeries(winners: Array<"a" | "b" | null>): Series[] {
+  return THREE_TWO.map((aTeam, i) => {
+    const bTeam = TWO_THREE[i];
+    const pick = winners[i];
+    return series({
+      id: `elim-m${i + 1}`,
+      section: "elimination",
+      round: 6,
+      roundLabel: "Elimination Round",
+      a: { kind: "team", teamId: aTeam },
+      b: { kind: "team", teamId: bTeam },
+      status: pick == null ? "scheduled" : "completed",
+      winnerId: pick == null ? null : pick === "a" ? aTeam : bTeam,
+      scoreA: pick === "a" ? 2 : pick === "b" ? 0 : 0,
+      scoreB: pick === "b" ? 2 : pick === "a" ? 0 : 0,
+      startUtc: "2026-08-16T04:00:00Z",
+    });
+  });
+}
+
+describe("elimination round", () => {
+  const swiss = () => swissSeries(COMPLETED_RECORDS);
+
+  it("sends exactly 10 teams into the round when the Swiss stage ends", () => {
+    const rows = computeSwiss(swiss());
+    const entrants = rows.filter((row) => row.state === "elimination_round");
+
+    expect(entrants).toHaveLength(10);
+    expect(entrants.every((row) => row.wins + row.losses === 5)).toBe(true);
+    expect(new Set(entrants.map((row) => row.teamId))).toEqual(
+      new Set([...THREE_TWO, ...TWO_THREE]),
+    );
+  });
+
+  it("advances exactly 5 and eliminates exactly 5 once every series is decided", () => {
+    // A deliberately mixed set of results: three upsets, two chalk.
+    const rows = computeSwiss([...swiss(), ...eliminationSeries(["a", "b", "b", "a", "b"])]);
+
+    const advancedFromRound = rows.filter(
+      (row) => row.state === "advanced" && row.wins + row.losses === 5 && row.wins === 3,
+    );
+    expect(rows.filter((row) => row.state === "elimination_round")).toHaveLength(0);
+    expect(rows.filter((row) => row.state === "advanced")).toHaveLength(3 + 5);
+    expect(rows.filter((row) => row.state === "eliminated")).toHaveLength(3 + 5);
+
+    // And the survivors are precisely the sides that won.
+    const survivors = [THREE_TWO[0], TWO_THREE[1], TWO_THREE[2], THREE_TWO[3], TWO_THREE[4]];
+    for (const id of survivors) {
+      expect(rows.find((row) => row.teamId === id)?.state).toBe("advanced");
+    }
+    expect(advancedFromRound.length).toBeGreaterThan(0);
+  });
+
+  it("produces an 8-team Main Event field: 3 direct plus 5 survivors", () => {
+    const rows = computeSwiss([...swiss(), ...eliminationSeries(["a", "a", "b", "b", "a"])]);
+    expect(rows.filter((row) => row.state === "advanced")).toHaveLength(8);
+  });
+
+  it("overrides the Swiss elimination_round fate on a decided series", () => {
+    const before = computeSwiss(swiss());
+    const winner = THREE_TWO[0];
+    const loser = TWO_THREE[0];
+    expect(before.find((row) => row.teamId === winner)?.state).toBe("elimination_round");
+    expect(before.find((row) => row.teamId === loser)?.state).toBe("elimination_round");
+
+    const after = computeSwiss([...swiss(), ...eliminationSeries(["a", null, null, null, null])]);
+    expect(after.find((row) => row.teamId === winner)?.state).toBe("advanced");
+    expect(after.find((row) => row.teamId === loser)?.state).toBe("eliminated");
+    // The other eight are untouched while their series are still pending.
+    expect(after.filter((row) => row.state === "elimination_round")).toHaveLength(8);
+  });
+
+  it("leaves W-L untouched, so the record stays the Swiss record", () => {
+    const winner = THREE_TWO[0];
+    const rows = computeSwiss([...swiss(), ...eliminationSeries(["a", "b", "a", "b", "a"])]);
+    const row = rows.find((item) => item.teamId === winner);
+
+    expect(row?.state).toBe("advanced");
+    expect(row?.wins).toBe(3);
+    expect(row?.losses).toBe(2);
+  });
+
+  it("preserves W/L parity across the stage boundary", () => {
+    const swissOnly = computeSwiss(swiss());
+    const withRound = computeSwiss([...swiss(), ...eliminationSeries(["a", "b", "a", "b", "a"])]);
+
+    const totals = (rows: ReturnType<typeof computeSwiss>) => ({
+      wins: rows.reduce((sum, row) => sum + row.wins, 0),
+      losses: rows.reduce((sum, row) => sum + row.losses, 0),
+    });
+
+    expect(totals(withRound).wins).toBe(totals(withRound).losses);
+    expect(totals(withRound)).toEqual(totals(swissOnly));
+  });
+
+  it("never disturbs teams that already settled in the Swiss stage", () => {
+    const rows = computeSwiss([...swiss(), ...eliminationSeries(["a", "b", "a", "b", "a"])]);
+    for (const id of ALL_16.slice(0, 3)) {
+      expect(rows.find((row) => row.teamId === id)?.state).toBe("advanced");
+    }
+    for (const id of ALL_16.slice(13)) {
+      expect(rows.find((row) => row.teamId === id)?.state).toBe("eliminated");
+    }
+  });
+
+  it("counts an undecided elimination series as nothing", () => {
+    const pending = computeSwiss([...swiss(), ...eliminationSeries([null, null, null, null, null])]);
+    expect(pending.filter((row) => row.state === "elimination_round")).toHaveLength(10);
+    expect(pending.filter((row) => row.state === "advanced")).toHaveLength(3);
+  });
+
+  it("ignores an elimination series whose sides are still placeholders", () => {
+    const unresolved = series({
+      id: "elim-tbd",
+      section: "elimination",
+      status: "completed",
+      winnerId: THREE_TWO[0],
+      a: { kind: "winner_of", matchId: "swiss-r5-m1" },
+      b: { kind: "tbd" },
+    });
+    const rows = computeSwiss([...swiss(), unresolved]);
+    expect(rows.filter((row) => row.state === "elimination_round")).toHaveLength(10);
+  });
+
+  it("keeps a hand-set fate authoritative over an elimination result", () => {
+    const loser = TWO_THREE[0];
+    const rows = applySwissOverrides(
+      computeSwiss([...swiss(), ...eliminationSeries(["a", null, null, null, null])]),
+      { [String(loser)]: { state: "advanced" } },
+    );
+    expect(rows.find((row) => row.teamId === loser)?.state).toBe("advanced");
+  });
+});
