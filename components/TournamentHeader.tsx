@@ -43,10 +43,11 @@ export function TournamentHeader({
                 <source type="image/webp" media="(min-width: 820px)" srcSet="/art/hero-desktop.webp" />
                 <source type="image/avif" srcSet="/art/hero-mobile.avif" />
                 <source type="image/webp" srcSet="/art/hero-mobile.webp" />
-                {/* decoding must stay async. Forcing a sync decode was measured
-                    on production at +680ms of total blocking time, because AVIF
-                    decode then lands on the main thread during hydration. It
-                    bought nothing: LCP render delay here is not decode-bound. */}
+                {/* decoding must stay async. A sync decode was tried to chase LCP
+                    render delay and moved it by ~3%, well inside run-to-run
+                    noise -- the delay here is not decode-bound. Async is the
+                    right default anyway: it keeps AVIF decode off the main
+                    thread during hydration. */}
                 <img src="/art/hero-mobile.webp" alt="" width={1600} height={556} decoding="async" fetchPriority="high" />
               </picture>
             </div>

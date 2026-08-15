@@ -31,8 +31,9 @@ export function SeriesCard({
   const winnerB = series.winnerId != null && series.b.teamId === series.winnerId;
   const showScore = HAS_SCORE.has(series.status);
   // Only a running series can have its score move on a poll. Giving a finished
-  // card a stateful score costs hydration work for a transition that can never
-  // fire -- measured at ~200ms of total blocking time across a full results grid.
+  // card a stateful score hydrates a useState/useRef/useEffect for a transition
+  // that can never fire -- roughly 78 of them across a full page. No behaviour
+  // is lost, because a completed score never changes.
   const inFlux = IN_FLUX.has(series.status);
   const games = series.games ?? [];
 
