@@ -140,7 +140,12 @@ export function TournamentView({
           onTimeModeChange={changeTimeMode}
         />
         <SwissTable rows={tournament.swiss} series={tournament.series} />
-        <BracketSection series={tournament.series} timeMode={timeMode} localTimeZone={localTimeZone} />
+        <BracketSection
+          series={tournament.series}
+          timeMode={timeMode}
+          localTimeZone={localTimeZone}
+          championId={tournament.championId}
+        />
         <ResultsSection
           series={tournament.series}
           teams={tournament.teams}

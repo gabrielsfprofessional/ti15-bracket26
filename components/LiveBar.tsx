@@ -1,4 +1,5 @@
 import { teamName } from "@/data/teams";
+import { FlipScore } from "@/components/FlipScore";
 import { TeamLogo } from "@/components/TeamLogo";
 import { formatDuration, formatTournamentTime, type TimeMode } from "@/lib/time";
 import type { Series } from "@/lib/types";
@@ -49,13 +50,13 @@ export function LiveBar({
                   <div>
                     <TeamLogo teamId={item.a.teamId} size={32} />
                     <span>{teamName(item.a.teamId)}</span>
-                    <strong className="numeric">{item.scoreA}</strong>
+                    <strong className="numeric"><FlipScore value={item.scoreA} /></strong>
                   </div>
                   <span className="live-match__versus">series</span>
                   <div>
                     <TeamLogo teamId={item.b.teamId} size={32} />
                     <span>{teamName(item.b.teamId)}</span>
-                    <strong className="numeric">{item.scoreB}</strong>
+                    <strong className="numeric"><FlipScore value={item.scoreB} /></strong>
                   </div>
                 </div>
                 <div className="live-match__context">

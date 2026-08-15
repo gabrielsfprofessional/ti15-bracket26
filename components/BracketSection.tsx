@@ -1,20 +1,26 @@
+import { AegisMedallion } from "@/components/AegisMedallion";
+import { SectionAmbient } from "@/components/SectionAmbient";
 import { SeriesCard } from "@/components/SeriesCard";
+import { ART_ENABLED } from "@/lib/art";
 import type { TimeMode } from "@/lib/time";
-import type { Series } from "@/lib/types";
+import type { Series, TeamId } from "@/lib/types";
 
 export function BracketSection({
   series,
   timeMode,
   localTimeZone,
+  championId = null,
 }: {
   series: Series[];
   timeMode: TimeMode;
   localTimeZone?: string;
+  championId?: TeamId | null;
 }) {
   const bracket = series.filter((item) => ["upper", "lower", "grand_final"].includes(item.section));
 
   return (
     <section id="bracket" className="command-section" aria-labelledby="bracket-heading">
+      <SectionAmbient name="section" />
       <div className="section-heading">
         <span className="eyebrow">Main Event · topology held until verified</span>
         <h2 id="bracket-heading">Bracket</h2>
@@ -23,7 +29,12 @@ export function BracketSection({
 
       {bracket.length === 0 ? (
         <div className="bracket-placeholder">
-          <div className="vault-mark" aria-hidden><span /></div>
+          {/* The Aegis slot. Dormant is the correct and meaningful state here. */}
+          {ART_ENABLED ? (
+            <AegisMedallion won={championId != null} size={120} />
+          ) : (
+            <div className="vault-mark" aria-hidden><span /></div>
+          )}
           <div>
             <strong>Main Event bracket will appear when official pairings are released</strong>
             <p>No topology, seed, or matchup is inferred from Swiss display order.</p>

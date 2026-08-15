@@ -1,4 +1,5 @@
 import { getTeam } from "@/data/teams";
+import { FlipScore } from "@/components/FlipScore";
 import { TeamLogo } from "@/components/TeamLogo";
 import { formatDuration, formatTournamentTime, type TimeMode } from "@/lib/time";
 import type { GameSummary, Series, SlotRef } from "@/lib/types";
@@ -93,7 +94,11 @@ export function TeamSide({
       <TeamLogo teamId={slot.teamId} size={28} />
       <span className="team-side__name">{slotText(slot, team?.name)}</span>
       {isWinner && <span className="sr-only">winner</span>}
-      {showScore && score != null && <span className="team-side__score numeric">{score}</span>}
+      {showScore && score != null && (
+        <span className="team-side__score numeric">
+          <FlipScore value={score} />
+        </span>
+      )}
     </div>
   );
 }

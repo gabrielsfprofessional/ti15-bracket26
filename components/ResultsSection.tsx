@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { RuneDivider, SectionAmbient } from "@/components/SectionAmbient";
 import { SeriesCard } from "@/components/SeriesCard";
 import type { TimeMode } from "@/lib/time";
 import type { Series, Team, TeamId } from "@/lib/types";
@@ -37,11 +38,13 @@ export function ResultsSection({
 
   return (
     <section id="results" className="command-section" aria-labelledby="results-heading">
+      <SectionAmbient name="results" />
       <div className="section-heading">
         <span className="eyebrow">Latest first · every final deep-linked</span>
         <h2 id="results-heading">Results</h2>
         <p>Expand a series for individual games, final kill scores, duration, sides, and OpenDota links.</p>
       </div>
+      <RuneDivider />
 
       <div className="filter-bar" aria-label="Result filters">
         <label>
