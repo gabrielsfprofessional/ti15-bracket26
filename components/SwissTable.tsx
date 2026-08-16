@@ -2,20 +2,38 @@ import { getTeam, teamName } from "@/data/teams";
 import { TeamLogo } from "@/components/TeamLogo";
 import type { Series, SwissRow, TeamId } from "@/lib/types";
 
+/**
+ * "Qualified for the Main Event", not "qualified directly": only the three teams
+ * that reached four wins went straight through. The other five won an
+ * Elimination Round series to get there, and saying otherwise would credit them
+ * with a Swiss finish they did not have.
+ */
 const STATE: Record<SwissRow["state"], { label: string; description: string }> = {
   active: { label: "Active", description: "Still playing the Swiss stage" },
-  advanced: { label: "Advanced", description: "Qualified directly for the Main Event" },
+  advanced: { label: "Advanced", description: "Qualified for the Main Event" },
   elimination_round: { label: "Elimination Round", description: "Moves to the Elimination Round" },
   eliminated: { label: "Eliminated", description: "Out of the tournament" },
 };
 
 export function SwissTable({ rows, series }: { rows: SwissRow[]; series: Series[] }) {
+  // Every team has settled, so this is the record the stage finished on rather
+  // than a table still in motion.
+  const stageComplete =
+    rows.length > 0 && rows.every((row) => row.state === "advanced" || row.state === "eliminated");
+
   return (
     <section id="standings" className="command-section" aria-labelledby="standings-heading">
       <div className="section-heading">
-        <span className="eyebrow">Four wins advance · four losses eliminate</span>
-        <h2 id="standings-heading">Swiss standings</h2>
+        <span className="eyebrow">
+          {stageComplete
+            ? "Group stage complete · four wins advanced · four losses eliminated"
+            : "Four wins advance · four losses eliminate"}
+        </span>
+        <h2 id="standings-heading">{stageComplete ? "Final Swiss standings" : "Swiss standings"}</h2>
         <p>
+          {stageComplete
+            ? "Final Group Stage records. The Elimination Round decided the last Main Event places without changing a team's Swiss record. "
+            : ""}
           Sorted by record for readability. Official tiebreak seeding is not calculated or implied.
         </p>
       </div>

@@ -52,6 +52,7 @@ had no available browser surface; automated Edge checks passed every required vi
   ├─ OpenDota league matches → completed games grouped by series_id
   ├─ OpenDota live feed → live confirmation only
   ├─ checked-in schedule adapter → future times and official round metadata
+  ├─ checked-in bracket topology → Main Event dependency graph
   ├─ manual overrides → final authority
   ├─ strict candidate validation
   └─ data/tournament.json → last-known-good fallback
@@ -60,7 +61,7 @@ had no available browser surface; automated Edge checks passed every required vi
 Source precedence is fixed:
 
 ```text
-overrides > confirmed live state > completed games > schedule > TBD
+overrides > confirmed live state > completed games > schedule/topology > TBD
 ```
 
 Runtime requests are bounded, cached, identified, and rate-limit aware. `/api/state` is cached for
@@ -96,6 +97,11 @@ authoritative and non-provisional.
 
 ## Scheduling policy
 
+`data/schedule.json` holds Swiss and Elimination Round rows only. The Main Event is a dependency
+graph rather than a list of concrete pairings, so it lives in `data/bracket-topology.ts` instead —
+a schedule row accepts only concrete team IDs and loses its own ID once a played series claims it,
+and both are fatal for `winner_of`/`loser_of` references.
+
 `data/schedule.json` is the checked-in fallback and manual correction surface. OpenDota provides
 completed games and live detection but no future schedule endpoint. Until a supported, stable,
 legally usable organizer/provider API is documented and integrated behind `lib/schedule.ts`,
@@ -109,11 +115,50 @@ When a played OpenDota series claims a schedule row, OpenDota retains authority 
 score, winner, games, status, and observation time. The row adds `section`, `round`, `roundLabel`,
 known `bestOf`, and `scheduleId`. Claims are one-to-one so a rematch cannot consume another row.
 
+## Main Event bracket
+
+`data/bracket-topology.ts` is the checked-in, typed graph of the 14 Main Event series: stable id,
+Valve node id, stage, best-of, official UTC start, and two `SlotRef`s. It carries no score, winner
+or status. It was verified on 2026-08-16 against Valve's league `19719` data (node group "Playoff",
+nodes 14–27). Every series is Bo3 except the Bo5 Grand Final, which has **no bracket reset**.
+
+The node 24/25 crossing is official. Lower quarterfinal 1 (Valve node 25, the earlier slot) takes
+the loser of upper semifinal 1 and the winner of lower round 1 match 2; lower quarterfinal 2 (node
+24) takes the loser of upper semifinal 2 and the winner of lower round 1 match 1. Do not "correct"
+it into a straight bracket.
+
+`lib/bracket.ts` reconciles played and live series onto that graph:
+
+1. Instantiate all 14 nodes. Both participants concrete → `scheduled`; otherwise `tbd`.
+2. Resolve, then claim, then repeat to a fixpoint, so a quarterfinal result can resolve a
+   semifinal and that semifinal can resolve both destinations inside one request.
+3. A node claims at most one OpenDota series and each series is claimed at most once, by unordered
+   team ids inside the shared window in `lib/claim.ts` — the same rule the schedule adapter uses.
+   A series a schedule row already owns is never taken.
+4. The **stable topology id survives the claim**; only `seriesId`, score, winner, games, live game,
+   status, source and observation time are copied on. Slot order stays the topology's and the score
+   follows it. The claimed raw series is removed so nothing is published twice.
+5. Overrides apply after reconciliation and address a bracket match by its stable id.
+
+The topology's own shape — 14 unique nodes, valid references, one terminal node, no cycles, a
+dependency never starting after its dependant — is checked by `validateBracketTopology()`, which
+runs in the unit suite (and therefore in CI before the build) and in `npm run smoke`.
+
+### Deep-link namespaces
+
+One series is published by several sections, and two elements cannot share a DOM id. Exactly one
+section owns the canonical `series-<id>` anchor for a given state — Schedule while a match is
+upcoming, Results once it is final — so every `#series-<id>` link lands on a card that is actually
+rendered. The curated views take their own prefix: `bracket-<id>` and `elimination-<id>`. An E2E
+test expands every disclosure and asserts the whole document has unique ids.
+
 ## Validation and fallback
 
-Candidates are rejected for an invalid league/team set, duplicate series or completed game IDs,
-unknown concrete teams, non-UTC timestamps, impossible scores/winners, invalid enum values,
-Swiss recomputation mismatch, series regression, or completed-history regression. Rejections are
+Candidates are rejected for an invalid league/team set, duplicate series or completed game IDs, the
+same upstream OpenDota series published under two IDs, unknown concrete teams, non-UTC timestamps,
+impossible scores/winners, invalid enum values, Swiss recomputation mismatch, series regression, or
+completed-history regression — which also covers a completed bracket node reverting its status or
+losing a game, because bracket nodes keep a stable ID. Rejections are
 logged as structured, non-sensitive reasons and the committed snapshot is served as `degraded`.
 
 The scheduled snapshot job validates before writing, skips no-op commits, and leaves the previous

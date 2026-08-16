@@ -131,9 +131,17 @@ export function TournamentFooter() {
   );
 }
 
+const GROUP_STAGE = new Set<Series["section"]>(["swiss", "elimination"]);
+
 function derivePhase(series: Series[], nextSeries?: Series): string {
-  if (series.some((item) => item.status === "live")) return "Group stage · live";
+  // Which stage is live matters now that both a group-stage and a Main Event
+  // series can be running on the same page.
+  const live = series.find((item) => item.status === "live");
+  if (live) return GROUP_STAGE.has(live.section) ? "Group stage · live" : "Main Event · live";
+
   if (nextSeries?.section === "swiss") return `Group stage · ${nextSeries.roundLabel.split(" · ")[0]}`;
-  if (series.some((item) => item.section !== "swiss")) return "Main Event";
+  if (nextSeries?.section === "elimination") return "Group stage · Elimination Round";
+  if (nextSeries) return `Main Event · ${nextSeries.roundLabel}`;
+  if (series.some((item) => !GROUP_STAGE.has(item.section))) return "Main Event";
   return "Group stage";
 }

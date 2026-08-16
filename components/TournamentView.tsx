@@ -8,7 +8,7 @@ import { ResultsSection } from "@/components/ResultsSection";
 import { ScheduleSection } from "@/components/ScheduleSection";
 import { SwissTable } from "@/components/SwissTable";
 import type { TimeMode } from "@/lib/time";
-import type { Series, Tournament } from "@/lib/types";
+import type { Series, SlotRef, Tournament } from "@/lib/types";
 
 const POLL_MS = 60_000;
 const CLOCK_MS = 30_000;
@@ -179,8 +179,23 @@ export function isTournament(value: unknown): value is Tournament {
   );
 }
 
+/**
+ * What counts as "the tournament changed" for the polite live region.
+ *
+ * The resolved participants are part of it: a bracket slot flipping from
+ * "Winner of Upper QF 1" to a real team is the single most meaningful update the
+ * page can receive, and it happens without any score on that node moving.
+ */
 function stateSignature(series: Series[]): string {
   return series
-    .map((item) => `${item.id}:${item.status}:${item.scoreA}:${item.scoreB}:${item.winnerId ?? ""}`)
+    .map(
+      (item) =>
+        `${item.id}:${item.status}:${item.scoreA}:${item.scoreB}:${item.winnerId ?? ""}` +
+        `:${slotSignature(item.a)}:${slotSignature(item.b)}`,
+    )
     .join("|");
+}
+
+function slotSignature(slot: SlotRef): string {
+  return slot.kind === "team" && slot.teamId != null ? String(slot.teamId) : slot.kind;
 }
