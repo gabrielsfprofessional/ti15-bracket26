@@ -100,100 +100,110 @@
   ],
   "swiss": [
     {
-      "teamId": 7119388,
-      "wins": 3,
+      "teamId": 9572001,
+      "wins": 4,
       "losses": 0,
-      "state": "active"
+      "state": "advanced"
     },
     {
-      "teamId": 9572001,
-      "wins": 3,
-      "losses": 0,
-      "state": "active"
+      "teamId": 10136357,
+      "wins": 4,
+      "losses": 1,
+      "state": "advanced"
+    },
+    {
+      "teamId": 2163,
+      "wins": 4,
+      "losses": 1,
+      "state": "advanced"
     },
     {
       "teamId": 9467224,
-      "wins": 2,
-      "losses": 1,
-      "state": "active"
+      "wins": 3,
+      "losses": 2,
+      "state": "eliminated",
+      "provisional": false
+    },
+    {
+      "teamId": 10150413,
+      "wins": 3,
+      "losses": 2,
+      "state": "advanced",
+      "provisional": false
+    },
+    {
+      "teamId": 10150538,
+      "wins": 3,
+      "losses": 2,
+      "state": "eliminated",
+      "provisional": false
+    },
+    {
+      "teamId": 9247354,
+      "wins": 3,
+      "losses": 2,
+      "state": "advanced",
+      "provisional": false
+    },
+    {
+      "teamId": 7119388,
+      "wins": 3,
+      "losses": 2,
+      "state": "advanced",
+      "provisional": false
     },
     {
       "teamId": 8255888,
       "wins": 2,
-      "losses": 1,
-      "state": "active"
+      "losses": 3,
+      "state": "advanced",
+      "provisional": false
     },
     {
-      "teamId": 10150413,
+      "teamId": 9964962,
       "wins": 2,
-      "losses": 1,
-      "state": "active"
+      "losses": 3,
+      "state": "eliminated",
+      "provisional": false
     },
     {
-      "teamId": 10136357,
+      "teamId": 5017210,
       "wins": 2,
-      "losses": 1,
-      "state": "active"
+      "losses": 3,
+      "state": "eliminated",
+      "provisional": false
     },
     {
-      "teamId": 2163,
+      "teamId": 9823272,
       "wins": 2,
-      "losses": 1,
-      "state": "active"
+      "losses": 3,
+      "state": "advanced",
+      "provisional": false
     },
     {
       "teamId": 726228,
       "wins": 2,
-      "losses": 1,
-      "state": "active"
+      "losses": 3,
+      "state": "eliminated",
+      "provisional": false
     },
     {
-      "teamId": 9964962,
+      "teamId": 2586976,
       "wins": 1,
-      "losses": 2,
-      "state": "active"
-    },
-    {
-      "teamId": 10150538,
-      "wins": 1,
-      "losses": 2,
-      "state": "active"
-    },
-    {
-      "teamId": 9247354,
-      "wins": 1,
-      "losses": 2,
-      "state": "active"
-    },
-    {
-      "teamId": 5017210,
-      "wins": 1,
-      "losses": 2,
-      "state": "active"
-    },
-    {
-      "teamId": 9823272,
-      "wins": 1,
-      "losses": 2,
-      "state": "active"
+      "losses": 4,
+      "state": "eliminated"
     },
     {
       "teamId": 8261500,
       "wins": 1,
-      "losses": 2,
-      "state": "active"
+      "losses": 4,
+      "state": "eliminated"
     },
     {
       "teamId": 10149530,
       "wins": 0,
-      "losses": 3,
-      "state": "active"
-    },
-    {
-      "teamId": 2586976,
-      "wins": 0,
-      "losses": 3,
-      "state": "active"
+      "losses": 4,
+      "state": "eliminated"
     }
   ],
   "series": [
@@ -1637,7 +1647,144 @@
       "streamUrl": "https://www.twitch.tv/dota2ti"
     },
     {
-      "id": "swiss-r4-m5",
+      "id": "s-1130536",
+      "seriesId": 1130536,
+      "section": "swiss",
+      "round": 4,
+      "roundLabel": "Round 4 · 0–3",
+      "bestOf": 3,
+      "a": {
+        "kind": "team",
+        "teamId": 10149530
+      },
+      "b": {
+        "kind": "team",
+        "teamId": 2586976
+      },
+      "scoreA": 1,
+      "scoreB": 2,
+      "status": "completed",
+      "startUtc": "2026-08-15T02:00:16.000Z",
+      "winnerId": 2586976,
+      "gameIds": [
+        8946161801,
+        8946227017,
+        8946283971
+      ],
+      "games": [
+        {
+          "matchId": 8946161801,
+          "gameNumber": 1,
+          "radiantTeamId": 10149530,
+          "direTeamId": 2586976,
+          "winnerId": 2586976,
+          "startUtc": "2026-08-15T02:00:16.000Z",
+          "durationSeconds": 3655,
+          "radiantKills": 15,
+          "direKills": 41,
+          "openDotaUrl": "https://www.opendota.com/matches/8946161801"
+        },
+        {
+          "matchId": 8946227017,
+          "gameNumber": 2,
+          "radiantTeamId": 10149530,
+          "direTeamId": 2586976,
+          "winnerId": 10149530,
+          "startUtc": "2026-08-15T03:33:51.000Z",
+          "durationSeconds": 2959,
+          "radiantKills": 19,
+          "direKills": 20,
+          "openDotaUrl": "https://www.opendota.com/matches/8946227017"
+        },
+        {
+          "matchId": 8946283971,
+          "gameNumber": 3,
+          "radiantTeamId": 10149530,
+          "direTeamId": 2586976,
+          "winnerId": 2586976,
+          "startUtc": "2026-08-15T04:53:30.000Z",
+          "durationSeconds": 2445,
+          "radiantKills": 6,
+          "direKills": 42,
+          "openDotaUrl": "https://www.opendota.com/matches/8946283971"
+        }
+      ],
+      "source": "opendota",
+      "updatedUtc": "2026-08-15T05:34:15.000Z",
+      "scheduleId": "swiss-r4-m8",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "s-1130534",
+      "seriesId": 1130534,
+      "section": "swiss",
+      "round": 4,
+      "roundLabel": "Round 4 · 1–2",
+      "bestOf": 3,
+      "a": {
+        "kind": "team",
+        "teamId": 9964962
+      },
+      "b": {
+        "kind": "team",
+        "teamId": 9247354
+      },
+      "scoreA": 1,
+      "scoreB": 2,
+      "status": "completed",
+      "startUtc": "2026-08-15T02:00:22.000Z",
+      "winnerId": 9247354,
+      "gameIds": [
+        8946161660,
+        8946228708,
+        8946285985
+      ],
+      "games": [
+        {
+          "matchId": 8946161660,
+          "gameNumber": 1,
+          "radiantTeamId": 9964962,
+          "direTeamId": 9247354,
+          "winnerId": 9247354,
+          "startUtc": "2026-08-15T02:00:22.000Z",
+          "durationSeconds": 3832,
+          "radiantKills": 27,
+          "direKills": 33,
+          "openDotaUrl": "https://www.opendota.com/matches/8946161660"
+        },
+        {
+          "matchId": 8946228708,
+          "gameNumber": 2,
+          "radiantTeamId": 9247354,
+          "direTeamId": 9964962,
+          "winnerId": 9964962,
+          "startUtc": "2026-08-15T03:36:43.000Z",
+          "durationSeconds": 2867,
+          "radiantKills": 20,
+          "direKills": 33,
+          "openDotaUrl": "https://www.opendota.com/matches/8946228708"
+        },
+        {
+          "matchId": 8946285985,
+          "gameNumber": 3,
+          "radiantTeamId": 9247354,
+          "direTeamId": 9964962,
+          "winnerId": 9247354,
+          "startUtc": "2026-08-15T04:58:27.000Z",
+          "durationSeconds": 2477,
+          "radiantKills": 31,
+          "direKills": 12,
+          "openDotaUrl": "https://www.opendota.com/matches/8946285985"
+        }
+      ],
+      "source": "opendota",
+      "updatedUtc": "2026-08-15T05:39:44.000Z",
+      "scheduleId": "swiss-r4-m6",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "s-1130535",
+      "seriesId": 1130535,
       "section": "swiss",
       "round": 4,
       "roundLabel": "Round 4 · 1–2",
@@ -1650,42 +1797,62 @@
         "kind": "team",
         "teamId": 8261500
       },
-      "scoreA": 0,
-      "scoreB": 0,
-      "status": "scheduled",
-      "startUtc": "2026-08-15T02:00:00Z",
-      "winnerId": null,
-      "gameIds": [],
-      "source": "schedule",
-      "updatedUtc": "2026-08-15T02:00:00Z",
+      "scoreA": 2,
+      "scoreB": 1,
+      "status": "completed",
+      "startUtc": "2026-08-15T02:01:25.000Z",
+      "winnerId": 10150538,
+      "gameIds": [
+        8946161784,
+        8946231092,
+        8946288549
+      ],
+      "games": [
+        {
+          "matchId": 8946161784,
+          "gameNumber": 1,
+          "radiantTeamId": 10150538,
+          "direTeamId": 8261500,
+          "winnerId": 8261500,
+          "startUtc": "2026-08-15T02:01:25.000Z",
+          "durationSeconds": 3544,
+          "radiantKills": 24,
+          "direKills": 31,
+          "openDotaUrl": "https://www.opendota.com/matches/8946161784"
+        },
+        {
+          "matchId": 8946231092,
+          "gameNumber": 2,
+          "radiantTeamId": 10150538,
+          "direTeamId": 8261500,
+          "winnerId": 10150538,
+          "startUtc": "2026-08-15T03:35:55.000Z",
+          "durationSeconds": 2947,
+          "radiantKills": 24,
+          "direKills": 6,
+          "openDotaUrl": "https://www.opendota.com/matches/8946231092"
+        },
+        {
+          "matchId": 8946288549,
+          "gameNumber": 3,
+          "radiantTeamId": 10150538,
+          "direTeamId": 8261500,
+          "winnerId": 10150538,
+          "startUtc": "2026-08-15T04:59:04.000Z",
+          "durationSeconds": 2840,
+          "radiantKills": 26,
+          "direKills": 17,
+          "openDotaUrl": "https://www.opendota.com/matches/8946288549"
+        }
+      ],
+      "source": "opendota",
+      "updatedUtc": "2026-08-15T05:46:24.000Z",
+      "scheduleId": "swiss-r4-m5",
       "streamUrl": "https://www.twitch.tv/dota2ti"
     },
     {
-      "id": "swiss-r4-m6",
-      "section": "swiss",
-      "round": 4,
-      "roundLabel": "Round 4 · 1–2",
-      "bestOf": 3,
-      "a": {
-        "kind": "team",
-        "teamId": 9247354
-      },
-      "b": {
-        "kind": "team",
-        "teamId": 9964962
-      },
-      "scoreA": 0,
-      "scoreB": 0,
-      "status": "scheduled",
-      "startUtc": "2026-08-15T02:00:00Z",
-      "winnerId": null,
-      "gameIds": [],
-      "source": "schedule",
-      "updatedUtc": "2026-08-15T02:00:00Z",
-      "streamUrl": "https://www.twitch.tv/dota2ti"
-    },
-    {
-      "id": "swiss-r4-m7",
+      "id": "s-1130533",
+      "seriesId": 1130533,
       "section": "swiss",
       "round": 4,
       "roundLabel": "Round 4 · 1–2",
@@ -1698,90 +1865,185 @@
         "kind": "team",
         "teamId": 9823272
       },
-      "scoreA": 0,
-      "scoreB": 0,
-      "status": "scheduled",
-      "startUtc": "2026-08-15T02:00:00Z",
-      "winnerId": null,
-      "gameIds": [],
-      "source": "schedule",
-      "updatedUtc": "2026-08-15T02:00:00Z",
+      "scoreA": 1,
+      "scoreB": 2,
+      "status": "completed",
+      "startUtc": "2026-08-15T02:02:08.000Z",
+      "winnerId": 9823272,
+      "gameIds": [
+        8946161629,
+        8946228107,
+        8946260898
+      ],
+      "games": [
+        {
+          "matchId": 8946161629,
+          "gameNumber": 1,
+          "radiantTeamId": 5017210,
+          "direTeamId": 9823272,
+          "winnerId": 5017210,
+          "startUtc": "2026-08-15T02:02:08.000Z",
+          "durationSeconds": 3844,
+          "radiantKills": 47,
+          "direKills": 31,
+          "openDotaUrl": "https://www.opendota.com/matches/8946161629"
+        },
+        {
+          "matchId": 8946228107,
+          "gameNumber": 2,
+          "radiantTeamId": 9823272,
+          "direTeamId": 5017210,
+          "winnerId": 9823272,
+          "startUtc": "2026-08-15T03:35:57.000Z",
+          "durationSeconds": 1102,
+          "radiantKills": 21,
+          "direKills": 5,
+          "openDotaUrl": "https://www.opendota.com/matches/8946228107"
+        },
+        {
+          "matchId": 8946260898,
+          "gameNumber": 3,
+          "radiantTeamId": 9823272,
+          "direTeamId": 5017210,
+          "winnerId": 9823272,
+          "startUtc": "2026-08-15T04:23:54.000Z",
+          "durationSeconds": 1820,
+          "radiantKills": 35,
+          "direKills": 11,
+          "openDotaUrl": "https://www.opendota.com/matches/8946260898"
+        }
+      ],
+      "source": "opendota",
+      "updatedUtc": "2026-08-15T04:54:14.000Z",
+      "scheduleId": "swiss-r4-m7",
       "streamUrl": "https://www.twitch.tv/dota2ti"
     },
     {
-      "id": "swiss-r4-m8",
-      "section": "swiss",
-      "round": 4,
-      "roundLabel": "Round 4 · 0–3",
-      "bestOf": 3,
-      "a": {
-        "kind": "team",
-        "teamId": 2586976
-      },
-      "b": {
-        "kind": "team",
-        "teamId": 10149530
-      },
-      "scoreA": 0,
-      "scoreB": 0,
-      "status": "scheduled",
-      "startUtc": "2026-08-15T02:00:00Z",
-      "winnerId": null,
-      "gameIds": [],
-      "source": "schedule",
-      "updatedUtc": "2026-08-15T02:00:00Z",
-      "streamUrl": "https://www.twitch.tv/dota2ti"
-    },
-    {
-      "id": "swiss-r4-m1",
-      "section": "swiss",
-      "round": 4,
-      "roundLabel": "Round 4 · 3–0",
-      "bestOf": 3,
-      "a": {
-        "kind": "team",
-        "teamId": 9572001
-      },
-      "b": {
-        "kind": "team",
-        "teamId": 7119388
-      },
-      "scoreA": 0,
-      "scoreB": 0,
-      "status": "scheduled",
-      "startUtc": "2026-08-15T05:00:00Z",
-      "winnerId": null,
-      "gameIds": [],
-      "source": "schedule",
-      "updatedUtc": "2026-08-15T05:00:00Z",
-      "streamUrl": "https://www.twitch.tv/dota2ti"
-    },
-    {
-      "id": "swiss-r4-m2",
+      "id": "s-1130559",
+      "seriesId": 1130559,
       "section": "swiss",
       "round": 4,
       "roundLabel": "Round 4 · 2–1",
       "bestOf": 3,
       "a": {
         "kind": "team",
-        "teamId": 10150413
+        "teamId": 726228
       },
       "b": {
         "kind": "team",
-        "teamId": 2163
+        "teamId": 10136357
       },
       "scoreA": 0,
-      "scoreB": 0,
-      "status": "scheduled",
-      "startUtc": "2026-08-15T05:00:00Z",
-      "winnerId": null,
-      "gameIds": [],
-      "source": "schedule",
-      "updatedUtc": "2026-08-15T05:00:00Z",
+      "scoreB": 2,
+      "status": "completed",
+      "startUtc": "2026-08-15T05:26:24.000Z",
+      "winnerId": 10136357,
+      "gameIds": [
+        8946303764,
+        8946386614
+      ],
+      "games": [
+        {
+          "matchId": 8946303764,
+          "gameNumber": 1,
+          "radiantTeamId": 726228,
+          "direTeamId": 10136357,
+          "winnerId": 10136357,
+          "startUtc": "2026-08-15T05:26:24.000Z",
+          "durationSeconds": 3327,
+          "radiantKills": 17,
+          "direKills": 33,
+          "openDotaUrl": "https://www.opendota.com/matches/8946303764"
+        },
+        {
+          "matchId": 8946386614,
+          "gameNumber": 2,
+          "radiantTeamId": 10136357,
+          "direTeamId": 726228,
+          "winnerId": 10136357,
+          "startUtc": "2026-08-15T06:56:59.000Z",
+          "durationSeconds": 2377,
+          "radiantKills": 31,
+          "direKills": 16,
+          "openDotaUrl": "https://www.opendota.com/matches/8946386614"
+        }
+      ],
+      "source": "opendota",
+      "updatedUtc": "2026-08-15T07:36:36.000Z",
+      "scheduleId": "swiss-r4-m4",
       "streamUrl": "https://www.twitch.tv/dota2ti"
     },
     {
-      "id": "swiss-r4-m3",
+      "id": "s-1130564",
+      "seriesId": 1130564,
+      "section": "swiss",
+      "round": 4,
+      "roundLabel": "Round 4 · 2–1",
+      "bestOf": 3,
+      "a": {
+        "kind": "team",
+        "teamId": 2163
+      },
+      "b": {
+        "kind": "team",
+        "teamId": 10150413
+      },
+      "scoreA": 2,
+      "scoreB": 1,
+      "status": "completed",
+      "startUtc": "2026-08-15T06:02:18.000Z",
+      "winnerId": 2163,
+      "gameIds": [
+        8946337070,
+        8946414154,
+        8946495628
+      ],
+      "games": [
+        {
+          "matchId": 8946337070,
+          "gameNumber": 1,
+          "radiantTeamId": 2163,
+          "direTeamId": 10150413,
+          "winnerId": 10150413,
+          "startUtc": "2026-08-15T06:02:18.000Z",
+          "durationSeconds": 2802,
+          "radiantKills": 25,
+          "direKills": 20,
+          "openDotaUrl": "https://www.opendota.com/matches/8946337070"
+        },
+        {
+          "matchId": 8946414154,
+          "gameNumber": 2,
+          "radiantTeamId": 2163,
+          "direTeamId": 10150413,
+          "winnerId": 2163,
+          "startUtc": "2026-08-15T07:24:49.000Z",
+          "durationSeconds": 2380,
+          "radiantKills": 42,
+          "direKills": 17,
+          "openDotaUrl": "https://www.opendota.com/matches/8946414154"
+        },
+        {
+          "matchId": 8946495628,
+          "gameNumber": 3,
+          "radiantTeamId": 2163,
+          "direTeamId": 10150413,
+          "winnerId": 2163,
+          "startUtc": "2026-08-15T08:40:28.000Z",
+          "durationSeconds": 2843,
+          "radiantKills": 37,
+          "direKills": 17,
+          "openDotaUrl": "https://www.opendota.com/matches/8946495628"
+        }
+      ],
+      "source": "opendota",
+      "updatedUtc": "2026-08-15T09:27:51.000Z",
+      "scheduleId": "swiss-r4-m2",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "s-1130566",
+      "seriesId": 1130566,
       "section": "swiss",
       "round": 4,
       "roundLabel": "Round 4 · 2–1",
@@ -1795,20 +2057,475 @@
         "teamId": 9467224
       },
       "scoreA": 0,
-      "scoreB": 0,
-      "status": "scheduled",
-      "startUtc": "2026-08-15T05:00:00Z",
-      "winnerId": null,
-      "gameIds": [],
-      "source": "schedule",
-      "updatedUtc": "2026-08-15T05:00:00Z",
+      "scoreB": 2,
+      "status": "completed",
+      "startUtc": "2026-08-15T06:09:56.000Z",
+      "winnerId": 9467224,
+      "gameIds": [
+        8946343023,
+        8946416702
+      ],
+      "games": [
+        {
+          "matchId": 8946343023,
+          "gameNumber": 1,
+          "radiantTeamId": 8255888,
+          "direTeamId": 9467224,
+          "winnerId": 9467224,
+          "startUtc": "2026-08-15T06:09:56.000Z",
+          "durationSeconds": 2527,
+          "radiantKills": 19,
+          "direKills": 27,
+          "openDotaUrl": "https://www.opendota.com/matches/8946343023"
+        },
+        {
+          "matchId": 8946416702,
+          "gameNumber": 2,
+          "radiantTeamId": 9467224,
+          "direTeamId": 8255888,
+          "winnerId": 9467224,
+          "startUtc": "2026-08-15T07:27:26.000Z",
+          "durationSeconds": 2030,
+          "radiantKills": 35,
+          "direKills": 10,
+          "openDotaUrl": "https://www.opendota.com/matches/8946416702"
+        }
+      ],
+      "source": "opendota",
+      "updatedUtc": "2026-08-15T08:01:16.000Z",
+      "scheduleId": "swiss-r4-m3",
       "streamUrl": "https://www.twitch.tv/dota2ti"
     },
     {
-      "id": "swiss-r4-m4",
+      "id": "s-1130567",
+      "seriesId": 1130567,
       "section": "swiss",
       "round": 4,
-      "roundLabel": "Round 4 · 2–1",
+      "roundLabel": "Round 4 · 3–0",
+      "bestOf": 3,
+      "a": {
+        "kind": "team",
+        "teamId": 7119388
+      },
+      "b": {
+        "kind": "team",
+        "teamId": 9572001
+      },
+      "scoreA": 0,
+      "scoreB": 2,
+      "status": "completed",
+      "startUtc": "2026-08-15T06:19:26.000Z",
+      "winnerId": 9572001,
+      "gameIds": [
+        8946351114,
+        8946428867
+      ],
+      "games": [
+        {
+          "matchId": 8946351114,
+          "gameNumber": 1,
+          "radiantTeamId": 7119388,
+          "direTeamId": 9572001,
+          "winnerId": 9572001,
+          "startUtc": "2026-08-15T06:19:26.000Z",
+          "durationSeconds": 2231,
+          "radiantKills": 7,
+          "direKills": 37,
+          "openDotaUrl": "https://www.opendota.com/matches/8946351114"
+        },
+        {
+          "matchId": 8946428867,
+          "gameNumber": 2,
+          "radiantTeamId": 9572001,
+          "direTeamId": 7119388,
+          "winnerId": 9572001,
+          "startUtc": "2026-08-15T07:38:43.000Z",
+          "durationSeconds": 3230,
+          "radiantKills": 28,
+          "direKills": 17,
+          "openDotaUrl": "https://www.opendota.com/matches/8946428867"
+        }
+      ],
+      "source": "opendota",
+      "updatedUtc": "2026-08-15T08:32:33.000Z",
+      "scheduleId": "swiss-r4-m1",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "s-1130619",
+      "seriesId": 1130619,
+      "section": "swiss",
+      "round": 5,
+      "roundLabel": "Round 5 · 1–3",
+      "bestOf": 3,
+      "a": {
+        "kind": "team",
+        "teamId": 5017210
+      },
+      "b": {
+        "kind": "team",
+        "teamId": 8261500
+      },
+      "scoreA": 2,
+      "scoreB": 0,
+      "status": "completed",
+      "startUtc": "2026-08-15T09:33:28.000Z",
+      "winnerId": 5017210,
+      "gameIds": [
+        8946552436,
+        8946650558
+      ],
+      "games": [
+        {
+          "matchId": 8946552436,
+          "gameNumber": 1,
+          "radiantTeamId": 5017210,
+          "direTeamId": 8261500,
+          "winnerId": 5017210,
+          "startUtc": "2026-08-15T09:33:28.000Z",
+          "durationSeconds": 2052,
+          "radiantKills": 28,
+          "direKills": 10,
+          "openDotaUrl": "https://www.opendota.com/matches/8946552436"
+        },
+        {
+          "matchId": 8946650558,
+          "gameNumber": 2,
+          "radiantTeamId": 8261500,
+          "direTeamId": 5017210,
+          "winnerId": 5017210,
+          "startUtc": "2026-08-15T10:38:57.000Z",
+          "durationSeconds": 2135,
+          "radiantKills": 12,
+          "direKills": 35,
+          "openDotaUrl": "https://www.opendota.com/matches/8946650558"
+        }
+      ],
+      "source": "opendota",
+      "updatedUtc": "2026-08-15T11:14:32.000Z",
+      "scheduleId": "swiss-r5-1-3-a",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "s-1130622",
+      "seriesId": 1130622,
+      "section": "swiss",
+      "round": 5,
+      "roundLabel": "Round 5 · 1–3",
+      "bestOf": 3,
+      "a": {
+        "kind": "team",
+        "teamId": 9964962
+      },
+      "b": {
+        "kind": "team",
+        "teamId": 2586976
+      },
+      "scoreA": 2,
+      "scoreB": 0,
+      "status": "completed",
+      "startUtc": "2026-08-15T09:34:29.000Z",
+      "winnerId": 9964962,
+      "gameIds": [
+        8946563158,
+        8946649932
+      ],
+      "games": [
+        {
+          "matchId": 8946563158,
+          "gameNumber": 1,
+          "radiantTeamId": 9964962,
+          "direTeamId": 2586976,
+          "winnerId": 9964962,
+          "startUtc": "2026-08-15T09:34:29.000Z",
+          "durationSeconds": 2069,
+          "radiantKills": 25,
+          "direKills": 10,
+          "openDotaUrl": "https://www.opendota.com/matches/8946563158"
+        },
+        {
+          "matchId": 8946649932,
+          "gameNumber": 2,
+          "radiantTeamId": 2586976,
+          "direTeamId": 9964962,
+          "winnerId": 9964962,
+          "startUtc": "2026-08-15T10:40:43.000Z",
+          "durationSeconds": 1904,
+          "radiantKills": 9,
+          "direKills": 36,
+          "openDotaUrl": "https://www.opendota.com/matches/8946649932"
+        }
+      ],
+      "source": "opendota",
+      "updatedUtc": "2026-08-15T11:12:27.000Z",
+      "scheduleId": "swiss-r5-1-3-b",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "s-1130625",
+      "seriesId": 1130625,
+      "section": "swiss",
+      "round": 5,
+      "roundLabel": "Round 5 · 2–2",
+      "bestOf": 3,
+      "a": {
+        "kind": "team",
+        "teamId": 726228
+      },
+      "b": {
+        "kind": "team",
+        "teamId": 10150538
+      },
+      "scoreA": 0,
+      "scoreB": 2,
+      "status": "completed",
+      "startUtc": "2026-08-15T09:41:07.000Z",
+      "winnerId": 10150538,
+      "gameIds": [
+        8946572751,
+        8946690366
+      ],
+      "games": [
+        {
+          "matchId": 8946572751,
+          "gameNumber": 1,
+          "radiantTeamId": 726228,
+          "direTeamId": 10150538,
+          "winnerId": 10150538,
+          "startUtc": "2026-08-15T09:41:07.000Z",
+          "durationSeconds": 3226,
+          "radiantKills": 17,
+          "direKills": 26,
+          "openDotaUrl": "https://www.opendota.com/matches/8946572751"
+        },
+        {
+          "matchId": 8946690366,
+          "gameNumber": 2,
+          "radiantTeamId": 10150538,
+          "direTeamId": 726228,
+          "winnerId": 10150538,
+          "startUtc": "2026-08-15T11:08:41.000Z",
+          "durationSeconds": 3153,
+          "radiantKills": 34,
+          "direKills": 26,
+          "openDotaUrl": "https://www.opendota.com/matches/8946690366"
+        }
+      ],
+      "source": "opendota",
+      "updatedUtc": "2026-08-15T12:01:14.000Z",
+      "scheduleId": "swiss-r5-2-2-a",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "s-1130641",
+      "seriesId": 1130641,
+      "section": "swiss",
+      "round": 5,
+      "roundLabel": "Round 5 · 2–2",
+      "bestOf": 3,
+      "a": {
+        "kind": "team",
+        "teamId": 9247354
+      },
+      "b": {
+        "kind": "team",
+        "teamId": 8255888
+      },
+      "scoreA": 2,
+      "scoreB": 1,
+      "status": "completed",
+      "startUtc": "2026-08-15T10:41:46.000Z",
+      "winnerId": 9247354,
+      "gameIds": [
+        8946648249,
+        8946758310,
+        8946889239
+      ],
+      "games": [
+        {
+          "matchId": 8946648249,
+          "gameNumber": 1,
+          "radiantTeamId": 9247354,
+          "direTeamId": 8255888,
+          "winnerId": 9247354,
+          "startUtc": "2026-08-15T10:41:46.000Z",
+          "durationSeconds": 2350,
+          "radiantKills": 18,
+          "direKills": 26,
+          "openDotaUrl": "https://www.opendota.com/matches/8946648249"
+        },
+        {
+          "matchId": 8946758310,
+          "gameNumber": 2,
+          "radiantTeamId": 9247354,
+          "direTeamId": 8255888,
+          "winnerId": 8255888,
+          "startUtc": "2026-08-15T11:58:40.000Z",
+          "durationSeconds": 2323,
+          "radiantKills": 8,
+          "direKills": 40,
+          "openDotaUrl": "https://www.opendota.com/matches/8946758310"
+        },
+        {
+          "matchId": 8946889239,
+          "gameNumber": 3,
+          "radiantTeamId": 9247354,
+          "direTeamId": 8255888,
+          "winnerId": 9247354,
+          "startUtc": "2026-08-15T13:08:28.000Z",
+          "durationSeconds": 2697,
+          "radiantKills": 25,
+          "direKills": 16,
+          "openDotaUrl": "https://www.opendota.com/matches/8946889239"
+        }
+      ],
+      "source": "opendota",
+      "updatedUtc": "2026-08-15T13:53:25.000Z",
+      "scheduleId": "swiss-r5-2-2-b",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "s-1130665",
+      "seriesId": 1130665,
+      "section": "swiss",
+      "round": 5,
+      "roundLabel": "Round 5 · 2–2",
+      "bestOf": 3,
+      "a": {
+        "kind": "team",
+        "teamId": 9823272
+      },
+      "b": {
+        "kind": "team",
+        "teamId": 10150413
+      },
+      "scoreA": 1,
+      "scoreB": 2,
+      "status": "completed",
+      "startUtc": "2026-08-15T11:44:37.000Z",
+      "winnerId": 10150413,
+      "gameIds": [
+        8946735226,
+        8946872708,
+        8947008125
+      ],
+      "games": [
+        {
+          "matchId": 8946735226,
+          "gameNumber": 1,
+          "radiantTeamId": 9823272,
+          "direTeamId": 10150413,
+          "winnerId": 10150413,
+          "startUtc": "2026-08-15T11:44:37.000Z",
+          "durationSeconds": 2388,
+          "radiantKills": 16,
+          "direKills": 37,
+          "openDotaUrl": "https://www.opendota.com/matches/8946735226"
+        },
+        {
+          "matchId": 8946872708,
+          "gameNumber": 2,
+          "radiantTeamId": 9823272,
+          "direTeamId": 10150413,
+          "winnerId": 9823272,
+          "startUtc": "2026-08-15T13:00:42.000Z",
+          "durationSeconds": 2131,
+          "radiantKills": 21,
+          "direKills": 11,
+          "openDotaUrl": "https://www.opendota.com/matches/8946872708"
+        },
+        {
+          "matchId": 8947008125,
+          "gameNumber": 3,
+          "radiantTeamId": 9823272,
+          "direTeamId": 10150413,
+          "winnerId": 10150413,
+          "startUtc": "2026-08-15T14:09:50.000Z",
+          "durationSeconds": 3254,
+          "radiantKills": 29,
+          "direKills": 38,
+          "openDotaUrl": "https://www.opendota.com/matches/8947008125"
+        }
+      ],
+      "source": "opendota",
+      "updatedUtc": "2026-08-15T15:04:04.000Z",
+      "scheduleId": "swiss-r5-2-2-c",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "s-1130669",
+      "seriesId": 1130669,
+      "section": "swiss",
+      "round": 5,
+      "roundLabel": "Round 5 · 3–1",
+      "bestOf": 3,
+      "a": {
+        "kind": "team",
+        "teamId": 9467224
+      },
+      "b": {
+        "kind": "team",
+        "teamId": 2163
+      },
+      "scoreA": 1,
+      "scoreB": 2,
+      "status": "completed",
+      "startUtc": "2026-08-15T11:52:37.000Z",
+      "winnerId": 2163,
+      "gameIds": [
+        8946740853,
+        8946860406,
+        8946996385
+      ],
+      "games": [
+        {
+          "matchId": 8946740853,
+          "gameNumber": 1,
+          "radiantTeamId": 9467224,
+          "direTeamId": 2163,
+          "winnerId": 9467224,
+          "startUtc": "2026-08-15T11:52:37.000Z",
+          "durationSeconds": 1656,
+          "radiantKills": 32,
+          "direKills": 7,
+          "openDotaUrl": "https://www.opendota.com/matches/8946740853"
+        },
+        {
+          "matchId": 8946860406,
+          "gameNumber": 2,
+          "radiantTeamId": 2163,
+          "direTeamId": 9467224,
+          "winnerId": 2163,
+          "startUtc": "2026-08-15T12:54:49.000Z",
+          "durationSeconds": 2130,
+          "radiantKills": 29,
+          "direKills": 17,
+          "openDotaUrl": "https://www.opendota.com/matches/8946860406"
+        },
+        {
+          "matchId": 8946996385,
+          "gameNumber": 3,
+          "radiantTeamId": 9467224,
+          "direTeamId": 2163,
+          "winnerId": 2163,
+          "startUtc": "2026-08-15T14:03:34.000Z",
+          "durationSeconds": 2512,
+          "radiantKills": 18,
+          "direKills": 32,
+          "openDotaUrl": "https://www.opendota.com/matches/8946996385"
+        }
+      ],
+      "source": "opendota",
+      "updatedUtc": "2026-08-15T14:45:26.000Z",
+      "scheduleId": "swiss-r5-3-1-a",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "s-1130710",
+      "seriesId": 1130710,
+      "section": "swiss",
+      "round": 5,
+      "roundLabel": "Round 5 · 3–1",
       "bestOf": 3,
       "a": {
         "kind": "team",
@@ -1816,204 +2533,723 @@
       },
       "b": {
         "kind": "team",
+        "teamId": 7119388
+      },
+      "scoreA": 2,
+      "scoreB": 0,
+      "status": "completed",
+      "startUtc": "2026-08-15T12:56:14.000Z",
+      "winnerId": 10136357,
+      "gameIds": [
+        8946858055,
+        8947050343
+      ],
+      "games": [
+        {
+          "matchId": 8946858055,
+          "gameNumber": 1,
+          "radiantTeamId": 10136357,
+          "direTeamId": 7119388,
+          "winnerId": 10136357,
+          "startUtc": "2026-08-15T12:56:14.000Z",
+          "durationSeconds": 3556,
+          "radiantKills": 45,
+          "direKills": 43,
+          "openDotaUrl": "https://www.opendota.com/matches/8946858055"
+        },
+        {
+          "matchId": 8947050343,
+          "gameNumber": 2,
+          "radiantTeamId": 7119388,
+          "direTeamId": 10136357,
+          "winnerId": 10136357,
+          "startUtc": "2026-08-15T14:28:00.000Z",
+          "durationSeconds": 3661,
+          "radiantKills": 23,
+          "direKills": 43,
+          "openDotaUrl": "https://www.opendota.com/matches/8947050343"
+        }
+      ],
+      "source": "opendota",
+      "updatedUtc": "2026-08-15T15:29:01.000Z",
+      "scheduleId": "swiss-r5-3-1-b",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "s-1130919",
+      "seriesId": 1130919,
+      "section": "elimination",
+      "round": 6,
+      "roundLabel": "Elimination Round",
+      "bestOf": 3,
+      "a": {
+        "kind": "team",
         "teamId": 726228
+      },
+      "b": {
+        "kind": "team",
+        "teamId": 9247354
+      },
+      "scoreA": 0,
+      "scoreB": 2,
+      "status": "completed",
+      "startUtc": "2026-08-16T02:00:06.000Z",
+      "winnerId": 9247354,
+      "gameIds": [
+        8947983249,
+        8948040486
+      ],
+      "games": [
+        {
+          "matchId": 8947983249,
+          "gameNumber": 1,
+          "radiantTeamId": 726228,
+          "direTeamId": 9247354,
+          "winnerId": 9247354,
+          "startUtc": "2026-08-16T02:00:06.000Z",
+          "durationSeconds": 2446,
+          "radiantKills": 6,
+          "direKills": 31,
+          "openDotaUrl": "https://www.opendota.com/matches/8947983249"
+        },
+        {
+          "matchId": 8948040486,
+          "gameNumber": 2,
+          "radiantTeamId": 9247354,
+          "direTeamId": 726228,
+          "winnerId": 9247354,
+          "startUtc": "2026-08-16T03:18:11.000Z",
+          "durationSeconds": 2570,
+          "radiantKills": 31,
+          "direKills": 11,
+          "openDotaUrl": "https://www.opendota.com/matches/8948040486"
+        }
+      ],
+      "source": "opendota",
+      "updatedUtc": "2026-08-16T04:01:01.000Z",
+      "scheduleId": "elim-m1",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "s-1130934",
+      "seriesId": 1130934,
+      "section": "elimination",
+      "round": 6,
+      "roundLabel": "Elimination Round",
+      "bestOf": 3,
+      "a": {
+        "kind": "team",
+        "teamId": 8255888
+      },
+      "b": {
+        "kind": "team",
+        "teamId": 9467224
+      },
+      "scoreA": 2,
+      "scoreB": 0,
+      "status": "completed",
+      "startUtc": "2026-08-16T03:00:00.000Z",
+      "winnerId": 8255888,
+      "gameIds": [
+        8948026518,
+        8948094765
+      ],
+      "games": [
+        {
+          "matchId": 8948026518,
+          "gameNumber": 1,
+          "radiantTeamId": 8255888,
+          "direTeamId": 9467224,
+          "winnerId": 8255888,
+          "startUtc": "2026-08-16T03:00:00.000Z",
+          "durationSeconds": 3512,
+          "radiantKills": 36,
+          "direKills": 29,
+          "openDotaUrl": "https://www.opendota.com/matches/8948026518"
+        },
+        {
+          "matchId": 8948094765,
+          "gameNumber": 2,
+          "radiantTeamId": 9467224,
+          "direTeamId": 8255888,
+          "winnerId": 8255888,
+          "startUtc": "2026-08-16T04:30:06.000Z",
+          "durationSeconds": 2244,
+          "radiantKills": 26,
+          "direKills": 23,
+          "openDotaUrl": "https://www.opendota.com/matches/8948094765"
+        }
+      ],
+      "source": "opendota",
+      "updatedUtc": "2026-08-16T05:07:30.000Z",
+      "scheduleId": "elim-m2",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "s-1130941",
+      "seriesId": 1130941,
+      "section": "elimination",
+      "round": 6,
+      "roundLabel": "Elimination Round",
+      "bestOf": 3,
+      "a": {
+        "kind": "team",
+        "teamId": 7119388
+      },
+      "b": {
+        "kind": "team",
+        "teamId": 5017210
+      },
+      "scoreA": 2,
+      "scoreB": 1,
+      "status": "completed",
+      "startUtc": "2026-08-16T04:32:38.000Z",
+      "winnerId": 7119388,
+      "gameIds": [
+        8948094346,
+        8948151326,
+        8948235815
+      ],
+      "games": [
+        {
+          "matchId": 8948094346,
+          "gameNumber": 1,
+          "radiantTeamId": 7119388,
+          "direTeamId": 5017210,
+          "winnerId": 7119388,
+          "startUtc": "2026-08-16T04:32:38.000Z",
+          "durationSeconds": 1774,
+          "radiantKills": 29,
+          "direKills": 9,
+          "openDotaUrl": "https://www.opendota.com/matches/8948094346"
+        },
+        {
+          "matchId": 8948151326,
+          "gameNumber": 2,
+          "radiantTeamId": 5017210,
+          "direTeamId": 7119388,
+          "winnerId": 5017210,
+          "startUtc": "2026-08-16T05:31:05.000Z",
+          "durationSeconds": 2947,
+          "radiantKills": 54,
+          "direKills": 21,
+          "openDotaUrl": "https://www.opendota.com/matches/8948151326"
+        },
+        {
+          "matchId": 8948235815,
+          "gameNumber": 3,
+          "radiantTeamId": 5017210,
+          "direTeamId": 7119388,
+          "winnerId": 7119388,
+          "startUtc": "2026-08-16T06:50:04.000Z",
+          "durationSeconds": 2384,
+          "radiantKills": 14,
+          "direKills": 29,
+          "openDotaUrl": "https://www.opendota.com/matches/8948235815"
+        }
+      ],
+      "source": "opendota",
+      "updatedUtc": "2026-08-16T07:29:48.000Z",
+      "scheduleId": "elim-m3",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "s-1130950",
+      "seriesId": 1130950,
+      "section": "elimination",
+      "round": 6,
+      "roundLabel": "Elimination Round",
+      "bestOf": 3,
+      "a": {
+        "kind": "team",
+        "teamId": 9964962
+      },
+      "b": {
+        "kind": "team",
+        "teamId": 10150413
+      },
+      "scoreA": 0,
+      "scoreB": 2,
+      "status": "completed",
+      "startUtc": "2026-08-16T05:46:32.000Z",
+      "winnerId": 10150413,
+      "gameIds": [
+        8948155771,
+        8948244379
+      ],
+      "games": [
+        {
+          "matchId": 8948155771,
+          "gameNumber": 1,
+          "radiantTeamId": 9964962,
+          "direTeamId": 10150413,
+          "winnerId": 10150413,
+          "startUtc": "2026-08-16T05:46:32.000Z",
+          "durationSeconds": 2221,
+          "radiantKills": 16,
+          "direKills": 30,
+          "openDotaUrl": "https://www.opendota.com/matches/8948155771"
+        },
+        {
+          "matchId": 8948244379,
+          "gameNumber": 2,
+          "radiantTeamId": 9964962,
+          "direTeamId": 10150413,
+          "winnerId": 10150413,
+          "startUtc": "2026-08-16T06:57:11.000Z",
+          "durationSeconds": 2045,
+          "radiantKills": 13,
+          "direKills": 32,
+          "openDotaUrl": "https://www.opendota.com/matches/8948244379"
+        }
+      ],
+      "source": "opendota",
+      "updatedUtc": "2026-08-16T07:31:16.000Z",
+      "scheduleId": "elim-m4",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "s-1130974",
+      "seriesId": 1130974,
+      "section": "elimination",
+      "round": 6,
+      "roundLabel": "Elimination Round",
+      "bestOf": 3,
+      "a": {
+        "kind": "team",
+        "teamId": 10150538
+      },
+      "b": {
+        "kind": "team",
+        "teamId": 9823272
+      },
+      "scoreA": 1,
+      "scoreB": 2,
+      "status": "completed",
+      "startUtc": "2026-08-16T08:08:05.000Z",
+      "winnerId": 9823272,
+      "gameIds": [
+        8948311007,
+        8948420293,
+        8948533452
+      ],
+      "games": [
+        {
+          "matchId": 8948311007,
+          "gameNumber": 1,
+          "radiantTeamId": 10150538,
+          "direTeamId": 9823272,
+          "winnerId": 10150538,
+          "startUtc": "2026-08-16T08:08:05.000Z",
+          "durationSeconds": 1886,
+          "radiantKills": 24,
+          "direKills": 11,
+          "openDotaUrl": "https://www.opendota.com/matches/8948311007"
+        },
+        {
+          "matchId": 8948420293,
+          "gameNumber": 2,
+          "radiantTeamId": 9823272,
+          "direTeamId": 10150538,
+          "winnerId": 9823272,
+          "startUtc": "2026-08-16T09:13:04.000Z",
+          "durationSeconds": 2325,
+          "radiantKills": 30,
+          "direKills": 17,
+          "openDotaUrl": "https://www.opendota.com/matches/8948420293"
+        },
+        {
+          "matchId": 8948533452,
+          "gameNumber": 3,
+          "radiantTeamId": 10150538,
+          "direTeamId": 9823272,
+          "winnerId": 9823272,
+          "startUtc": "2026-08-16T10:24:26.000Z",
+          "durationSeconds": 4092,
+          "radiantKills": 26,
+          "direKills": 40,
+          "openDotaUrl": "https://www.opendota.com/matches/8948533452"
+        }
+      ],
+      "source": "opendota",
+      "updatedUtc": "2026-08-16T11:32:38.000Z",
+      "scheduleId": "elim-m5",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "main-ub-qf1",
+      "section": "upper",
+      "round": 1,
+      "roundLabel": "Upper Quarterfinals",
+      "bestOf": 3,
+      "a": {
+        "kind": "team",
+        "teamId": 10150413
+      },
+      "b": {
+        "kind": "team",
+        "teamId": 7119388
       },
       "scoreA": 0,
       "scoreB": 0,
       "status": "scheduled",
-      "startUtc": "2026-08-15T05:00:00Z",
+      "startUtc": "2026-08-20T02:00:00Z",
       "winnerId": null,
       "gameIds": [],
       "source": "schedule",
-      "updatedUtc": "2026-08-15T05:00:00Z",
+      "updatedUtc": "2026-08-20T02:00:00Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
     },
     {
-      "id": "swiss-r5-1-3-a",
-      "section": "swiss",
-      "round": 5,
-      "roundLabel": "Round 5 · 1–3",
+      "id": "main-ub-qf2",
+      "section": "upper",
+      "round": 1,
+      "roundLabel": "Upper Quarterfinals",
       "bestOf": 3,
       "a": {
-        "kind": "tbd",
-        "label": "1–3 team"
+        "kind": "team",
+        "teamId": 9572001
       },
       "b": {
-        "kind": "tbd",
-        "label": "1–3 team"
+        "kind": "team",
+        "teamId": 8255888
+      },
+      "scoreA": 0,
+      "scoreB": 0,
+      "status": "scheduled",
+      "startUtc": "2026-08-20T05:00:00Z",
+      "winnerId": null,
+      "gameIds": [],
+      "source": "schedule",
+      "updatedUtc": "2026-08-20T05:00:00Z",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "main-ub-qf3",
+      "section": "upper",
+      "round": 1,
+      "roundLabel": "Upper Quarterfinals",
+      "bestOf": 3,
+      "a": {
+        "kind": "team",
+        "teamId": 2163
+      },
+      "b": {
+        "kind": "team",
+        "teamId": 9823272
+      },
+      "scoreA": 0,
+      "scoreB": 0,
+      "status": "scheduled",
+      "startUtc": "2026-08-20T08:00:00Z",
+      "winnerId": null,
+      "gameIds": [],
+      "source": "schedule",
+      "updatedUtc": "2026-08-20T08:00:00Z",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "main-ub-qf4",
+      "section": "upper",
+      "round": 1,
+      "roundLabel": "Upper Quarterfinals",
+      "bestOf": 3,
+      "a": {
+        "kind": "team",
+        "teamId": 10136357
+      },
+      "b": {
+        "kind": "team",
+        "teamId": 9247354
+      },
+      "scoreA": 0,
+      "scoreB": 0,
+      "status": "scheduled",
+      "startUtc": "2026-08-20T11:00:00Z",
+      "winnerId": null,
+      "gameIds": [],
+      "source": "schedule",
+      "updatedUtc": "2026-08-20T11:00:00Z",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "main-lb-r1-1",
+      "section": "lower",
+      "round": 2,
+      "roundLabel": "Lower Round 1",
+      "bestOf": 3,
+      "a": {
+        "kind": "loser_of",
+        "matchId": "main-ub-qf1",
+        "label": "Loser of Upper QF 1"
+      },
+      "b": {
+        "kind": "loser_of",
+        "matchId": "main-ub-qf2",
+        "label": "Loser of Upper QF 2"
       },
       "scoreA": 0,
       "scoreB": 0,
       "status": "tbd",
-      "startUtc": "2026-08-15T08:00:00Z",
+      "startUtc": "2026-08-21T02:00:00Z",
       "winnerId": null,
       "gameIds": [],
       "source": "tbd",
-      "updatedUtc": "2026-08-15T08:00:00Z",
+      "updatedUtc": "2026-08-21T02:00:00Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
     },
     {
-      "id": "swiss-r5-1-3-b",
-      "section": "swiss",
-      "round": 5,
-      "roundLabel": "Round 5 · 1–3",
+      "id": "main-lb-r1-2",
+      "section": "lower",
+      "round": 2,
+      "roundLabel": "Lower Round 1",
       "bestOf": 3,
       "a": {
-        "kind": "tbd",
-        "label": "1–3 team"
+        "kind": "loser_of",
+        "matchId": "main-ub-qf3",
+        "label": "Loser of Upper QF 3"
       },
       "b": {
-        "kind": "tbd",
-        "label": "1–3 team"
+        "kind": "loser_of",
+        "matchId": "main-ub-qf4",
+        "label": "Loser of Upper QF 4"
       },
       "scoreA": 0,
       "scoreB": 0,
       "status": "tbd",
-      "startUtc": "2026-08-15T08:00:00Z",
+      "startUtc": "2026-08-21T05:00:00Z",
       "winnerId": null,
       "gameIds": [],
       "source": "tbd",
-      "updatedUtc": "2026-08-15T08:00:00Z",
+      "updatedUtc": "2026-08-21T05:00:00Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
     },
     {
-      "id": "swiss-r5-2-2-a",
-      "section": "swiss",
-      "round": 5,
-      "roundLabel": "Round 5 · 2–2",
+      "id": "main-ub-sf1",
+      "section": "upper",
+      "round": 3,
+      "roundLabel": "Upper Semifinals",
       "bestOf": 3,
       "a": {
-        "kind": "tbd",
-        "label": "2–2 team"
+        "kind": "winner_of",
+        "matchId": "main-ub-qf1",
+        "label": "Winner of Upper QF 1"
       },
       "b": {
-        "kind": "tbd",
-        "label": "2–2 team"
+        "kind": "winner_of",
+        "matchId": "main-ub-qf2",
+        "label": "Winner of Upper QF 2"
       },
       "scoreA": 0,
       "scoreB": 0,
       "status": "tbd",
-      "startUtc": "2026-08-15T08:00:00Z",
+      "startUtc": "2026-08-21T08:00:00Z",
       "winnerId": null,
       "gameIds": [],
       "source": "tbd",
-      "updatedUtc": "2026-08-15T08:00:00Z",
+      "updatedUtc": "2026-08-21T08:00:00Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
     },
     {
-      "id": "swiss-r5-2-2-b",
-      "section": "swiss",
-      "round": 5,
-      "roundLabel": "Round 5 · 2–2",
+      "id": "main-ub-sf2",
+      "section": "upper",
+      "round": 3,
+      "roundLabel": "Upper Semifinals",
       "bestOf": 3,
       "a": {
-        "kind": "tbd",
-        "label": "2–2 team"
+        "kind": "winner_of",
+        "matchId": "main-ub-qf3",
+        "label": "Winner of Upper QF 3"
       },
       "b": {
-        "kind": "tbd",
-        "label": "2–2 team"
+        "kind": "winner_of",
+        "matchId": "main-ub-qf4",
+        "label": "Winner of Upper QF 4"
       },
       "scoreA": 0,
       "scoreB": 0,
       "status": "tbd",
-      "startUtc": "2026-08-15T08:00:00Z",
+      "startUtc": "2026-08-21T11:00:00Z",
       "winnerId": null,
       "gameIds": [],
       "source": "tbd",
-      "updatedUtc": "2026-08-15T08:00:00Z",
+      "updatedUtc": "2026-08-21T11:00:00Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
     },
     {
-      "id": "swiss-r5-2-2-c",
-      "section": "swiss",
-      "round": 5,
-      "roundLabel": "Round 5 · 2–2",
+      "id": "main-lb-qf1",
+      "section": "lower",
+      "round": 4,
+      "roundLabel": "Lower Quarterfinals",
       "bestOf": 3,
       "a": {
-        "kind": "tbd",
-        "label": "2–2 team"
+        "kind": "loser_of",
+        "matchId": "main-ub-sf1",
+        "label": "Loser of Upper SF 1"
       },
       "b": {
-        "kind": "tbd",
-        "label": "2–2 team"
+        "kind": "winner_of",
+        "matchId": "main-lb-r1-2",
+        "label": "Winner of Lower R1-2"
       },
       "scoreA": 0,
       "scoreB": 0,
       "status": "tbd",
-      "startUtc": "2026-08-15T11:00:00Z",
+      "startUtc": "2026-08-22T02:00:00Z",
       "winnerId": null,
       "gameIds": [],
       "source": "tbd",
-      "updatedUtc": "2026-08-15T11:00:00Z",
+      "updatedUtc": "2026-08-22T02:00:00Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
     },
     {
-      "id": "swiss-r5-3-1-a",
-      "section": "swiss",
-      "round": 5,
-      "roundLabel": "Round 5 · 3–1",
+      "id": "main-lb-qf2",
+      "section": "lower",
+      "round": 4,
+      "roundLabel": "Lower Quarterfinals",
       "bestOf": 3,
       "a": {
-        "kind": "tbd",
-        "label": "3–1 team"
+        "kind": "loser_of",
+        "matchId": "main-ub-sf2",
+        "label": "Loser of Upper SF 2"
       },
       "b": {
-        "kind": "tbd",
-        "label": "3–1 team"
+        "kind": "winner_of",
+        "matchId": "main-lb-r1-1",
+        "label": "Winner of Lower R1-1"
       },
       "scoreA": 0,
       "scoreB": 0,
       "status": "tbd",
-      "startUtc": "2026-08-15T11:00:00Z",
+      "startUtc": "2026-08-22T05:00:00Z",
       "winnerId": null,
       "gameIds": [],
       "source": "tbd",
-      "updatedUtc": "2026-08-15T11:00:00Z",
+      "updatedUtc": "2026-08-22T05:00:00Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
     },
     {
-      "id": "swiss-r5-3-1-b",
-      "section": "swiss",
+      "id": "main-ub-final",
+      "section": "upper",
       "round": 5,
-      "roundLabel": "Round 5 · 3–1",
+      "roundLabel": "Upper Final",
       "bestOf": 3,
       "a": {
-        "kind": "tbd",
-        "label": "3–1 team"
+        "kind": "winner_of",
+        "matchId": "main-ub-sf1",
+        "label": "Winner of Upper SF 1"
       },
       "b": {
-        "kind": "tbd",
-        "label": "3–1 team"
+        "kind": "winner_of",
+        "matchId": "main-ub-sf2",
+        "label": "Winner of Upper SF 2"
       },
       "scoreA": 0,
       "scoreB": 0,
       "status": "tbd",
-      "startUtc": "2026-08-15T11:00:00Z",
+      "startUtc": "2026-08-22T08:00:00Z",
       "winnerId": null,
       "gameIds": [],
       "source": "tbd",
-      "updatedUtc": "2026-08-15T11:00:00Z",
+      "updatedUtc": "2026-08-22T08:00:00Z",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "main-lb-sf",
+      "section": "lower",
+      "round": 6,
+      "roundLabel": "Lower Semifinal",
+      "bestOf": 3,
+      "a": {
+        "kind": "winner_of",
+        "matchId": "main-lb-qf1",
+        "label": "Winner of Lower QF 1"
+      },
+      "b": {
+        "kind": "winner_of",
+        "matchId": "main-lb-qf2",
+        "label": "Winner of Lower QF 2"
+      },
+      "scoreA": 0,
+      "scoreB": 0,
+      "status": "tbd",
+      "startUtc": "2026-08-22T11:00:00Z",
+      "winnerId": null,
+      "gameIds": [],
+      "source": "tbd",
+      "updatedUtc": "2026-08-22T11:00:00Z",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "main-lb-final",
+      "section": "lower",
+      "round": 7,
+      "roundLabel": "Lower Final",
+      "bestOf": 3,
+      "a": {
+        "kind": "loser_of",
+        "matchId": "main-ub-final",
+        "label": "Loser of Upper Final"
+      },
+      "b": {
+        "kind": "winner_of",
+        "matchId": "main-lb-sf",
+        "label": "Winner of Lower SF"
+      },
+      "scoreA": 0,
+      "scoreB": 0,
+      "status": "tbd",
+      "startUtc": "2026-08-23T02:00:00Z",
+      "winnerId": null,
+      "gameIds": [],
+      "source": "tbd",
+      "updatedUtc": "2026-08-23T02:00:00Z",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
+      "id": "main-grand-final",
+      "section": "grand_final",
+      "round": 8,
+      "roundLabel": "Grand Final",
+      "bestOf": 5,
+      "a": {
+        "kind": "winner_of",
+        "matchId": "main-ub-final",
+        "label": "Winner of Upper Final"
+      },
+      "b": {
+        "kind": "winner_of",
+        "matchId": "main-lb-final",
+        "label": "Winner of Lower Final"
+      },
+      "scoreA": 0,
+      "scoreB": 0,
+      "status": "tbd",
+      "startUtc": "2026-08-23T05:00:00Z",
+      "winnerId": null,
+      "gameIds": [],
+      "source": "tbd",
+      "updatedUtc": "2026-08-23T05:00:00Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
     }
   ],
   "championId": null,
-  "lastSyncUtc": "2026-08-14T23:17:47.222Z",
+  "lastSyncUtc": "2026-08-16T15:18:36.579Z",
   "syncState": "ok",
   "sourceHealth": {
     "matches": {
       "status": "ok",
-      "observedUtc": "2026-08-14T23:17:47.222Z"
+      "observedUtc": "2026-08-16T15:18:36.579Z"
     },
     "live": {
       "status": "ok",
-      "observedUtc": "2026-08-14T23:17:47.222Z"
+      "observedUtc": "2026-08-16T15:18:36.579Z"
     },
     "schedule": {
       "status": "managed",
-      "observedUtc": "2026-08-14T23:17:47.222Z"
+      "observedUtc": "2026-08-16T15:18:36.579Z"
     },
-    "snapshotGeneratedUtc": "2026-08-14T23:17:47.222Z",
+    "snapshotGeneratedUtc": "2026-08-16T15:18:36.579Z",
     "mode": "live"
   }
 }
