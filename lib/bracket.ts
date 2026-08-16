@@ -107,6 +107,31 @@ export function mergeBracket(input: Series[], nodes: BracketNode[] = BRACKET_NOD
 }
 
 /**
+ * Put authored dependency refs back onto reconciled nodes before manual
+ * overrides run.
+ *
+ * Reconciliation has to resolve refs to concrete teams in order to claim a
+ * played series. Those concrete slots are correct for the provider result, but
+ * they would make a later manual winner correction unable to reflow: resolve()
+ * cannot turn an already-concrete team back into winner_of/loser_of. Restoring
+ * the topology here lets the final resolve pass derive every downstream slot
+ * from the overridden result. A manual patch may still replace a slot because
+ * overrides are applied after this function.
+ */
+export function restoreBracketSlotRefs(
+  input: Series[],
+  nodes: BracketNode[] = BRACKET_NODES,
+): Series[] {
+  const topology = new Map(nodes.map((node) => [node.id, node]));
+  return input.map((item) => {
+    const node = topology.get(item.id);
+    return node
+      ? { ...item, a: { ...node.a }, b: { ...node.b } }
+      : item;
+  });
+}
+
+/**
  * Series a bracket node is allowed to consume.
  *
  * `scheduleId != null` means a checked-in Swiss or Elimination Round row already

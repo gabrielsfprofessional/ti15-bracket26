@@ -1,11 +1,12 @@
 // @vitest-environment jsdom
 
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import snapshotJson from "@/data/tournament.json";
 import { teamName } from "@/data/teams";
 import { EliminationSection } from "@/components/EliminationSection";
 import { LiveBar } from "@/components/LiveBar";
+import { ResultsSection } from "@/components/ResultsSection";
 import { ScheduleSection } from "@/components/ScheduleSection";
 import { SeriesCard } from "@/components/SeriesCard";
 import { SwissTable } from "@/components/SwissTable";
@@ -74,6 +75,57 @@ describe("complete schedule controls", () => {
       (item) => item.a.teamId === snapshot.teams[0].id || item.b.teamId === snapshot.teams[0].id,
     ).length;
     expect(document.querySelectorAll("article.series-card")).toHaveLength(expected);
+  });
+
+  it("gives a live series one canonical anchor even when Schedule shows All", async () => {
+    const user = userEvent.setup();
+    const live = makeSeries({
+      id: "live-anchor",
+      status: "live",
+      winnerId: null,
+      scoreA: 1,
+      scoreB: 0,
+      source: "live",
+    });
+    render(
+      <>
+        <LiveBar series={[live]} timeMode="utc" />
+        <ScheduleSection
+          series={[live]}
+          teams={snapshot.teams}
+          timeMode="utc"
+          onTimeModeChange={() => undefined}
+        />
+      </>,
+    );
+
+    await user.click(screen.getByRole("button", { name: "All" }));
+    expect(document.querySelectorAll("#series-live-anchor")).toHaveLength(1);
+    expect(document.getElementById("series-live-anchor")?.tagName).toBe("LI");
+    expect(document.getElementById("schedule-live-anchor")).toBeInTheDocument();
+  });
+
+  it("reveals an older completed canonical anchor from the URL hash", async () => {
+    const finals = Array.from({ length: 10 }, (_, index) =>
+      makeSeries({
+        id: `final-${index}`,
+        startUtc: `2026-08-${String(10 + index).padStart(2, "0")}T12:00:00.000Z`,
+      }),
+    );
+    window.location.hash = "#series-final-0";
+    Element.prototype.scrollIntoView = vi.fn();
+
+    render(
+      <ResultsSection
+        series={finals}
+        teams={snapshot.teams}
+        timeMode="utc"
+      />,
+    );
+
+    await waitFor(() => expect(document.getElementById("series-final-0")).toBeInTheDocument());
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalled();
+    window.history.replaceState(null, "", window.location.pathname);
   });
 
   it("emits all four time modes without changing server-safe Eastern by itself", async () => {

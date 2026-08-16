@@ -10,9 +10,18 @@ import type { Series, SlotRef, TeamId, Tournament } from "./types";
  * itself just got resolved, this runs to a fixpoint rather than in one pass —
  * a fresh champion propagates all the way down in a single resolve() call.
  */
-export function resolve(t: Tournament): Tournament {
+export function resolve(
+  t: Tournament,
+  championOverride: TeamId | null = null,
+): Tournament {
   const series = resolveSeries(t.series);
-  return { ...t, series, championId: findChampion(series, t.championId) };
+  return {
+    ...t,
+    series,
+    // Manual authority is explicit here rather than stored as an indistinct
+    // pre-existing value that an undecided Grand Final would erase.
+    championId: championOverride ?? findChampion(series, t.championId),
+  };
 }
 
 /**

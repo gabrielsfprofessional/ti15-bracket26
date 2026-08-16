@@ -203,6 +203,43 @@ describe("tournament validation gate", () => {
     expect(result.errors.join(" ")).toMatch(/completed_game_regression/);
   });
 
+  it("rejects a completed series whose winner changes", () => {
+    const baseline = tournament();
+    const changed = series("s-1");
+    changed.scoreA = 0;
+    changed.scoreB = 2;
+    changed.winnerId = TEAMS[1].id;
+    const candidate = tournament({ series: [changed] });
+    candidate.swiss[0] = { ...candidate.swiss[0], wins: 0, losses: 1 };
+    candidate.swiss[1] = { ...candidate.swiss[1], wins: 1, losses: 0 };
+
+    const result = validateTournament(candidate, baseline);
+    expect(result.errors.join(" ")).toMatch(/completed_winner_regression/);
+  });
+
+  it("allows an explicit manual correction to a completed winner", () => {
+    const baseline = tournament();
+    const changed = series("s-1");
+    changed.scoreA = 0;
+    changed.scoreB = 2;
+    changed.winnerId = TEAMS[1].id;
+    changed.source = "override";
+    const candidate = tournament({ series: [changed] });
+    candidate.swiss[0] = { ...candidate.swiss[0], wins: 0, losses: 1 };
+    candidate.swiss[1] = { ...candidate.swiss[1], wins: 1, losses: 0 };
+
+    expect(validateTournament(candidate, baseline)).toEqual({ valid: true, errors: [] });
+  });
+
+  it("rejects a completed series that loses its provider series id", () => {
+    const baselineSeries = series("s-1");
+    baselineSeries.seriesId = 7001;
+    const baseline = tournament({ series: [baselineSeries] });
+    const current = series("s-1");
+    const result = validateTournament(tournament({ series: [current] }), baseline);
+    expect(result.errors.join(" ")).toMatch(/completed_series_id_regression/);
+  });
+
   it("rejects invalid section, status, and source values", () => {
     const broken = series("s-1");
     const unsafe = broken as unknown as Record<string, unknown>;

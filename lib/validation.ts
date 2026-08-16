@@ -1,4 +1,5 @@
 import { TEAMS } from "@/data/teams";
+import { BRACKET_NODES } from "@/data/bracket-topology";
 import { winsNeeded } from "./series";
 import type { Series, TeamId, Tournament } from "./types";
 
@@ -130,9 +131,25 @@ export function validateTournament(
   }
 
   validateSwiss(candidate, uniqueTeamIds, add);
+  validateStableBracketNodes(baselineTournament, candidateById, add);
   validateCompletedHistory(baselineTournament, candidateById, add);
 
   return { valid: errors.length === 0, errors };
+}
+
+function validateStableBracketNodes(
+  baseline: Tournament | null,
+  candidateById: Map<string, Series>,
+  add: (code: string, detail: string) => void,
+): void {
+  const bracketIds = new Set(BRACKET_NODES.map((node) => node.id));
+  const baselineHadBracket = baseline?.series.some((item) => bracketIds.has(item.id)) ?? false;
+  const candidateHasBracket = [...candidateById.keys()].some((id) => bracketIds.has(id));
+  if (!baselineHadBracket && !candidateHasBracket) return;
+
+  for (const node of BRACKET_NODES) {
+    if (!candidateById.has(node.id)) add("bracket_node_missing", node.id);
+  }
 }
 
 function validateGameDetails(
@@ -333,6 +350,18 @@ function validateCompletedHistory(
     if (!current || current.status !== "completed") {
       add("completed_regression", `${previous.id} is no longer completed`);
       continue;
+    }
+    if (current.winnerId !== previous.winnerId && current.source !== "override") {
+      add(
+        "completed_winner_regression",
+        `${previous.id} winner changed from ${String(previous.winnerId)} to ${String(current.winnerId)}`,
+      );
+    }
+    if (previous.seriesId != null && current.seriesId !== previous.seriesId) {
+      add(
+        "completed_series_id_regression",
+        `${previous.id} provider series changed from ${previous.seriesId} to ${String(current.seriesId)}`,
+      );
     }
     const currentGames = new Set(current.gameIds);
     for (const gameId of previous.gameIds) {

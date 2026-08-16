@@ -212,6 +212,11 @@ describe("resolve", () => {
     expect(resolve(groupStageOnly).championId).toBe(T4);
   });
 
+  it("keeps an explicit champion override above a computed Grand Final winner", () => {
+    const decided = play(bracket(), "gf", T7);
+    expect(resolve(decided, T4).championId).toBe(T4);
+  });
+
   it("terminates on a hand-authored cycle instead of hanging", () => {
     const cyclic: Tournament = {
       ...bracket(),

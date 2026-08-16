@@ -45,7 +45,7 @@ export function LiveBar({
           {live.map((item) => {
             const gameNumber = item.liveGame?.gameNumber ?? item.scoreA + item.scoreB + 1;
             return (
-              <li key={item.id}>
+              <li key={item.id} id={`series-${item.id}`}>
                 <div className="live-match__teams">
                   <div>
                     <TeamLogo teamId={item.a.teamId} size={32} />

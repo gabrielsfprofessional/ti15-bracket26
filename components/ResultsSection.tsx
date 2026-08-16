@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { RuneDivider, SectionAmbient } from "@/components/SectionAmbient";
 import { SeriesCard } from "@/components/SeriesCard";
 import type { TimeMode } from "@/lib/time";
@@ -34,7 +34,35 @@ export function ResultsSection({
     .filter((item) => round === "all" || item.roundLabel === round)
     .filter((item) => teamId === "all" || item.a.teamId === teamId || item.b.teamId === teamId);
   const visible = filtered.slice(0, limit);
+  const visibleIdSignature = visible.map((item) => item.id).join("|");
   const grouped = groupByRound(visible);
+
+  // A scheduled card's canonical #series-<id> link remains valid after the
+  // match becomes final, even when that final is older than the first Results
+  // page. Reveal the target, clear filters that could hide it, then scroll once
+  // React has committed the card. Hash navigation stays the site's only route.
+  useEffect(() => {
+    const revealHash = () => {
+      const anchor = window.location.hash.replace(/^#/, "");
+      if (!anchor.startsWith("series-")) return;
+      const id = anchor.slice("series-".length);
+      const index = completed.findIndex((item) => item.id === id);
+      if (index < 0) return;
+      setRound("all");
+      setTeamId("all");
+      setLimit((current) => Math.max(current, index + 1));
+    };
+
+    revealHash();
+    window.addEventListener("hashchange", revealHash);
+    return () => window.removeEventListener("hashchange", revealHash);
+  }, [completed]);
+
+  useEffect(() => {
+    const anchor = window.location.hash.replace(/^#/, "");
+    if (!anchor.startsWith("series-")) return;
+    document.getElementById(anchor)?.scrollIntoView();
+  }, [visibleIdSignature]);
 
   return (
     <section id="results" className="command-section" aria-labelledby="results-heading">

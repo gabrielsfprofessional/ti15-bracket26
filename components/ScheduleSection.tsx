@@ -121,7 +121,7 @@ export function ScheduleSection({
                           timeMode={timeMode}
                           localTimeZone={localTimeZone}
                           compact
-                          anchorPrefix={item.status === "completed" ? "schedule" : "series"}
+                          anchorPrefix={ownsCanonicalAnchor(item) ? "series" : "schedule"}
                         />
                       </div>
                     ))}
@@ -134,6 +134,10 @@ export function ScheduleSection({
       )}
     </section>
   );
+}
+
+function ownsCanonicalAnchor(item: Series): boolean {
+  return item.status === "scheduled" || item.status === "tbd" || item.status === "unconfirmed";
 }
 
 function matchesStatus(item: Series, filter: ScheduleFilter): boolean {

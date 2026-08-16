@@ -1,6 +1,6 @@
 import overridesFile from "@/data/overrides.json";
 import { TEAMS } from "@/data/teams";
-import { mergeBracket } from "./bracket";
+import { mergeBracket, restoreBracketSlotRefs } from "./bracket";
 import { claimNearestSeries } from "./claim";
 import { resolve } from "./resolve";
 import { readSchedule } from "./schedule";
@@ -183,7 +183,10 @@ export interface AssembleInput {
   liveStatus?: "ok" | "error";
 }
 
-export function assembleTournament(input: AssembleInput): Tournament {
+export function assembleTournament(
+  input: AssembleInput,
+  manual: OverridesFile = overrides,
+): Tournament {
   const { matches, live, nowMs } = input;
   const observedUtc = new Date(nowMs).toISOString();
   const scheduleState = readSchedule(nowMs);
@@ -194,30 +197,30 @@ export function assembleTournament(input: AssembleInput): Tournament {
   // The Main Event is a dependency graph, not a list of rows, so it reconciles
   // after the schedule and before overrides — which stay the final authority and
   // address a bracket match by its stable topology id.
-  const withBracket = mergeBracket(withSchedule);
-  const streamUrl = overrides.streamUrl ?? scheduleState.streamUrl ?? DEFAULT_STREAM_URL;
+  const withBracket = restoreBracketSlotRefs(mergeBracket(withSchedule));
+  const streamUrl = manual.streamUrl ?? scheduleState.streamUrl ?? DEFAULT_STREAM_URL;
 
   let series: Series[] = withBracket.map((s) => ({ ...s, streamUrl: s.streamUrl ?? streamUrl }));
-  series = applySeriesOverrides(series);
+  series = applySeriesOverrides(series, manual);
   series = series.sort(bySeriesOrder);
 
-  const swiss = applySwissOverrides(computeSwiss(series));
+  const swiss = applySwissOverrides(computeSwiss(series), manual.swiss ?? {});
 
   const tournament: Tournament = {
     leagueId: TI_LEAGUE_ID,
     teams: TEAMS,
     swiss,
     series,
-    championId: overrides.championId ?? null,
+    championId: null,
     lastSyncUtc: new Date(nowMs).toISOString(),
-    syncState: overrides.syncState ?? (input.degraded ? "degraded" : "ok"),
+    syncState: manual.syncState ?? (input.degraded ? "degraded" : "ok"),
     sourceHealth: {
       matches: { status: input.matchesStatus ?? (input.degraded ? "error" : "ok"), observedUtc },
       live: { status: input.liveStatus ?? (input.degraded ? "error" : "ok"), observedUtc },
       schedule: scheduleState.health,
       snapshotGeneratedUtc: null,
       mode:
-        overrides.syncState === "manual"
+        manual.syncState === "manual"
           ? "manual"
           : input.degraded
             ? "degraded"
@@ -225,7 +228,7 @@ export function assembleTournament(input: AssembleInput): Tournament {
     },
   };
 
-  return resolve(tournament);
+  return resolve(tournament, manual.championId ?? null);
 }
 
 /**
@@ -421,9 +424,9 @@ function slotFromSchedule(teamId: TeamId | null | undefined, label?: string) {
 }
 
 /** overrides.json wins over everything, including hiding a series outright. */
-function applySeriesOverrides(series: Series[]): Series[] {
-  const hidden = new Set(overrides.hide ?? []);
-  const patches = overrides.series ?? {};
+function applySeriesOverrides(series: Series[], manual: OverridesFile = overrides): Series[] {
+  const hidden = new Set(manual.hide ?? []);
+  const patches = manual.series ?? {};
 
   const out: Series[] = [];
   for (const s of series) {

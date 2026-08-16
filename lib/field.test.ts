@@ -4,7 +4,7 @@ import { TEAMS } from "@/data/teams";
 import { assembleTournament } from "./opendota";
 import { loadTournamentWithFallback } from "./state";
 import { validateTournament } from "./validation";
-import type { RawMatch, Series, TeamId, Tournament } from "./types";
+import type { OverridesFile, RawMatch, Series, TeamId, Tournament } from "./types";
 
 /**
  * The real, released group stage as a compact table.
@@ -228,6 +228,20 @@ describe("bracket regression is rejected", () => {
     expect(result.errors.join(" ")).toContain("series_regression");
   });
 
+  it("rejects a missing stable bracket node even when total series count is unchanged", () => {
+    const grandFinal = baseline.series.find((item) => item.id === "main-grand-final") as Series;
+    const replaced: Tournament = {
+      ...baseline,
+      series: [
+        ...baseline.series.filter((item) => item.id !== grandFinal.id),
+        { ...grandFinal, id: "s-raw-grand-final" },
+      ],
+    };
+    const result = validateTournament(replaced, baseline);
+    expect(result.valid).toBe(false);
+    expect(result.errors.join(" ")).toContain("bracket_node_missing: main-grand-final");
+  });
+
   it("rejects a completed node that reverted to scheduled", () => {
     const reverted: Tournament = {
       ...baseline,
@@ -283,5 +297,41 @@ describe("bracket regression is rejected", () => {
     const result = validateTournament(impossible, baseline);
     expect(result.valid).toBe(false);
     expect(result.errors.join(" ")).toContain("winner");
+  });
+});
+
+describe("manual bracket authority", () => {
+  const manualResult: OverridesFile = {
+    series: {
+      "main-ub-qf1": {
+        status: "completed",
+        scoreA: 0,
+        scoreB: 2,
+        winnerId: 7119388,
+      },
+    },
+  };
+
+  it("reflows winner and loser paths after a provider result is corrected", () => {
+    const withProviderQuarterfinal: Array<[number, TeamId, TeamId, number, number, string]> = [
+      ...GROUP_STAGE,
+      [1132000, 10150413, 7119388, 2, 0, "2026-08-20T02:04:00.000Z"],
+    ];
+    const tournament = assembleTournament(
+      { matches: rawMatches(withProviderQuarterfinal), live: [], nowMs: Date.parse("2026-08-20T05:00:00Z") },
+      manualResult,
+    );
+
+    const qf = tournament.series.find((item) => item.id === "main-ub-qf1") as Series;
+    const upper = tournament.series.find((item) => item.id === "main-ub-sf1") as Series;
+    const lower = tournament.series.find((item) => item.id === "main-lb-r1-1") as Series;
+    expect(qf.winnerId).toBe(7119388);
+    expect(upper.a).toEqual({ kind: "team", teamId: 7119388 });
+    expect(lower.a).toEqual({ kind: "team", teamId: 10150413 });
+  });
+
+  it("keeps a manual champion authoritative while the Grand Final is undecided", () => {
+    expect(assembleTournament({ matches: rawMatches(), live: [], nowMs: NOW }, { championId: 7119388 }).championId)
+      .toBe(7119388);
   });
 });
