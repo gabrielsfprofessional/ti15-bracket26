@@ -1,5 +1,7 @@
 import overridesFile from "@/data/overrides.json";
 import { TEAMS } from "@/data/teams";
+import { mergeBracket } from "./bracket";
+import { claimNearestSeries } from "./claim";
 import { resolve } from "./resolve";
 import { readSchedule } from "./schedule";
 import { bestOfFor, toSeries, unixToIso } from "./series";
@@ -49,14 +51,6 @@ const RETRY_BACKOFF_MS = 1_000;
  * without the live feed corroborating it.
  */
 const LIVE_GRACE_MS = 2 * 3_600_000;
-
-/**
- * C.3 — how far a played series may sit from its hand-entered slot and still be
- * considered the same match. Asymmetric on purpose: Dota broadcasts run late,
- * essentially never early.
- */
-const SCHEDULE_EARLY_MS = 2 * 3_600_000;
-const SCHEDULE_LATE_MS = 12 * 3_600_000;
 
 const overrides = overridesFile as unknown as OverridesFile;
 
@@ -197,9 +191,13 @@ export function assembleTournament(input: AssembleInput): Tournament {
   const played = toSeries(matches);
   const withLive = mergeLive(played, live, nowMs);
   const withSchedule = mergeSchedule(withLive, scheduleState.matches);
+  // The Main Event is a dependency graph, not a list of rows, so it reconciles
+  // after the schedule and before overrides — which stay the final authority and
+  // address a bracket match by its stable topology id.
+  const withBracket = mergeBracket(withSchedule);
   const streamUrl = overrides.streamUrl ?? scheduleState.streamUrl ?? DEFAULT_STREAM_URL;
 
-  let series: Series[] = withSchedule.map((s) => ({ ...s, streamUrl: s.streamUrl ?? streamUrl }));
+  let series: Series[] = withBracket.map((s) => ({ ...s, streamUrl: s.streamUrl ?? streamUrl }));
   series = applySeriesOverrides(series);
   series = series.sort(bySeriesOrder);
 
@@ -383,7 +381,7 @@ export function mergeSchedule(
     if (existingIds.has(entry.id)) continue;
 
     if (entry.aTeamId != null && entry.bTeamId != null && entry.startUtc) {
-      const played = claimPlayed(claimable, claimed, entry.aTeamId, entry.bTeamId, entry.startUtc);
+      const played = claimNearestSeries(claimable, claimed, entry.aTeamId, entry.bTeamId, entry.startUtc);
       if (played) {
         claimed.add(played.id);
         played.section = entry.section;
@@ -420,43 +418,6 @@ export function mergeSchedule(
 function slotFromSchedule(teamId: TeamId | null | undefined, label?: string) {
   if (teamId != null) return { kind: "team" as const, teamId };
   return { kind: "tbd" as const, label: label ?? "TBD" };
-}
-
-/**
- * The unclaimed played series that best fits this schedule row, or null.
- * "Best" is the nearest start time inside an asymmetric window — a broadcast
- * runs late far more often than early.
- */
-function claimPlayed(
-  claimable: Series[],
-  claimed: Set<string>,
-  aId: TeamId,
-  bId: TeamId,
-  startUtc: string,
-): Series | null {
-  const target = Date.parse(startUtc);
-  if (Number.isNaN(target)) return null;
-
-  let best: Series | null = null;
-  let bestDistance = Number.POSITIVE_INFINITY;
-
-  for (const s of claimable) {
-    if (claimed.has(s.id)) continue;
-    const ids = [s.a.teamId, s.b.teamId];
-    if (!ids.includes(aId) || !ids.includes(bId)) continue;
-
-    const delta = Date.parse(s.startUtc as string) - target;
-    if (delta < -SCHEDULE_EARLY_MS || delta > SCHEDULE_LATE_MS) continue;
-
-    const distance = Math.abs(delta);
-    // Ties broken by id so the assignment is deterministic.
-    if (distance < bestDistance || (distance === bestDistance && best && s.id < best.id)) {
-      best = s;
-      bestDistance = distance;
-    }
-  }
-
-  return best;
 }
 
 /** overrides.json wins over everything, including hiding a series outright. */

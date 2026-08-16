@@ -25,7 +25,19 @@ describe("public state uptime contract", () => {
       expectedSha: "abc123",
     });
     expect(result.valid).toBe(true);
-    expect(result.summary).toMatchObject({ teams: 16, series: 39, completed: 24 });
+    // Counts are reported, not frozen: the snapshot is refreshed by a scheduled
+    // job, so a literal series count here would fail CI the next time a match
+    // finishes. What must hold is the shape and the relationships.
+    const state = payload();
+    expect(result.summary).toMatchObject({
+      syncState: "ok",
+      teams: 16,
+      series: state.series.length,
+      completed: state.series.filter((item) => item.status === "completed").length,
+      deploymentSha: "abc123",
+    });
+    expect(result.summary.series).toBeGreaterThanOrEqual(39);
+    expect(result.summary.completed).toBeLessThanOrEqual(result.summary.series);
   });
 
   it("rejects wrong league, team count, parity, degraded sync, old snapshot, and SHA", () => {

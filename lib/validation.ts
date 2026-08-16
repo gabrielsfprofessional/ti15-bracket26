@@ -74,12 +74,25 @@ export function validateTournament(
 
   const seriesIds = new Set<string>();
   const completedGameOwners = new Map<number, string>();
+  /**
+   * Which published row owns each upstream OpenDota series. Bracket
+   * reconciliation moves a played series onto a stable topology id and drops the
+   * raw row; if a bug ever left both behind, the same match would appear twice
+   * on the page with two different ids and the counts would silently inflate.
+   */
+  const providerSeriesOwners = new Map<number, string>();
   const candidateById = new Map<string, Series>();
 
   for (const item of candidate.series) {
     candidateById.set(item.id, item);
     if (seriesIds.has(item.id)) add("duplicate_series_id", item.id);
     seriesIds.add(item.id);
+
+    if (item.seriesId != null) {
+      const owner = providerSeriesOwners.get(item.seriesId);
+      if (owner) add("duplicate_provider_series", `${item.seriesId} appears in ${owner} and ${item.id}`);
+      else providerSeriesOwners.set(item.seriesId, item.id);
+    }
 
     if (!SECTIONS.has(item.section)) add("series_section", `${item.id} has ${String(item.section)}`);
     if (!STATUSES.has(item.status)) add("series_status", `${item.id} has ${String(item.status)}`);

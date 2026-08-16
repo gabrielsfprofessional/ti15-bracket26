@@ -7,11 +7,20 @@
  *   npm run smoke
  */
 import { buildTournament } from "../lib/opendota";
+import { validateBracketTopology } from "../lib/bracket";
 import { TEAM_BY_ID } from "../data/teams";
 import { formatEt } from "../lib/time";
 
+const BRACKET_SECTIONS = new Set(["upper", "lower", "grand_final"]);
+
 async function main() {
 const nowMs = Date.now();
+
+// The topology is hand-authored, so check its shape before reporting anything
+// that was reconciled onto it.
+const topologyErrors = validateBracketTopology();
+console.log("topology       ", topologyErrors.length ? topologyErrors : "valid");
+
 const t = await buildTournament(nowMs);
 
 const byStatus = new Map<string, number>();
@@ -32,6 +41,14 @@ console.log("swiss states   ", Object.fromEntries(
 ));
 console.log("provisional    ", t.swiss.filter((r) => r.provisional).length);
 console.log("stamped rows   ", t.series.filter((s) => s.scheduleId).length);
+
+const bracket = t.series.filter((s) => BRACKET_SECTIONS.has(s.section));
+console.log("bracket nodes  ", bracket.length);
+console.log("bracket status ", Object.fromEntries(
+  bracket.reduce((m, s) => m.set(s.status, (m.get(s.status) ?? 0) + 1), new Map<string, number>()),
+));
+console.log("bracket claimed", bracket.filter((s) => s.seriesId != null).length);
+console.log("championId     ", t.championId ?? "undecided");
 
 const unknown = new Set<number>();
 for (const s of t.series) {

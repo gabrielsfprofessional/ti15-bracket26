@@ -11,10 +11,23 @@ import type { Series, SlotRef, TeamId, Tournament } from "./types";
  * a fresh champion propagates all the way down in a single resolve() call.
  */
 export function resolve(t: Tournament): Tournament {
-  const byId = new Map<string, Series>();
-  for (const s of t.series) byId.set(s.id, s);
+  const series = resolveSeries(t.series);
+  return { ...t, series, championId: findChampion(series, t.championId) };
+}
 
-  let series = t.series.map(cloneSeries);
+/**
+ * The graph half of resolve(), without the tournament wrapper.
+ *
+ * lib/bracket.ts needs exactly this: propagate every decided result through the
+ * dependency slots so the next reconciliation pass can see which nodes now have
+ * two concrete participants. Sharing the function keeps one propagation rule
+ * rather than a second, subtly different one inside the bracket layer.
+ */
+export function resolveSeries(input: Series[]): Series[] {
+  const byId = new Map<string, Series>();
+  for (const s of input) byId.set(s.id, s);
+
+  let series = input.map(cloneSeries);
 
   // Fixpoint. The cap makes a malformed topology (a cycle authored by hand in
   // bracket-topology.ts) terminate instead of hanging the build.
@@ -35,7 +48,7 @@ export function resolve(t: Tournament): Tournament {
     if (!changed) break;
   }
 
-  return { ...t, series, championId: findChampion(series, t.championId) };
+  return series;
 }
 
 function resolveOne(s: Series, byId: Map<string, Series>): Series {
