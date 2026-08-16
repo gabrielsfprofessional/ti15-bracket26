@@ -136,12 +136,6 @@
       "state": "advanced"
     },
     {
-      "teamId": 10150538,
-      "wins": 3,
-      "losses": 2,
-      "state": "elimination_round"
-    },
-    {
       "teamId": 9467224,
       "wins": 3,
       "losses": 3,
@@ -154,8 +148,14 @@
       "state": "elimination_round"
     },
     {
+      "teamId": 10150538,
+      "wins": 3,
+      "losses": 3,
+      "state": "elimination_round"
+    },
+    {
       "teamId": 9823272,
-      "wins": 2,
+      "wins": 3,
       "losses": 3,
       "state": "elimination_round"
     },
@@ -2971,13 +2971,14 @@
         "teamId": 9823272
       },
       "scoreA": 1,
-      "scoreB": 1,
-      "status": "live",
+      "scoreB": 2,
+      "status": "completed",
       "startUtc": "2026-08-16T08:08:05.000Z",
-      "winnerId": null,
+      "winnerId": 9823272,
       "gameIds": [
         8948311007,
-        8948420293
+        8948420293,
+        8948533452
       ],
       "games": [
         {
@@ -3003,39 +3004,42 @@
           "radiantKills": 30,
           "direKills": 17,
           "openDotaUrl": "https://www.opendota.com/matches/8948420293"
+        },
+        {
+          "matchId": 8948533452,
+          "gameNumber": 3,
+          "radiantTeamId": 10150538,
+          "direTeamId": 9823272,
+          "winnerId": 9823272,
+          "startUtc": "2026-08-16T10:24:26.000Z",
+          "durationSeconds": 4092,
+          "radiantKills": 26,
+          "direKills": 40,
+          "openDotaUrl": "https://www.opendota.com/matches/8948533452"
         }
       ],
-      "source": "live",
-      "updatedUtc": "2026-08-16T09:51:49.000Z",
-      "liveGame": {
-        "gameNumber": 3,
-        "radiantTeamId": 10150538,
-        "direTeamId": 9823272,
-        "radiantKills": 20,
-        "direKills": 17,
-        "gameTimeSeconds": 2389,
-        "observedUtc": "2026-08-16T11:20:00.000Z"
-      },
+      "source": "opendota",
+      "updatedUtc": "2026-08-16T11:32:38.000Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
     }
   ],
   "championId": null,
-  "lastSyncUtc": "2026-08-16T11:21:19.568Z",
+  "lastSyncUtc": "2026-08-16T12:41:07.553Z",
   "syncState": "ok",
   "sourceHealth": {
     "matches": {
       "status": "ok",
-      "observedUtc": "2026-08-16T11:21:19.568Z"
+      "observedUtc": "2026-08-16T12:41:07.553Z"
     },
     "live": {
       "status": "ok",
-      "observedUtc": "2026-08-16T11:21:19.568Z"
+      "observedUtc": "2026-08-16T12:41:07.553Z"
     },
     "schedule": {
       "status": "managed",
-      "observedUtc": "2026-08-16T11:21:19.568Z"
+      "observedUtc": "2026-08-16T12:41:07.553Z"
     },
-    "snapshotGeneratedUtc": "2026-08-16T11:21:19.568Z",
+    "snapshotGeneratedUtc": "2026-08-16T12:41:07.553Z",
     "mode": "live"
   }
 }
