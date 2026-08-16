@@ -111,11 +111,17 @@ export function ScheduleSection({
                             {simultaneous.get(item.startUtc ?? "")} matches at this time
                           </span>
                         )}
+                        {/* Schedule owns the canonical `series-<id>` anchor
+                            until a match is final, at which point Results owns
+                            it — so a `#series-<id>` link always lands on a card
+                            that is actually rendered for that state, and the
+                            Completed filter cannot duplicate an id. */}
                         <SeriesCard
                           series={item}
                           timeMode={timeMode}
                           localTimeZone={localTimeZone}
                           compact
+                          anchorPrefix={item.status === "completed" ? "schedule" : "series"}
                         />
                       </div>
                     ))}

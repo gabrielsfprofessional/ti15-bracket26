@@ -57,7 +57,15 @@ export function EliminationSection({
           <ol className="elimination-list">
             {elimination.map((item) => (
               <li key={item.id}>
-                <SeriesCard series={item} timeMode={timeMode} localTimeZone={localTimeZone} />
+                {/* Results owns `series-<id>` for a decided series; this is a
+                    curated second view of the same match, so it takes its own
+                    anchor rather than colliding with it. */}
+                <SeriesCard
+                  series={item}
+                  timeMode={timeMode}
+                  localTimeZone={localTimeZone}
+                  anchorPrefix="elimination"
+                />
                 <Stakes series={item} />
               </li>
             ))}

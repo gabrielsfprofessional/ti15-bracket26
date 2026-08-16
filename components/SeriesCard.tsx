@@ -1,6 +1,7 @@
 import { getTeam } from "@/data/teams";
 import { FlipScore } from "@/components/FlipScore";
 import { TeamLogo } from "@/components/TeamLogo";
+import { SERIES_STATUS_LABEL, slotText } from "@/lib/series-text";
 import { formatDuration, formatTournamentTime, type TimeMode } from "@/lib/time";
 import type { GameSummary, Series, SlotRef } from "@/lib/types";
 
@@ -8,25 +9,28 @@ const HAS_SCORE = new Set<Series["status"]>(["live", "unconfirmed", "completed"]
 /** Statuses whose score can still move while the page is open. */
 const IN_FLUX = new Set<Series["status"]>(["live", "unconfirmed"]);
 
-const STATUS_LABEL: Record<Series["status"], string> = {
-  tbd: "Matchup TBD",
-  scheduled: "Scheduled",
-  live: "Live now",
-  unconfirmed: "In progress · awaiting live confirmation",
-  completed: "Final",
-};
-
+/**
+ * The canonical deep-link namespace. A series is published by more than one
+ * section — Schedule lists it before it is played, Results after, Elimination
+ * and Bracket curate it — and two elements cannot share a DOM id. So exactly one
+ * section owns `series-<id>` for a given state (Schedule while it is upcoming,
+ * Results once it is final, which is what makes every `#series-<id>` link land
+ * on a card that is actually rendered) and the others pass their own prefix.
+ */
 export function SeriesCard({
   series,
   timeMode,
   localTimeZone,
   compact = false,
+  anchorPrefix = "series",
 }: {
   series: Series;
   timeMode: TimeMode;
   localTimeZone?: string;
   compact?: boolean;
+  anchorPrefix?: string;
 }) {
+  const anchor = `${anchorPrefix}-${series.id}`;
   const winnerA = series.winnerId != null && series.a.teamId === series.winnerId;
   const winnerB = series.winnerId != null && series.b.teamId === series.winnerId;
   const showScore = HAS_SCORE.has(series.status);
@@ -39,7 +43,7 @@ export function SeriesCard({
 
   return (
     <article
-      id={`series-${series.id}`}
+      id={anchor}
       className={`series-card ${compact ? "series-card--compact" : ""} status-${series.status}`}
     >
       <div className="series-card__meta">
@@ -57,8 +61,8 @@ export function SeriesCard({
       </div>
 
       <div className="series-card__footer">
-        <span className={`status-label status-label--${series.status}`}>{STATUS_LABEL[series.status]}</span>
-        <a className="deep-link" href={`#series-${series.id}`} aria-label={`Link to ${series.roundLabel}`}>
+        <span className={`status-label status-label--${series.status}`}>{SERIES_STATUS_LABEL[series.status]}</span>
+        <a className="deep-link" href={`#${anchor}`} aria-label={`Link to ${series.roundLabel}`}>
           #
         </a>
       </div>
@@ -73,6 +77,7 @@ export function SeriesCard({
               <GameRow
                 key={game.matchId}
                 game={game}
+                anchor={`${anchor}-game-${game.matchId}`}
                 timeMode={timeMode}
                 localTimeZone={localTimeZone}
               />
@@ -97,11 +102,10 @@ export function TeamSide({
   showScore?: boolean;
   animate?: boolean;
 }) {
-  const team = getTeam(slot.teamId);
   return (
     <div className={`team-side ${isWinner ? "team-side--winner" : ""}`}>
       <TeamLogo teamId={slot.teamId} size={28} />
-      <span className="team-side__name">{slotText(slot, team?.name)}</span>
+      <span className="team-side__name">{slotText(slot)}</span>
       {isWinner && <span className="sr-only">winner</span>}
       {showScore && score != null && (
         <span className="team-side__score numeric">
@@ -114,10 +118,12 @@ export function TeamSide({
 
 function GameRow({
   game,
+  anchor,
   timeMode,
   localTimeZone,
 }: {
   game: GameSummary;
+  anchor: string;
   timeMode: TimeMode;
   localTimeZone?: string;
 }) {
@@ -126,7 +132,7 @@ function GameRow({
   const winner = getTeam(game.winnerId);
 
   return (
-    <li id={`game-${game.matchId}`} className="game-row">
+    <li id={anchor} className="game-row">
       <div className="game-row__heading">
         <strong>Game {game.gameNumber}</strong>
         <span>{winner?.name ?? `Team ${game.winnerId}`} won</span>
@@ -149,13 +155,4 @@ function GameRow({
       </a>
     </li>
   );
-}
-
-function slotText(slot: SlotRef, name: string | undefined): string {
-  if (name) return name;
-  if (slot.kind === "team" && slot.teamId != null) return `Team ${slot.teamId}`;
-  if (slot.label) return slot.label;
-  if (slot.kind === "winner_of") return `Winner of ${slot.matchId ?? "previous match"}`;
-  if (slot.kind === "loser_of") return `Loser of ${slot.matchId ?? "previous match"}`;
-  return "TBD";
 }

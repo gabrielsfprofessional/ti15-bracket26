@@ -187,7 +187,9 @@ function makeSeries(overrides: Partial<Series> = {}): Series {
 
 describe("elimination round section", () => {
   it("explains the stage and why nothing is listed before the pairings exist", () => {
-    render(<EliminationSection series={snapshot.series} timeMode="eastern" />);
+    // A full tournament that has not reached the Elimination Round pairings.
+    const beforePairings = snapshot.series.filter((item) => item.section !== "elimination");
+    render(<EliminationSection series={beforePairings} timeMode="eastern" />);
 
     expect(screen.getByRole("heading", { name: "Elimination round" })).toBeInTheDocument();
     expect(screen.getByText(/Pairings are announced after Round 5/)).toBeInTheDocument();
