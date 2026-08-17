@@ -33,7 +33,6 @@ export default function AppleIcon() {
   return new ImageResponse(
     <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "#0b0709" }}>
       {/* Satori renders this to a PNG; next/image does not apply here. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={MEDALLION} width={168} height={134} alt="" />
     </div>,
     size,

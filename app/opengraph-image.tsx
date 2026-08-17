@@ -43,7 +43,6 @@ export default function OpenGraphImage() {
       {BACKDROP ? (
         <>
           {/* Satori renders this to a PNG; next/image does not apply here. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={BACKDROP} width={1200} height={630} style={{ position: "absolute", inset: 0 }} alt="" />
           {/* Same scrim intent as the hero: heaviest under the type column. */}
           <div
