@@ -1,6 +1,6 @@
 import overridesFile from "@/data/overrides.json";
 import { TEAMS } from "@/data/teams";
-import { mergeBracket, restoreBracketSlotRefs } from "./bracket";
+import { mergeBracketWithOverrides, restoreBracketSlotRefs } from "./bracket";
 import { claimNearestSeries } from "./claim";
 import { resolve } from "./resolve";
 import { readSchedule } from "./schedule";
@@ -197,7 +197,9 @@ export function assembleTournament(
   // The Main Event is a dependency graph, not a list of rows, so it reconciles
   // after the schedule and before overrides — which stay the final authority and
   // address a bracket match by its stable topology id.
-  const withBracket = restoreBracketSlotRefs(mergeBracket(withSchedule));
+  const withBracket = restoreBracketSlotRefs(
+    mergeBracketWithOverrides(withSchedule, manual.series ?? {}),
+  );
   const streamUrl = manual.streamUrl ?? scheduleState.streamUrl ?? DEFAULT_STREAM_URL;
 
   let series: Series[] = withBracket.map((s) => ({ ...s, streamUrl: s.streamUrl ?? streamUrl }));

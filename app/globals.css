@@ -1335,7 +1335,7 @@ a {
   justify-content: space-between;
   gap: var(--space-3);
   align-items: center;
-  padding-right: 1.6rem;
+  padding-right: 2.75rem;
   color: var(--text-muted);
   font-size: 0.68rem;
   letter-spacing: 0.07em;
@@ -1441,13 +1441,6 @@ a {
   height: 0.45rem;
   border-radius: 50%;
   background: var(--live);
-  animation: bracket-pulse 1.8s var(--ease-out) infinite;
-}
-
-@keyframes bracket-pulse {
-  50% {
-    opacity: 0.25;
-  }
 }
 
 .bracket-card__time {
@@ -1457,8 +1450,10 @@ a {
 
 .bracket-card__link {
   position: absolute;
-  top: 0.15rem;
-  right: 0.15rem;
+  top: 0;
+  right: 0;
+  width: 44px;
+  height: 44px;
 }
 
 /* The navigator is mobile-only; from 1024px every stage is already visible. */

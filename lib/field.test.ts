@@ -330,6 +330,50 @@ describe("manual bracket authority", () => {
     expect(lower.a).toEqual({ kind: "team", teamId: 10150413 });
   });
 
+  it("drops a downstream provider claim whose participants became stale after a correction", () => {
+    const withPlayedSemifinal: Array<[number, TeamId, TeamId, number, number, string]> = [
+      ...GROUP_STAGE,
+      [1132000, 10150413, 7119388, 2, 0, "2026-08-20T02:04:00.000Z"],
+      [1132001, 9572001, 8255888, 2, 0, "2026-08-20T05:04:00.000Z"],
+      [1132002, 10150413, 9572001, 2, 0, "2026-08-21T08:04:00.000Z"],
+    ];
+    const tournament = assembleTournament(
+      { matches: rawMatches(withPlayedSemifinal), live: [], nowMs: Date.parse("2026-08-21T12:00:00Z") },
+      manualResult,
+    );
+
+    const semifinal = tournament.series.find((item) => item.id === "main-ub-sf1") as Series;
+    const upperFinal = tournament.series.find((item) => item.id === "main-ub-final") as Series;
+    expect(semifinal.a).toEqual({ kind: "team", teamId: 7119388 });
+    expect(semifinal.b).toEqual({ kind: "team", teamId: 9572001 });
+    expect(semifinal.status).toBe("scheduled");
+    expect(semifinal.seriesId).toBeUndefined();
+    expect(semifinal.winnerId).toBeNull();
+    expect(upperFinal.a).toMatchObject({ kind: "winner_of", matchId: "main-ub-sf1" });
+    expect(tournament.series.some((item) => item.id === "s-1132002")).toBe(false);
+  });
+
+  it("claims a downstream provider result that exists only on the corrected path", () => {
+    const correctedPath: Array<[number, TeamId, TeamId, number, number, string]> = [
+      ...GROUP_STAGE,
+      [1132000, 10150413, 7119388, 2, 0, "2026-08-20T02:04:00.000Z"],
+      [1132001, 9572001, 8255888, 2, 0, "2026-08-20T05:04:00.000Z"],
+      [1132003, 7119388, 9572001, 2, 1, "2026-08-21T08:04:00.000Z"],
+    ];
+    const tournament = assembleTournament(
+      { matches: rawMatches(correctedPath), live: [], nowMs: Date.parse("2026-08-21T12:00:00Z") },
+      manualResult,
+    );
+
+    const semifinal = tournament.series.find((item) => item.id === "main-ub-sf1") as Series;
+    expect(semifinal.status).toBe("completed");
+    expect(semifinal.seriesId).toBe(1132003);
+    expect(semifinal.a).toEqual({ kind: "team", teamId: 7119388 });
+    expect(semifinal.b).toEqual({ kind: "team", teamId: 9572001 });
+    expect(semifinal.winnerId).toBe(7119388);
+    expect(tournament.series.some((item) => item.id === "s-1132003")).toBe(false);
+  });
+
   it("keeps a manual champion authoritative while the Grand Final is undecided", () => {
     expect(assembleTournament({ matches: rawMatches(), live: [], nowMs: NOW }, { championId: 7119388 }).championId)
       .toBe(7119388);

@@ -9,7 +9,7 @@ import { TEAM_BY_ID } from "@/data/teams";
 import { claimNearestSeries } from "./claim";
 import { resolveSeries } from "./resolve";
 import { winsNeeded } from "./series";
-import type { Series, TeamId } from "./types";
+import type { OverridesFile, Series, TeamId } from "./types";
 
 const UTC_ISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?Z$/;
 
@@ -68,7 +68,51 @@ export function bracketNodeSeries(nodes: BracketNode[] = BRACKET_NODES): Series[
  * comes back complete in a single request.
  */
 export function mergeBracket(input: Series[], nodes: BracketNode[] = BRACKET_NODES): Series[] {
-  let byId = new Map<string, Series>(bracketNodeSeries(nodes).map((node) => [node.id, node]));
+  return reconcileBracket(input, nodes, {}).series;
+}
+
+/**
+ * Reconcile with manual bracket patches inside the fixpoint, not after it.
+ *
+ * A corrected upstream winner changes both of its dependency destinations. If
+ * provider-only reconciliation claims later matches first and the override is
+ * applied afterwards, those later nodes retain results for participants that
+ * are no longer on that path. Applying the patch on every claim pass lets the
+ * corrected winner/loser drive all subsequent claims.
+ *
+ * The provider-only pass identifies raw rows that belonged to the superseded
+ * path. A row no longer claimable after the correction is omitted instead of
+ * leaking back into the generic Swiss remainder and corrupting standings.
+ */
+export function mergeBracketWithOverrides(
+  input: Series[],
+  patches: NonNullable<OverridesFile["series"]> = {},
+  nodes: BracketNode[] = BRACKET_NODES,
+): Series[] {
+  if (Object.keys(patches).length === 0) return mergeBracket(input, nodes);
+
+  const providerOnly = reconcileBracket(input, nodes, {});
+  const corrected = reconcileBracket(input, nodes, patches);
+  const topologyIds = new Set(nodes.map((node) => node.id));
+  return corrected.series.filter(
+    (item) => topologyIds.has(item.id) || !providerOnly.claimedRaw.has(item.id),
+  );
+}
+
+interface BracketReconciliation {
+  series: Series[];
+  claimedRaw: Set<string>;
+}
+
+function reconcileBracket(
+  input: Series[],
+  nodes: BracketNode[],
+  patches: NonNullable<OverridesFile["series"]>,
+): BracketReconciliation {
+  const manualNodes = new Set(nodes.map((node) => node.id).filter((id) => patches[id] != null));
+  let byId = new Map<string, Series>(
+    bracketNodeSeries(nodes).map((node) => [node.id, applyBracketPatch(node, patches[node.id])]),
+  );
   const order = nodes.length === BRACKET_NODES.length ? BRACKET_ORDER_BY_ID : orderOf(nodes);
 
   const pool = input.filter(isClaimable);
@@ -91,7 +135,7 @@ export function mergeBracket(input: Series[], nodes: BracketNode[] = BRACKET_NOD
 
       claimedRaw.add(raw.id);
       claimedNodes.add(node.id);
-      byId.set(node.id, hydrate(node, raw));
+      byId.set(node.id, applyBracketPatch(hydrate(node, raw), patches[node.id]));
       claimedThisPass++;
     }
 
@@ -99,11 +143,15 @@ export function mergeBracket(input: Series[], nodes: BracketNode[] = BRACKET_NOD
   }
 
   const settled = resolveSeries([...byId.values()]).map((node) =>
-    claimedNodes.has(node.id) ? node : normalizeUnclaimed(node),
+    claimedNodes.has(node.id) || manualNodes.has(node.id) ? node : normalizeUnclaimed(node),
   );
 
   const remainder = input.filter((item) => !claimedRaw.has(item.id) && !byId.has(item.id));
-  return [...remainder, ...settled];
+  return { series: [...remainder, ...settled], claimedRaw };
+}
+
+function applyBracketPatch(item: Series, patch: Partial<Series> | undefined): Series {
+  return patch ? { ...item, ...patch, source: "override" } : item;
 }
 
 /**

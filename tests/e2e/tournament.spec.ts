@@ -107,6 +107,22 @@ test("the desktop bracket board shows every lane and stage without duplicate DOM
   await expect(bracket.getByText("Winner of Upper QF 1").first()).toBeVisible();
   await expect(bracket.getByText("Loser of Upper SF 2").first()).toBeVisible();
   await expect(bracket.getByText("Bo5").first()).toBeVisible();
+
+  for (const link of await bracket.locator(".bracket-card__link").all()) {
+    const box = await link.boundingBox();
+    expect(box?.width ?? 0).toBeGreaterThanOrEqual(44);
+    expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
+  }
+
+  const liveIndicatorMotion = await page.evaluate(() => {
+    const indicator = document.createElement("span");
+    indicator.className = "bracket-status__pulse";
+    document.body.append(indicator);
+    const animationName = getComputedStyle(indicator).animationName;
+    indicator.remove();
+    return animationName;
+  });
+  expect(liveIndicatorMotion).toBe("none");
 });
 
 test("the mobile bracket pages through stages by keyboard, one stage at a time", async ({ page }) => {
