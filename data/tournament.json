@@ -3093,24 +3093,30 @@
         "teamId": 9247354
       },
       "scoreA": 0,
-      "scoreB": 0,
+      "scoreB": 1,
       "status": "live",
-      "startUtc": "2026-08-20T13:23:02.000Z",
+      "startUtc": "2026-08-20T13:22:01.000Z",
       "winnerId": null,
-      "gameIds": [],
-      "source": "live",
-      "updatedUtc": "2026-08-20T13:48:20.000Z",
+      "gameIds": [
+        8955796155
+      ],
+      "source": "opendota",
+      "updatedUtc": "2026-08-20T14:03:42.000Z",
       "seriesId": 1132197,
-      "games": [],
-      "liveGame": {
-        "gameNumber": 1,
-        "radiantTeamId": 9247354,
-        "direTeamId": 10136357,
-        "radiantKills": 3,
-        "direKills": 1,
-        "gameTimeSeconds": 459,
-        "observedUtc": "2026-08-20T13:48:20.000Z"
-      },
+      "games": [
+        {
+          "matchId": 8955796155,
+          "gameNumber": 1,
+          "radiantTeamId": 9247354,
+          "direTeamId": 10136357,
+          "winnerId": 9247354,
+          "startUtc": "2026-08-20T13:22:01.000Z",
+          "durationSeconds": 2501,
+          "radiantKills": 25,
+          "direKills": 8,
+          "openDotaUrl": "https://www.opendota.com/matches/8955796155"
+        }
+      ],
       "streamUrl": "https://www.twitch.tv/dota2ti"
     },
     {
@@ -3371,22 +3377,22 @@
     }
   ],
   "championId": null,
-  "lastSyncUtc": "2026-08-20T13:48:18.717Z",
+  "lastSyncUtc": "2026-08-20T14:37:24.593Z",
   "syncState": "ok",
   "sourceHealth": {
     "matches": {
       "status": "ok",
-      "observedUtc": "2026-08-20T13:48:18.717Z"
+      "observedUtc": "2026-08-20T14:37:24.593Z"
     },
     "live": {
       "status": "ok",
-      "observedUtc": "2026-08-20T13:48:18.717Z"
+      "observedUtc": "2026-08-20T14:37:24.593Z"
     },
     "schedule": {
       "status": "managed",
-      "observedUtc": "2026-08-20T13:48:18.717Z"
+      "observedUtc": "2026-08-20T14:37:24.593Z"
     },
-    "snapshotGeneratedUtc": "2026-08-20T13:48:18.717Z",
+    "snapshotGeneratedUtc": "2026-08-20T14:37:24.593Z",
     "mode": "live"
   }
 }
