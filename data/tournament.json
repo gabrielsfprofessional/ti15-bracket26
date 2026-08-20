@@ -3092,16 +3092,17 @@
         "kind": "team",
         "teamId": 9247354
       },
-      "scoreA": 0,
+      "scoreA": 1,
       "scoreB": 1,
       "status": "live",
       "startUtc": "2026-08-20T13:22:01.000Z",
       "winnerId": null,
       "gameIds": [
-        8955796155
+        8955796155,
+        8955934230
       ],
       "source": "live",
-      "updatedUtc": "2026-08-20T14:03:42.000Z",
+      "updatedUtc": "2026-08-20T15:18:27.000Z",
       "seriesId": 1132197,
       "games": [
         {
@@ -3115,16 +3116,28 @@
           "radiantKills": 25,
           "direKills": 8,
           "openDotaUrl": "https://www.opendota.com/matches/8955796155"
+        },
+        {
+          "matchId": 8955934230,
+          "gameNumber": 2,
+          "radiantTeamId": 10136357,
+          "direTeamId": 9247354,
+          "winnerId": 10136357,
+          "startUtc": "2026-08-20T14:38:19.000Z",
+          "durationSeconds": 2408,
+          "radiantKills": 40,
+          "direKills": 8,
+          "openDotaUrl": "https://www.opendota.com/matches/8955934230"
         }
       ],
       "liveGame": {
-        "gameNumber": 2,
-        "radiantTeamId": 10136357,
-        "direTeamId": 9247354,
-        "radiantKills": 22,
-        "direKills": 5,
-        "gameTimeSeconds": 1616,
-        "observedUtc": "2026-08-20T15:21:40.000Z"
+        "gameNumber": 3,
+        "radiantTeamId": 9247354,
+        "direTeamId": 10136357,
+        "radiantKills": 11,
+        "direKills": 6,
+        "gameTimeSeconds": 964,
+        "observedUtc": "2026-08-20T16:36:40.000Z"
       },
       "streamUrl": "https://www.twitch.tv/dota2ti"
     },
@@ -3386,22 +3399,22 @@
     }
   ],
   "championId": null,
-  "lastSyncUtc": "2026-08-20T15:34:48.839Z",
+  "lastSyncUtc": "2026-08-20T16:36:29.507Z",
   "syncState": "ok",
   "sourceHealth": {
     "matches": {
       "status": "ok",
-      "observedUtc": "2026-08-20T15:34:48.839Z"
+      "observedUtc": "2026-08-20T16:36:29.507Z"
     },
     "live": {
       "status": "ok",
-      "observedUtc": "2026-08-20T15:34:48.839Z"
+      "observedUtc": "2026-08-20T16:36:29.507Z"
     },
     "schedule": {
       "status": "managed",
-      "observedUtc": "2026-08-20T15:34:48.839Z"
+      "observedUtc": "2026-08-20T16:36:29.507Z"
     },
-    "snapshotGeneratedUtc": "2026-08-20T15:34:48.839Z",
+    "snapshotGeneratedUtc": "2026-08-20T16:36:29.507Z",
     "mode": "live"
   }
 }
