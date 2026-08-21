@@ -3410,17 +3410,18 @@
         "kind": "team",
         "teamId": 10136357
       },
-      "scoreA": 1,
+      "scoreA": 2,
       "scoreB": 1,
-      "status": "live",
+      "status": "completed",
       "startUtc": "2026-08-21T14:12:01.000Z",
-      "winnerId": null,
+      "winnerId": 9823272,
       "gameIds": [
         8957527957,
-        8957749452
+        8957749452,
+        8957890399
       ],
-      "source": "live",
-      "updatedUtc": "2026-08-21T16:54:58.000Z",
+      "source": "opendota",
+      "updatedUtc": "2026-08-21T18:28:08.000Z",
       "seriesId": 1132426,
       "games": [
         {
@@ -3446,17 +3447,20 @@
           "radiantKills": 14,
           "direKills": 52,
           "openDotaUrl": "https://www.opendota.com/matches/8957749452"
+        },
+        {
+          "matchId": 8957890399,
+          "gameNumber": 3,
+          "radiantTeamId": 10136357,
+          "direTeamId": 9823272,
+          "winnerId": 9823272,
+          "startUtc": "2026-08-21T17:26:56.000Z",
+          "durationSeconds": 3672,
+          "radiantKills": 23,
+          "direKills": 38,
+          "openDotaUrl": "https://www.opendota.com/matches/8957890399"
         }
       ],
-      "liveGame": {
-        "gameNumber": 3,
-        "radiantTeamId": 10136357,
-        "direTeamId": 9823272,
-        "radiantKills": 21,
-        "direKills": 28,
-        "gameTimeSeconds": 3124,
-        "observedUtc": "2026-08-21T18:38:20.000Z"
-      },
       "streamUrl": "https://www.twitch.tv/dota2ti"
     },
     {
@@ -3491,9 +3495,8 @@
       "roundLabel": "Lower Quarterfinals",
       "bestOf": 3,
       "a": {
-        "kind": "loser_of",
-        "matchId": "main-ub-sf2",
-        "label": "Loser of Upper SF 2"
+        "kind": "team",
+        "teamId": 10136357
       },
       "b": {
         "kind": "winner_of",
@@ -3522,9 +3525,8 @@
         "label": "Winner of Upper SF 1"
       },
       "b": {
-        "kind": "winner_of",
-        "matchId": "main-ub-sf2",
-        "label": "Winner of Upper SF 2"
+        "kind": "team",
+        "teamId": 9823272
       },
       "scoreA": 0,
       "scoreB": 0,
@@ -3616,22 +3618,22 @@
     }
   ],
   "championId": null,
-  "lastSyncUtc": "2026-08-21T18:37:59.740Z",
+  "lastSyncUtc": "2026-08-21T19:27:02.181Z",
   "syncState": "ok",
   "sourceHealth": {
     "matches": {
       "status": "ok",
-      "observedUtc": "2026-08-21T18:37:59.740Z"
+      "observedUtc": "2026-08-21T19:27:02.181Z"
     },
     "live": {
       "status": "ok",
-      "observedUtc": "2026-08-21T18:37:59.740Z"
+      "observedUtc": "2026-08-21T19:27:02.181Z"
     },
     "schedule": {
       "status": "managed",
-      "observedUtc": "2026-08-21T18:37:59.740Z"
+      "observedUtc": "2026-08-21T19:27:02.181Z"
     },
-    "snapshotGeneratedUtc": "2026-08-21T18:37:59.740Z",
+    "snapshotGeneratedUtc": "2026-08-21T19:27:02.181Z",
     "mode": "live"
   }
 }
