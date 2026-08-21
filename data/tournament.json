@@ -3171,6 +3171,41 @@
       "streamUrl": "https://www.twitch.tv/dota2ti"
     },
     {
+      "id": "s-1132343",
+      "seriesId": 1132343,
+      "section": "swiss",
+      "round": 0,
+      "roundLabel": "Group Stage",
+      "bestOf": 3,
+      "a": {
+        "kind": "team",
+        "teamId": 8255888
+      },
+      "b": {
+        "kind": "team",
+        "teamId": 10150413
+      },
+      "scoreA": 0,
+      "scoreB": 0,
+      "status": "live",
+      "startUtc": "2026-08-21T02:10:25.000Z",
+      "winnerId": null,
+      "gameIds": [],
+      "games": [],
+      "liveGame": {
+        "gameNumber": 1,
+        "radiantTeamId": 8255888,
+        "direTeamId": 10150413,
+        "radiantKills": 7,
+        "direKills": 10,
+        "gameTimeSeconds": 2140,
+        "observedUtc": "2026-08-21T03:03:20.000Z"
+      },
+      "source": "live",
+      "updatedUtc": "2026-08-21T03:03:20.000Z",
+      "streamUrl": "https://www.twitch.tv/dota2ti"
+    },
+    {
       "id": "main-lb-r1-2",
       "section": "lower",
       "round": 2,
@@ -3401,22 +3436,22 @@
     }
   ],
   "championId": null,
-  "lastSyncUtc": "2026-08-20T17:30:25.437Z",
+  "lastSyncUtc": "2026-08-21T03:04:09.309Z",
   "syncState": "ok",
   "sourceHealth": {
     "matches": {
       "status": "ok",
-      "observedUtc": "2026-08-20T17:30:25.437Z"
+      "observedUtc": "2026-08-21T03:04:09.309Z"
     },
     "live": {
       "status": "ok",
-      "observedUtc": "2026-08-20T17:30:25.437Z"
+      "observedUtc": "2026-08-21T03:04:09.309Z"
     },
     "schedule": {
       "status": "managed",
-      "observedUtc": "2026-08-20T17:30:25.437Z"
+      "observedUtc": "2026-08-21T03:04:09.309Z"
     },
-    "snapshotGeneratedUtc": "2026-08-20T17:30:25.437Z",
+    "snapshotGeneratedUtc": "2026-08-21T03:04:09.309Z",
     "mode": "live"
   }
 }
