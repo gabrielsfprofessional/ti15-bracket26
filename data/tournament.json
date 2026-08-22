@@ -108,7 +108,7 @@
     {
       "teamId": 10136357,
       "wins": 4,
-      "losses": 1,
+      "losses": 2,
       "state": "advanced"
     },
     {
@@ -116,6 +116,13 @@
       "wins": 4,
       "losses": 2,
       "state": "advanced"
+    },
+    {
+      "teamId": 8255888,
+      "wins": 4,
+      "losses": 3,
+      "state": "advanced",
+      "provisional": false
     },
     {
       "teamId": 7119388,
@@ -142,13 +149,6 @@
       "teamId": 9247354,
       "wins": 3,
       "losses": 2,
-      "state": "advanced",
-      "provisional": false
-    },
-    {
-      "teamId": 8255888,
-      "wins": 3,
-      "losses": 3,
       "state": "advanced",
       "provisional": false
     },
@@ -3582,14 +3582,15 @@
         "kind": "team",
         "teamId": 10136357
       },
-      "scoreA": 1,
+      "scoreA": 2,
       "scoreB": 1,
-      "status": "live",
+      "status": "completed",
       "startUtc": "2026-08-22T05:02:28.000Z",
-      "winnerId": null,
+      "winnerId": 8255888,
       "gameIds": [
         8958607830,
-        8958667855
+        8958667855,
+        8958734008
       ],
       "games": [
         {
@@ -3615,19 +3616,22 @@
           "radiantKills": 26,
           "direKills": 6,
           "openDotaUrl": "https://www.opendota.com/matches/8958667855"
+        },
+        {
+          "matchId": 8958734008,
+          "gameNumber": 3,
+          "radiantTeamId": 8255888,
+          "direTeamId": 10136357,
+          "winnerId": 8255888,
+          "startUtc": "2026-08-22T07:17:23.000Z",
+          "durationSeconds": 2610,
+          "radiantKills": 21,
+          "direKills": 5,
+          "openDotaUrl": "https://www.opendota.com/matches/8958734008"
         }
       ],
-      "source": "live",
-      "updatedUtc": "2026-08-22T06:47:31.000Z",
-      "liveGame": {
-        "gameNumber": 3,
-        "radiantTeamId": 8255888,
-        "direTeamId": 10136357,
-        "radiantKills": 0,
-        "direKills": 0,
-        "gameTimeSeconds": 0,
-        "observedUtc": "2026-08-22T07:31:40.000Z"
-      },
+      "source": "opendota",
+      "updatedUtc": "2026-08-22T08:00:53.000Z",
       "streamUrl": "https://www.twitch.tv/dota2ti"
     },
     {
@@ -3735,22 +3739,22 @@
     }
   ],
   "championId": null,
-  "lastSyncUtc": "2026-08-22T07:32:50.356Z",
+  "lastSyncUtc": "2026-08-22T08:31:47.905Z",
   "syncState": "ok",
   "sourceHealth": {
     "matches": {
       "status": "ok",
-      "observedUtc": "2026-08-22T07:32:50.356Z"
+      "observedUtc": "2026-08-22T08:31:47.905Z"
     },
     "live": {
       "status": "ok",
-      "observedUtc": "2026-08-22T07:32:50.356Z"
+      "observedUtc": "2026-08-22T08:31:47.905Z"
     },
     "schedule": {
       "status": "managed",
-      "observedUtc": "2026-08-22T07:32:50.356Z"
+      "observedUtc": "2026-08-22T08:31:47.905Z"
     },
-    "snapshotGeneratedUtc": "2026-08-22T07:32:50.356Z",
+    "snapshotGeneratedUtc": "2026-08-22T08:31:47.905Z",
     "mode": "live"
   }
 }
